@@ -14,7 +14,7 @@ setup(
     packages=["openquakeplatform_taxtweb"],
     include_package_data=True,
     license='BSD License',  # example license
-    description='Input Preparation Toolkit for OpenQuake Platform.',
+    description='Taxtweb - GEM building taxonomy editor',
     long_description=README,
     url='http://github.com/gem/oq-platform-taxtweb',
     author='GEM Foundation',
