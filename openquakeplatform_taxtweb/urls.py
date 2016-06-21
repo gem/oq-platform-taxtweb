@@ -30,4 +30,5 @@ urlpatterns = patterns(
     '',
     url(r'^/checker(?P<taxonomy>[^?]*)', views.checker, name='checker'),
     url(r'^(?P<taxonomy>[^?]*)', views.index, name='index'),
+    url('', views.index, name='home'),
 )
