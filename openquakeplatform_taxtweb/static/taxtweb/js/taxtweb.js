@@ -2571,6 +2571,8 @@ function BuildTaxonomyString(out_type)
     return (ResTax);
 }
 
+var virt_sfx = "";
+
 function taxt_BuildTaxonomy()
 {
     var ResTax, ResTaxFull = BuildTaxonomyString(0);
@@ -2771,15 +2773,88 @@ function taxt_BuildTaxonomy()
         gem_taxonomy_form = ResTax;
         gem_taxonomy_form_full = ResTaxFull;
 
-        gem$('#resultE').val(ResTax);
+        gem$('#resultE' + virt_sfx).val(ResTax);
         gem$('#permalink').attr("href", taxt_prefix + "/" +  ResTaxFull);
     }
     else {
         gem_taxonomy_form = "";
         gem_taxonomy_form_full = "";
-        gem$('#resultE').val(validate_msg);
+        gem$('#resultE' + virt_sfx).val(validate_msg);
         gem$('#permalink').attr("href", taxt_prefix);
     }
+}
+
+/* resultE_mgmt(event) manage hands editing of resultE input tag decoupling input and processing to a different
+   output */
+function resultE_mgmt(event)
+{
+    var item = event.target;
+    var taxonomy = $(item).val();
+    var error = "";
+
+    console.log('qui ' + event.type);
+    $(item).css('background-color', '#ffdfbf'); // orange
+    
+    if (event.type == 'input') {
+        $(item).off('keyup', resultE_mgmt);
+    }
+    var ev_type = (event.type == 'blur' ? "OUT" : "IN");
+
+    if (ev_type == 'IN' && $('#OutTypeCB').val() != 2) {
+        $('#OutTypeCB').val(2);
+    }
+
+    if (ev_type == 'IN' && virt_sfx == '') {
+        virt_sfx = '_virt';
+    }
+
+    do {
+        ret = taxonomy_short2full(taxonomy);
+    
+        if (ret) {
+            if (ret.err_s) {
+                error = ret.err_s;
+                taxonomy = '';
+                break;
+            }
+            else {
+                taxonomy = ret.result;
+            }
+        }
+        else {
+            alert("No response from server.");
+            taxonomy = '';
+            break;
+        }
+
+        var ret_s = { s: "" };
+
+        if (populate(taxonomy, ret_s) == false) {
+            error = ret_s.s;
+            break; // $(item).css('background-color', '#ffbfbf');
+        }
+        $(item).css('background-color', '#bfffbf');
+    } while(false);
+
+    if (error != "") {
+        $("#resultE_explain").html(error);
+        $("#resultE_explain").show();
+        $(item).css('background-color', '#ffbfbf'); 
+    }
+    else {
+        $("#resultE_explain").html("");
+        $("#resultE_explain").hide();
+    }
+    console.log('ev_type: ' + ev_type + "  virt_sfx: " + virt_sfx);
+    if (ev_type == 'OUT' && virt_sfx == '_virt') {
+        console.log("Out procedure");
+        $(item).val($('#resultE_virt').val());
+        virt_sfx = '';
+        $(item).css('background-color', '');
+        $("#resultE_explain").html("");
+        $("#resultE_explain").hide();
+    }
+
 }
 
 

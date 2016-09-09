@@ -7,6 +7,7 @@
 <script type="text/javascript"><!--
 var taxt_prefix = '{{ taxt_prefix }}';
 var gem$ = {{ jquery }};
+
 function taxtweb_main() {
     var ret = null;
     var tab_cur = {{ tab_id }};
@@ -37,11 +38,21 @@ function taxtweb_main() {
 
     var ret_s = { s: "" };
 
+    console.log("QUI TAX: " + taxonomy);
+
     if (taxonomy != '') {
         if (populate(taxonomy, ret_s) == false) {
             alert("Load of taxonomy failed\n" + ret_s.s);
         }
     }
+
+    $("#resultE").on("focus", resultE_mgmt);
+    $("#resultE").on("blur", resultE_mgmt);
+    $("#resultE").on("input", resultE_mgmt);
+    $("#resultE").on("keyup", resultE_mgmt);
+
+
+
 }
 
 /*
