@@ -19,7 +19,6 @@ def tag_and_val_get(xpath, times):
 
 def make_function(func_name, taxonomy, run_slow):
     def generated(self):
-        sys.stderr.write("START: ");
         taxonomy_loc = taxonomy
         if taxonomy_loc[-1] == '/':
             taxonomy_loc = taxonomy_loc[0:-1]
@@ -38,7 +37,6 @@ def make_function(func_name, taxonomy, run_slow):
              self.assertEqual(resulte_val, taxonomy_loc)
 
         if run_slow:
-            sys.stderr.write("RUN SLOW START\n")
             resulte_tag.click()   # Positions the cursor at the end of the string
             if len(resulte_val) > 0 and resulte_val[-1] == '/':
                 resulte_tag.send_keys(Keys.BACK_SPACE)
@@ -84,7 +82,7 @@ def generator():
             if ct >= 60:
                 break
             taxonomy = taxonomy.strip()
-            func_name = "r%04d_%s_test" % (r, taxonomy)
+            func_name = "r%04d_%s_%s_test" % (r, taxonomy, "slow" if run_slow else "fast")
             test_func = make_function(func_name, taxonomy, run_slow)
             setattr(VulnTaxonomiesTest, func_name, test_func)
             ct += 1
