@@ -2743,8 +2743,8 @@ function taxt_BuildTaxonomy()
             d2 = false;
         }
         else if (parseInt(gem$('#DateE1').val()) == parseInt(gem$('#DateE2').val())) {
-            ret_s.s = "Date of construction or retrofit: invalid range.";
-            return (false);
+            validate_msg += "Date of construction or retrofit: invalid range.";
+            d2 = false;
         }
         else {
             gem$('#DateE2').removeClass('gem_field_alert');
@@ -2799,10 +2799,6 @@ function resultE_mgmt(event)
         $(item).off('keyup', resultE_mgmt);
     }
     var ev_type = (event.type == 'blur' ? "OUT" : "IN");
-
-    if (ev_type == 'IN' && $('#OutTypeCB').val() != 2) {
-        $('#OutTypeCB').val(2);
-    }
 
     if (ev_type == 'IN' && virt_sfx == '') {
         virt_sfx = '_virt';
@@ -4159,16 +4155,27 @@ function populate(s, ret_s) {
             }
         }
         else if (h_type == hsfx_bet) {
-            h_vals = h_items[1].split(',');
-            if (h_vals.length != 2) {
-                ret_s.s = "Height: '" + h_label + "' type requires exactly 2 values, " + is_or_are_given(h_vals.length);
+            if (typeof(h_items[1]) == 'undefined') {
+                ret_s.s = "Height: '" + h_label + "' type requires exactly 2 values, no one is given.";
                 return (false);
+            }
+            else {
+                h_vals = h_items[1].split(',');
+
+                if (h_vals.length != 2) {
+                    ret_s.s = "Height: '" + h_label + "' type requires exactly 2 values, " + is_or_are_given(h_vals.length);
+                    return (false);
+                }
             }
         }
         else {
+            if (typeof(h_items[1]) == 'undefined') {
+                ret_s.s = "Height: '" + h_label + "' type requires exactly 1 value, no one is given.";
+                return (false);
+            }
             h_vals = h_items[1].split(',');
-            if (h_vals.length != 1) {
-                ret_s.s = "Height: '" + h_label + "' type requires exactly 2 values, " + is_or_are_given(h_vals.length);
+            if (typeof(h_items[1]) == 'undefined' || h_vals.length != 1) {
+                ret_s.s = "Height: '" + h_label + "' type requires exactly 1 value, " + is_or_are_given(h_vals.length);
                 return (false);
             }
         }
@@ -4208,6 +4215,11 @@ function populate(s, ret_s) {
 
             gem$('#noStoreysE' + h_cbid[h_grp] + '1').val(h_vals[0]);
 
+            h_cbfun[h_grp](null);
+        }
+        else {
+            // missing case for H99 case
+            gem$('#HeightCB' + h_cbid[h_grp]).val(h_map[h_id] == 'HD' ? h_type - 1 : h_type);
             h_cbfun[h_grp](null);
         }
     }
@@ -4291,6 +4303,10 @@ function populate(s, ret_s) {
         gem$('#DateE1').val(date_vals[0]);
 
         taxt_ValidateDate();
+    }
+    else {
+        gem$('#DateCB1').val(0);
+        taxt_DateCB1Select(null);
     }
 
     //
