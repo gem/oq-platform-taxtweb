@@ -5,6 +5,7 @@
 <script src="{{ STATIC_URL }}taxtweb/js/taxonomy_map.js"></script>
 <script src="{{ STATIC_URL }}taxtweb/js/taxonomy.js"></script>
 <script type="text/javascript"><!--
+var gem_pageloaded = false;
 var taxt_prefix = '{{ taxt_prefix }}';
 var gem$ = {{ jquery }};
 
@@ -221,6 +222,7 @@ function gem_help_cb(event)
         document.detachEvent("mousedown", gem_help_cb);
     }
     document.body.className = gem_help_old_body_class;
+    gem_pageloaded = true;
 }
           
 window.onload = taxtweb_main;
