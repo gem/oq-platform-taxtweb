@@ -2784,6 +2784,7 @@ function taxt_BuildTaxonomy()
     }
 }
 
+
 /* resultE_mgmt(event) manage hands editing of resultE input tag decoupling input and processing to a different
    output */
 function resultE_mgmt(event)
@@ -2791,8 +2792,6 @@ function resultE_mgmt(event)
     var item = event.target;
     var taxonomy = $(item).val();
     var error = "";
-
-    console.log('qui ' + event.type);
     $(item).css('background-color', '#ffdfbf'); // orange
     
     if (event.type == 'input') {
@@ -2824,7 +2823,9 @@ function resultE_mgmt(event)
         }
 
         var ret_s = { s: "" };
-
+        // NOTE: all console.log calls will be removed
+        // after a short quarantine period
+        // console.log("PRE POP: " + taxonomy);
         if (populate(taxonomy, ret_s) == false) {
             error = ret_s.s;
             break; // $(item).css('background-color', '#ffbfbf');
@@ -2841,9 +2842,8 @@ function resultE_mgmt(event)
         $("#resultE_explain").html("");
         $("#resultE_explain").hide();
     }
-    console.log('ev_type: ' + ev_type + "  virt_sfx: " + virt_sfx);
     if (ev_type == 'OUT' && virt_sfx == '_virt') {
-        console.log("Out procedure");
+        // console.log("Out procedure");
         $(item).val($('#resultE_virt').val());
         virt_sfx = '';
         $(item).css('background-color', '');
@@ -2851,6 +2851,7 @@ function resultE_mgmt(event)
         $("#resultE_explain").hide();
     }
 
+    // console.log("RESULT: " + gem$('#resultE' + virt_sfx).val());
 }
 
 
@@ -4141,6 +4142,7 @@ function populate(s, ret_s) {
         h_label = h_items[0];
 
         h_id = h_map.indexOf(h_label);
+        // console.log("H_ID: " + h_id);
         if (h_id == -1) {
             ret_s.s = "Height not defined properly.";
             return (false);
