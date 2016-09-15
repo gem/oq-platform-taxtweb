@@ -82,7 +82,7 @@ def generator():
             if ct >= 60:
                 break
             taxonomy = taxonomy.strip()
-            func_name = "r%04d_%s_%s_test" % (r, taxonomy, "slow" if run_slow else "fast")
+            func_name = "r%04d_%s_%s_test" % (r, taxonomy.replace('.', '~'), "slow" if run_slow else "fast")
             test_func = make_function(func_name, taxonomy, run_slow)
             setattr(VulnTaxonomiesTest, func_name, test_func)
             ct += 1
