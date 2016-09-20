@@ -9,7 +9,13 @@ import time
 from openquakeplatform.test import pla
 
 class VulnTaxonomiesTest(unittest.TestCase):
-    pass
+    @staticmethod
+    def setup_class():
+        pla.get('/taxtweb')
+        dontshow_tag, dontshow_val = tag_and_val_get("//div[@id='taxtweb_splash']//input[@name='dontshowmeagain']", 20)
+        dontshow_tag.click()
+        close_tag, close_val = tag_and_val_get("//div[@id='taxtweb_splash']//button[@name='close_btn']", 20)
+        close_tag.click()
 
 def tag_and_val_get(xpath, times):
     resulte_tag = pla.xpath_finduniq(xpath, times=times)
@@ -82,7 +88,7 @@ def generator():
             if ct >= 60:
                 break
             taxonomy = taxonomy.strip()
-            func_name = "r%04d_%s_%s_test" % (r, taxonomy.replace('.', '__'), "slow" if run_slow else "fast")
+            func_name = "r%04d_%s_%s_test" % (r, taxonomy.replace('.', '~'), "slow" if run_slow else "fast")
             test_func = make_function(func_name, taxonomy, run_slow)
             setattr(VulnTaxonomiesTest, func_name, test_func)
             ct += 1
