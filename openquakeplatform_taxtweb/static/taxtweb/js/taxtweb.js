@@ -207,6 +207,7 @@ function select_populate(id, items)
 {
     var preitem, item, text = null, attrs;
 
+    gem$('#' + id).empty();
     for (var i = 0 ; i < items.length ; i++) {
         attrs = "";
         preitem = items[i];
@@ -2845,6 +2846,8 @@ function resultE_mgmt(event)
         // NOTE: all console.log calls will be removed
         // after a short quarantine period
         // console.log("PRE POP: " + taxonomy);
+        taxt_Initiate(false);
+
         if (populate(taxonomy, ret_s) == false) {
             error = ret_s.s;
             break; // $(item).css('background-color', '#ffbfbf');
@@ -3570,14 +3573,16 @@ function taxt_OutTypeCBSelect(obj)
     taxt_BuildTaxonomy();
 }
 
-function taxt_Initiate() {
-    var OutTypeCB = [];
-    OutTypeCB.push('Full');
-    OutTypeCB.push('Omit Unknown');
-    OutTypeCB.push('Short');
-    select_populate('OutTypeCB', OutTypeCB);
-    gem$('#OutTypeCB').on('change', taxt_OutTypeCBSelect);
-    gem$('#OutTypeCB').val(2);
+function taxt_Initiate(full) {
+    if (full) {
+        var OutTypeCB = [];
+        OutTypeCB.push('Full');
+        OutTypeCB.push('Omit Unknown');
+        OutTypeCB.push('Short');
+        select_populate('OutTypeCB', OutTypeCB);
+        gem$('#OutTypeCB').on('change', taxt_OutTypeCBSelect);
+        gem$('#OutTypeCB').val(2);
+    }
 
     gem$('#DirectionCB').prop('checked', true);
     gem$('#DirectionCB').on('change', taxt_SetDirection2);
@@ -3886,7 +3891,7 @@ function tab_set(id_or_obj) {
         id = id_or_obj.id;
     }
     else if (typeof(id_or_obj) == 'number') {
-        taxt_Initiate();
+        taxt_Initiate(true);
 
         id = "tab_id-" + id_or_obj;
         if (arguments.length > 1) {
