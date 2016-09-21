@@ -10,7 +10,7 @@ function taxonomy_short2full(t_short)
 {
     var max_pos = 0, tfull_arr, tfull_arr_orig, t_parent = "", t_paridx = 0, t_parnum = 0;
 
-    console.log('T_SHORT: ' + t_short);
+    // console.log('T_SHORT: ' + t_short);
     
     tfull_arr = ['DX+D99', 'MAT99', 'L99', 'DY+D99', 'MAT99', 'L99', 'H99', 'Y99', 'OC99', 'BP99',
                  'PLF99', 'IR99', 'EW99', 'RSH99+RMT99+R99+RWC99', 'F99+FWC99', 'FOS99'];
@@ -24,7 +24,7 @@ function taxonomy_short2full(t_short)
     t_arr = t_short.split('/');
     for (var i = 0 ; i < t_arr.length ; i++) {
         t_el = t_arr[i];
-        console.log('T_EL: ' + t_el);
+        // console.log('T_EL: ' + t_el);
         // revert from hided DX and DY to explicit unknown values
         if (t_el == 'DX') {
             t_el = 'DX+D99';
@@ -52,11 +52,11 @@ function taxonomy_short2full(t_short)
         }
             
         if (t_el == '') {
-            console.log("T_EL EMPTY (" + i + ", " + t_paridx + ")" );
+            // console.log("T_EL EMPTY (" + i + ", " + t_paridx + ")" );
             if (i <= (t_paridx + 2)) {
                 var id;
 
-                console.log("CHILDREN AT: " + (i - t_paridx));
+                // console.log("CHILDREN AT: " + (i - t_paridx));
                 id = (t_parent == "DX" ? i - t_paridx : i - t_paridx + 3);
                 t_el = tfull_arr_orig[id];
                 if (max_pos < id) {
@@ -75,7 +75,7 @@ function taxonomy_short2full(t_short)
         // if prefix is identified
         if (prefix in taxonomy_map) {
             cur_pos = taxonomy_map[prefix];
-            console.log("FOUND: " + cur_pos + " THE VAL: " + t_el);
+            // console.log("FOUND: " + cur_pos + " THE VAL: " + t_el);
             if (cur_pos == 0) {
                 // manage special case for coupled DX,DY cell
                 if (t_el == 'DX+D99') {
@@ -89,8 +89,6 @@ function taxonomy_short2full(t_short)
             }
             else if (cur_pos == 3) {
                 // manage special case for coupled DX,DY cell
-                /* tfull_arr[4] = tfull_arr_orig[4];
-                   tfull_arr[5] = tfull_arr_orig[5]; */
                 if (t_el == 'DY+D99') {
                     tfull_arr[0] = 'DX+D99';
                     tfull_arr[3] = t_el;
@@ -111,20 +109,20 @@ function taxonomy_short2full(t_short)
                     // manage special case paired direction Y cells for
                     // 'Material' or 'Lateral load-resisting system'
                     if (t_parnum <= 1) {
-                        console.log("T_PARNUM <= 1");
+                        // console.log("T_PARNUM <= 1");
                         if (t_parent == '' || t_parent == 'DX') {
-                            console.log('DX parent');
-                            console.log("ASSIGN TO " + (cur_pos + 3) + " THE VAL: " + t_el);
+                            // console.log('DX parent');
+                            // console.log("ASSIGN TO " + (cur_pos + 3) + " THE VAL: " + t_el);
                             tfull_arr[cur_pos+3] = t_el;
                         }
                         else if (t_parent == 'DY') {
-                            console.log('DY parent');
-                            console.log("ASSIGN TO " + (cur_pos - 3) + " THE VAL: " + t_el);
+                            // console.log('DY parent');
+                            // console.log("ASSIGN TO " + (cur_pos - 3) + " THE VAL: " + t_el);
                             tfull_arr[cur_pos-3] = t_el;
                         }
                     }
                 }
-                console.log("ASSIGN TO " + cur_pos + " THE VAL: " + t_el);
+                // console.log("ASSIGN TO " + cur_pos + " THE VAL: " + t_el);
                 tfull_arr[cur_pos] = t_el;
             }
 

@@ -2809,10 +2809,11 @@ function taxt_BuildTaxonomy()
    output */
 function resultE_mgmt(event)
 {
+    var col_orange = '#ffdfbf', col_red = '#ffbfbf', col_green = '#bfffbf', col_transparent = '';
     var item = event.target;
     var taxonomy = $(item).val();
     var error = "";
-    $(item).css('background-color', '#ffdfbf'); // orange
+    $(item).css('background-color', col_orange);
     
     if (event.type == 'input') {
         $(item).off('keyup', resultE_mgmt);
@@ -2850,15 +2851,15 @@ function resultE_mgmt(event)
 
         if (populate(taxonomy, ret_s) == false) {
             error = ret_s.s;
-            break; // $(item).css('background-color', '#ffbfbf');
+            break;
         }
-        $(item).css('background-color', '#bfffbf');
+        $(item).css('background-color', col_green);
     } while(false);
 
     if (error != "") {
         $("#resultE_explain").html(error);
         $("#resultE_explain").show();
-        $(item).css('background-color', '#ffbfbf'); 
+        $(item).css('background-color', col_red);
     }
     else {
         $("#resultE_explain").html("");
@@ -2868,7 +2869,7 @@ function resultE_mgmt(event)
         // console.log("Out procedure");
         $(item).val($('#resultE_virt').val());
         virt_sfx = '';
-        $(item).css('background-color', '');
+        $(item).css('background-color', col_transparent);
         $("#resultE_explain").html("");
         $("#resultE_explain").hide();
     }

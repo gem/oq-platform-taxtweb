@@ -25,6 +25,9 @@ def tag_and_val_get(xpath, times):
 
 def make_function(func_name, taxonomy, run_slow):
     def generated(self):
+        col_red = "rgba(255, 223, 191, 1)"
+        col_green = "rgba(191, 255, 191, 1)"
+
         taxonomy_loc = taxonomy
         if taxonomy_loc[-1] == '/':
             taxonomy_loc = taxonomy_loc[0:-1]
@@ -52,16 +55,15 @@ def make_function(func_name, taxonomy, run_slow):
             while len(cur) > 0:
                 last = cur[-1]
                 resulte_tag.send_keys(Keys.BACK_SPACE)
-                # sys.stderr.write("BS");
                 resulte_tag, resulte_val = tag_and_val_get("//input[@id='resultE']", 20)
                 resulte_bgcol = resulte_tag.value_of_css_property('background-color')
-                self.assertNotEqual(resulte_bgcol, "rgba(255, 223, 191, 1)")
+                self.assertNotEqual(resulte_bgcol, col_red)
 
                 if last is "/":
                     # check integrity
                     virtual_tag, virtual_val = tag_and_val_get("//input[@id='resultE_virt']", 20)
 
-                    self.assertEqual(resulte_bgcol, "rgba(191, 255, 191, 1)")
+                    self.assertEqual(resulte_bgcol, col_green)
                     self.assertEqual(resulte_val, virtual_val)
 
                 if resulte_val == "":

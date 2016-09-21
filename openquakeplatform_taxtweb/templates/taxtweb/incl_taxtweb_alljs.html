@@ -72,8 +72,6 @@ function taxtweb_main() {
 
     var ret_s = { s: "" };
 
-    console.log("QUI TAX: " + taxonomy);
-
     if (taxonomy != '') {
         if (populate(taxonomy, ret_s) == false) {
             alert("Load of taxonomy failed\n" + ret_s.s);
@@ -89,7 +87,6 @@ function taxtweb_main() {
 
     if (!dontshowsplash) {
         $("#taxtweb_splash").show();
-        // setTimeout(function () { $("#taxtweb_splash").hide(); }, 5000);
     }
 
     $("#taxtweb_splash button[name='close_btn']").on("click", function () { $("#taxtweb_splash").hide(); });
