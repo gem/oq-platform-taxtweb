@@ -5,8 +5,43 @@
 <script src="{{ STATIC_URL }}taxtweb/js/taxonomy_map.js"></script>
 <script src="{{ STATIC_URL }}taxtweb/js/taxonomy.js"></script>
 <script type="text/javascript"><!--
+var gem_pageloaded = false;
 var taxt_prefix = '{{ taxt_prefix }}';
 var gem$ = {{ jquery }};
+
+var gem_taxtweb_cookiepath = "/taxtweb/";
+
+function createCookie(name,value,hours,path) {
+        if (hours) {
+                var date = new Date();
+                date.setTime(date.getTime()+(hours*60*60*1000));
+                var expires = "; expires="+date.toGMTString();
+        }
+        else var expires = "";
+        document.cookie = name+"="+value+expires+"; path="+path;
+}
+
+function readCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0;i < ca.length;i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ')
+                    c = c.substring(1,c.length);
+                if (c.indexOf(nameEQ) == 0)
+                    return c.substring(nameEQ.length,c.length);
+        }
+        return null;
+}
+
+function eraseCookie(name, path) {
+  if( readCookie( name ) ) {
+    document.cookie = name + "=" +
+      ((path) ? ";path="+path:"")+
+      ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+  }
+}
+
 function taxtweb_main() {
     var ret = null;
     var tab_cur = {{ tab_id }};
@@ -42,6 +77,28 @@ function taxtweb_main() {
             alert("Load of taxonomy failed\n" + ret_s.s);
         }
     }
+
+    $("#resultE").on("focus", resultE_mgmt);
+    $("#resultE").on("blur", resultE_mgmt);
+    $("#resultE").on("input", resultE_mgmt);
+    $("#resultE").on("keyup", resultE_mgmt);
+
+    var dontshowsplash = readCookie("gem_taxtweb_dontshowsplash");
+
+    if (!dontshowsplash) {
+        $("#taxtweb_splash").show();
+    }
+
+    $("#taxtweb_splash button[name='close_btn']").on("click", function () { $("#taxtweb_splash").hide(); });
+    $("#taxtweb_splash input[name='dontshowmeagain']").change(function() {
+        if($(this).is(":checked")) {
+            createCookie("gem_taxtweb_dontshowsplash", true, 10000, gem_taxtweb_cookiepath);
+        }
+        else {
+            eraseCookie("gem_taxtweb_dontshowsplash", gem_taxtweb_cookiepath);
+        }
+    });
+    gem_pageloaded = true;
 }
 
 /*

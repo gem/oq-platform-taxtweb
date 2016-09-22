@@ -145,6 +145,7 @@ var floo_conn =
       'FO':  []
     };
 
+var gem_taxonomy_regularity_postinit = -1;
 var gem_taxonomy_form = "";
 var gem_taxonomy_form_full = "";
 
@@ -206,6 +207,7 @@ function select_populate(id, items)
 {
     var preitem, item, text = null, attrs;
 
+    gem$('#' + id).empty();
     for (var i = 0 ; i < items.length ; i++) {
         attrs = "";
         preitem = items[i];
@@ -873,12 +875,31 @@ function taxt_ValidateRegularity()
         gem$('#RegularityCB3').prop("disabled", true);
         gem$('#RegularityCB4').prop("disabled", true);
         gem$('#RegularityCB5').prop("disabled", true);
+        gem_taxonomy_regularity_postinit = -1;
     }
-    else if (gem$('#RegularityCB1').val() == 2) {
+    else if (gem$('#RegularityCB1').val() == 2) { /* irregular case */
+        /* RegularityCB2 related part */
+        var RegularityCB2 = [];
+        if (gem$('#RegularityCB3').val() == 0 || gem$('#RegularityCB3').val() == null) {
+            RegularityCB2.push({ _text: 'No irregularity', 'dataGemHelp': 'http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/no-irregularity--irn', disabled: '' });
+            default_cb2 = 1;
+        }
+        else {
+            /* IRPP:IRN */ RegularityCB2.push({'_text': 'No irregularity', 'dataGemHelp': 'http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/no-irregularity--irn' });
+        }
+        /* IRPP:TOR */ RegularityCB2.push({'_text': 'Torsion eccentricity', 'dataGemHelp': 'http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/torsion-eccentricity--tor' });
+        /* IRPP:REC */ RegularityCB2.push({'_text': 'Re-entrant corner', 'dataGemHelp': 'http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/re-entrant-corner--rec' });
+        /* IRPP:IRHO */ RegularityCB2.push({'_text': 'Other plan irregularity', 'dataGemHelp': 'http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/other-horizontal-irregularity--irho' });
+        gem$('#RegularityCB2').prop("disabled", false);
+        select_populate('RegularityCB2', RegularityCB2);
+        gem$('#RegularityCB2').val(default_cb2);
+
+        /* RegularityCB3 related part */
         var RegularityCB3 = [];
-        if (gem$('#RegularityCB2').val() == 0) {
+        if (gem$('#RegularityCB2').val() == 0 || gem$('#RegularityCB2').val() == null) {
             RegularityCB3.push({ '_text': 'No irregularity', 'dataGemHelp': 'http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/no-irregularity--irn', disabled: '' });
             default_cb3 = 1;
+            gem_taxonomy_regularity_postinit = 2;
         }
         else {
             /* IRVP:IRN  */ RegularityCB3.push({'_text': 'No irregularity', 'dataGemHelp': 'http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/no-irregularity--irn' });
@@ -893,24 +914,13 @@ function taxt_ValidateRegularity()
         gem$('#RegularityCB3').prop("disabled", false);
         select_populate('RegularityCB3', RegularityCB3);
         gem$('#RegularityCB3').val(default_cb3);
-
-        var RegularityCB2 = [];
-        if (gem$('#RegularityCB3').val() == 0) {
-            RegularityCB2.push({ _text: 'No irregularity', 'dataGemHelp': 'http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/no-irregularity--irn', disabled: '' });
-            default_cb2 = 1;
-        }
-        else {
-            /* IRPP:IRN */ RegularityCB2.push({'_text': 'No irregularity', 'dataGemHelp': 'http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/no-irregularity--irn' });
-        }
-        /* IRPP:TOR */ RegularityCB2.push({'_text': 'Torsion eccentricity', 'dataGemHelp': 'http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/torsion-eccentricity--tor' });
-        /* IRPP:REC */ RegularityCB2.push({'_text': 'Re-entrant corner', 'dataGemHelp': 'http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/re-entrant-corner--rec' });
-        /* IRPP:IRHO */ RegularityCB2.push({'_text': 'Other plan irregularity', 'dataGemHelp': 'http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/other-horizontal-irregularity--irho' });
-        gem$('#RegularityCB2').prop("disabled", false);
-        select_populate('RegularityCB2', RegularityCB2);
-        gem$('#RegularityCB2').val(default_cb2);
     }
     taxt_RegularityCB2Select(null);
     taxt_RegularityCB3Select(null);
+    if (default_cb2 == 1)
+        gem_taxonomy_regularity_postinit = 2;
+    else if (default_cb3 == 1)
+        gem_taxonomy_regularity_postinit = 3;
 }
 
 function taxt_ValidateRegularityCross23(who)
@@ -1299,12 +1309,22 @@ function taxt_RegularityCB1Select(obj)
 function taxt_RegularityCB2Select(obj)
 {
     taxt_ValidateRegularity2();
+    if (gem_taxonomy_regularity_postinit == 3) {
+        gem$('#RegularityCB3').val(0);
+        taxt_ValidateRegularity3();
+    }
+    gem_taxonomy_regularity_postinit = -1;
     taxt_BuildTaxonomy();
 }
 
 function taxt_RegularityCB3Select(obj)
 {
     taxt_ValidateRegularity3();
+    if (gem_taxonomy_regularity_postinit == 2) {
+        gem$('#RegularityCB2').val(0);
+        taxt_ValidateRegularity2();
+    }
+    gem_taxonomy_regularity_postinit = -1;
     taxt_BuildTaxonomy();
 }
 
@@ -2571,6 +2591,8 @@ function BuildTaxonomyString(out_type)
     return (ResTax);
 }
 
+var virt_sfx = "";
+
 function taxt_BuildTaxonomy()
 {
     var ResTax, ResTaxFull = BuildTaxonomyString(0);
@@ -2741,8 +2763,8 @@ function taxt_BuildTaxonomy()
             d2 = false;
         }
         else if (parseInt(gem$('#DateE1').val()) == parseInt(gem$('#DateE2').val())) {
-            ret_s.s = "Date of construction or retrofit: invalid range.";
-            return (false);
+            validate_msg += "Date of construction or retrofit: invalid range.";
+            d2 = false;
         }
         else {
             gem$('#DateE2').removeClass('gem_field_alert');
@@ -2771,15 +2793,88 @@ function taxt_BuildTaxonomy()
         gem_taxonomy_form = ResTax;
         gem_taxonomy_form_full = ResTaxFull;
 
-        gem$('#resultE').val(ResTax);
+        gem$('#resultE' + virt_sfx).val(ResTax);
         gem$('#permalink').attr("href", taxt_prefix + "/" +  ResTaxFull);
     }
     else {
         gem_taxonomy_form = "";
         gem_taxonomy_form_full = "";
-        gem$('#resultE').val(validate_msg);
+        gem$('#resultE' + virt_sfx).val(validate_msg);
         gem$('#permalink').attr("href", taxt_prefix);
     }
+}
+
+
+/* resultE_mgmt(event) manage hands editing of resultE input tag decoupling input and processing to a different
+   output */
+function resultE_mgmt(event)
+{
+    var col_orange = '#ffdfbf', col_red = '#ffbfbf', col_green = '#bfffbf', col_transparent = '';
+    var item = event.target;
+    var taxonomy = $(item).val();
+    var error = "";
+    $(item).css('background-color', col_orange);
+    
+    if (event.type == 'input') {
+        $(item).off('keyup', resultE_mgmt);
+    }
+    var ev_type = (event.type == 'blur' ? "OUT" : "IN");
+
+    if (ev_type == 'IN' && virt_sfx == '') {
+        virt_sfx = '_virt';
+    }
+
+    do {
+        ret = taxonomy_short2full(taxonomy);
+    
+        if (ret) {
+            if (ret.err_s) {
+                error = ret.err_s;
+                taxonomy = '';
+                break;
+            }
+            else {
+                taxonomy = ret.result;
+            }
+        }
+        else {
+            alert("No response from server.");
+            taxonomy = '';
+            break;
+        }
+
+        var ret_s = { s: "" };
+        // NOTE: all console.log calls will be removed
+        // after a short quarantine period
+        // console.log("PRE POP: " + taxonomy);
+        taxt_Initiate(false);
+
+        if (populate(taxonomy, ret_s) == false) {
+            error = ret_s.s;
+            break;
+        }
+        $(item).css('background-color', col_green);
+    } while(false);
+
+    if (error != "") {
+        $("#resultE_explain").html(error);
+        $("#resultE_explain").show();
+        $(item).css('background-color', col_red);
+    }
+    else {
+        $("#resultE_explain").html("");
+        $("#resultE_explain").hide();
+    }
+    if (ev_type == 'OUT' && virt_sfx == '_virt') {
+        // console.log("Out procedure");
+        $(item).val($('#resultE_virt').val());
+        virt_sfx = '';
+        $(item).css('background-color', col_transparent);
+        $("#resultE_explain").html("");
+        $("#resultE_explain").hide();
+    }
+
+    // console.log("RESULT: " + gem$('#resultE' + virt_sfx).val());
 }
 
 
@@ -3479,14 +3574,16 @@ function taxt_OutTypeCBSelect(obj)
     taxt_BuildTaxonomy();
 }
 
-function taxt_Initiate() {
-    var OutTypeCB = [];
-    OutTypeCB.push('Full');
-    OutTypeCB.push('Omit Unknown');
-    OutTypeCB.push('Short');
-    select_populate('OutTypeCB', OutTypeCB);
-    gem$('#OutTypeCB').on('change', taxt_OutTypeCBSelect);
-    gem$('#OutTypeCB').val(2);
+function taxt_Initiate(full) {
+    if (full) {
+        var OutTypeCB = [];
+        OutTypeCB.push('Full');
+        OutTypeCB.push('Omit Unknown');
+        OutTypeCB.push('Short');
+        select_populate('OutTypeCB', OutTypeCB);
+        gem$('#OutTypeCB').on('change', taxt_OutTypeCBSelect);
+        gem$('#OutTypeCB').val(2);
+    }
 
     gem$('#DirectionCB').prop('checked', true);
     gem$('#DirectionCB').on('change', taxt_SetDirection2);
@@ -3795,7 +3892,7 @@ function tab_set(id_or_obj) {
         id = id_or_obj.id;
     }
     else if (typeof(id_or_obj) == 'number') {
-        taxt_Initiate();
+        taxt_Initiate(true);
 
         id = "tab_id-" + id_or_obj;
         if (arguments.length > 1) {
@@ -4070,6 +4167,7 @@ function populate(s, ret_s) {
         h_label = h_items[0];
 
         h_id = h_map.indexOf(h_label);
+        // console.log("H_ID: " + h_id);
         if (h_id == -1) {
             ret_s.s = "Height not defined properly.";
             return (false);
@@ -4084,16 +4182,27 @@ function populate(s, ret_s) {
             }
         }
         else if (h_type == hsfx_bet) {
-            h_vals = h_items[1].split(',');
-            if (h_vals.length != 2) {
-                ret_s.s = "Height: '" + h_label + "' type requires exactly 2 values, " + is_or_are_given(h_vals.length);
+            if (typeof(h_items[1]) == 'undefined') {
+                ret_s.s = "Height: '" + h_label + "' type requires exactly 2 values, no one is given.";
                 return (false);
+            }
+            else {
+                h_vals = h_items[1].split(',');
+
+                if (h_vals.length != 2) {
+                    ret_s.s = "Height: '" + h_label + "' type requires exactly 2 values, " + is_or_are_given(h_vals.length);
+                    return (false);
+                }
             }
         }
         else {
+            if (typeof(h_items[1]) == 'undefined') {
+                ret_s.s = "Height: '" + h_label + "' type requires exactly 1 value, no one is given.";
+                return (false);
+            }
             h_vals = h_items[1].split(',');
-            if (h_vals.length != 1) {
-                ret_s.s = "Height: '" + h_label + "' type requires exactly 2 values, " + is_or_are_given(h_vals.length);
+            if (typeof(h_items[1]) == 'undefined' || h_vals.length != 1) {
+                ret_s.s = "Height: '" + h_label + "' type requires exactly 1 value, " + is_or_are_given(h_vals.length);
                 return (false);
             }
         }
@@ -4133,6 +4242,11 @@ function populate(s, ret_s) {
 
             gem$('#noStoreysE' + h_cbid[h_grp] + '1').val(h_vals[0]);
 
+            h_cbfun[h_grp](null);
+        }
+        else {
+            // missing case for H99 case
+            gem$('#HeightCB' + h_cbid[h_grp]).val(h_map[h_id] == 'HD' ? h_type - 1 : h_type);
             h_cbfun[h_grp](null);
         }
     }
@@ -4216,6 +4330,10 @@ function populate(s, ret_s) {
         gem$('#DateE1').val(date_vals[0]);
 
         taxt_ValidateDate();
+    }
+    else {
+        gem$('#DateCB1').val(0);
+        taxt_DateCB1Select(null);
     }
 
     //
@@ -4418,21 +4536,26 @@ function populate(s, ret_s) {
 
     // all data are retrieved before the population phase to avoid unrequired reset of values permformed
     // by hierarchical ancestors
-    if (ir_values[0] > -1)
+    if (ir_values[0] > -1) {
         gem$('#RegularityCB1').val(ir_values[0]);
-    taxt_RegularityCB1Select(null);
-    if (ir_values[1] > -1)
+        taxt_RegularityCB1Select(null);
+    }
+    if (ir_values[1] > -1) {
         gem$('#RegularityCB2').val(ir_values[1]);
-    taxt_RegularityCB2Select(null);
-    if (ir_values[2] > -1)
+        taxt_RegularityCB2Select(null);
+    }
+    if (ir_values[2] > -1) {
         gem$('#RegularityCB3').val(ir_values[2]);
-    taxt_RegularityCB3Select(null);
-    if (ir_values[3] > -1)
+        taxt_RegularityCB3Select(null);
+    }
+    if (ir_values[3] > -1) {
         gem$('#RegularityCB4').val(ir_values[3]);
-    taxt_RegularityCB4Select(null);
-    if (ir_values[4] > -1)
+        taxt_RegularityCB4Select(null);
+    }
+    if (ir_values[4] > -1) {
         gem$('#RegularityCB5').val(ir_values[4]);
-    taxt_RegularityCB5Select(null);
+        taxt_RegularityCB5Select(null);
+    }
 
     //
     //  Exterior wall
