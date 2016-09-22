@@ -2250,7 +2250,6 @@ function BuildTaxonomyString(out_type)
     if (gem$('#WallsCB').val() == 11)
         Taxonomy[24] = 'EWO';
 
-    console.log('PRE RoofCB1: [' + Taxonomy[25] + ']' + out_type);
     if (gem$('#RoofCB1').val() == 0 && (out_type == 0))
         Taxonomy[25] = 'RSH99';
     if (gem$('#RoofCB1').val() == 1)
@@ -2456,11 +2455,11 @@ function BuildTaxonomyString(out_type)
         }
     }
     if (gem$('#FloorCB3').val() == 0 && (out_type == 0))
-        Taxonomy[32] = '+FWC99';
+        Taxonomy[32] = 'FWC99';
     if (gem$('#FloorCB3').val() == 1)
-        Taxonomy[32] = '+FWCN';
+        Taxonomy[32] = 'FWCN';
     if (gem$('#FloorCB3').val() == 2)
-        Taxonomy[32] = '+FWCP';
+        Taxonomy[32] = 'FWCP';
 
     if (gem$('#FoundationsCB').val() == 0 && (out_type == 0))
         Taxonomy[33] = 'FOS99';
@@ -2547,7 +2546,6 @@ function BuildTaxonomyString(out_type)
     /* roof special case */
     var roof_atom_empty = true;
     for (var i = 25 ; i <= 29 ; i++) {
-        console.log('Roofffo:' + Taxonomy[i]);
         if (Taxonomy[i] != '') {
             if (roof_atom_empty) {
                 roof_atom_empty = false;
@@ -2558,6 +2556,20 @@ function BuildTaxonomyString(out_type)
         }
     }
 
+    /* floor special case */
+    var floor_atom_empty = true;
+    var floor_atom_primaries = [30, 32];
+    for (var idx in floor_atom_primaries) {
+        i = floor_atom_primaries[idx];
+        if (Taxonomy[i] != '') {
+            if (floor_atom_empty) {
+                floor_atom_empty = false;
+            }
+            else{
+                Taxonomy[i] = "+" + Taxonomy[i];
+            }
+        }
+    }
     ResTax = direction1 + '/' + Taxonomy[0] + Taxonomy[1] + Taxonomy[34] + Taxonomy[2] +
         '/' +Taxonomy[3] + Taxonomy[4] +
         '/' + direction2 + '/' + Taxonomy[5] + Taxonomy[6] + Taxonomy[35] + Taxonomy[7] +
@@ -2829,7 +2841,7 @@ function resultE_mgmt(event)
     var taxonomy = $(item).val();
     var error = "";
     $(item).css('background-color', col_orange);
-    
+
     if (event.type == 'input') {
         $(item).off('keyup', resultE_mgmt);
     }
@@ -2841,7 +2853,7 @@ function resultE_mgmt(event)
 
     do {
         ret = taxonomy_short2full(taxonomy);
-    
+
         if (ret) {
             if (ret.err_s) {
                 error = ret.err_s;
@@ -4675,38 +4687,25 @@ function populate(s, ret_s) {
     //
     //  Floor
     //
-    var flma, flma_items, flma_label, flma_id, flma_vals, flma_atom;
+    var flma, flma_items, flma_label, flma_id = -1, flma_vals, flma_atom;
 
     flma = sar[14].split('+');
     flma_label = flma[0];
 
-    // floor system material
-    for (i = 0 ; i < floo_syma.length ; i++) {
-        if (flma_label == floo_syma[i].id) {
-            flma_id = flma_label;
-            gem$('#FloorCB1').val(i);
-            taxt_FloorCB1Select(null);
-            break;
-        }
-    }
-    if (i == floo_syma.length) {
-        ret_s.s = "Not identified '" + flma_label + "' as specification of floor system material.";
-        return (false);
-    }
-
-    for (sub_i = 1 ; sub_i < flma.length ; sub_i++) {
+    for (sub_i = 0 ; sub_i < flma.length ; sub_i++) {
         flma_atom = flma[sub_i];
 
-        // floor connections
-        for (i = 0 ; i < floo_conn[flma_id].length ; i++) {
+        // floor system material
+        for (i = 0 ; i < floo_syma.length ; i++) {
 
-            if (flma_atom == floo_conn[flma_id][i].id) {
-                gem$('#FloorCB2').val(i);
-                taxt_FloorCB2Select(null);
+            if (flma_atom == floo_syma[i].id) {
+                flma_id = floo_syma[i].id;
+                gem$('#FloorCB1').val(i);
+                taxt_FloorCB1Select(null);
                 break;
             }
         }
-        if (i < floo_conn[flma_id].length)
+        if (i < floo_syma.length)
             continue;
 
         // floor system type
@@ -4719,6 +4718,19 @@ function populate(s, ret_s) {
         }
         if (i < floo_syty.length)
             continue;
+
+        if (flma_id != -1) {
+            // floor connections
+            for (i = 0 ; i < floo_conn[flma_id].length ; i++) {
+                if (flma_atom == floo_conn[flma_id][i].id) {
+                    gem$('#FloorCB2').val(i);
+                    taxt_FloorCB2Select(null);
+                    break;
+                }
+            }
+            if (i < floo_conn[flma_id].length)
+                continue;
+        }
 
         ret_s.s = "Not identified '" + flma_atom + "' as specification of floor.";
         return (false);

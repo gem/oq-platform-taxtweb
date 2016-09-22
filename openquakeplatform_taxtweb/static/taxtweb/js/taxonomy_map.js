@@ -15,7 +15,7 @@ var taxonomy_map = { // Direction spec
              MCF: 1,
              MR: 1,
              E99: 1,
-             EU: 1, 
+             EU: 1,
              ER: 1,
              W: 1,
              MATO: 1,
@@ -123,6 +123,7 @@ var taxonomy_map = { // Direction spec
              RSH8: 13,
              RSH9: 13,
              RSHO: 13,
+
              RMT99: 13,
              RMN: 13,
              RMT1: 13,
@@ -137,6 +138,7 @@ var taxonomy_map = { // Direction spec
              RMT10: 13,
              RMT11: 13,
              RMTO: 13,
+
              R99: 13,
              RM: 13,
              RE: 13,
@@ -145,6 +147,7 @@ var taxonomy_map = { // Direction spec
              RWO: 13,
              RFA: 13,
              RO: 13,
+
              RWC99: 13,
              RWCN: 13,
              RWCP: 13,
@@ -161,6 +164,10 @@ var taxonomy_map = { // Direction spec
              FME: 14,
              FW: 14,
              FO: 14,
+
+             FWC99: 14,
+             FWCN: 14,
+             FWCP: 14,
 
              // Foundation
              FOS99: 15,
