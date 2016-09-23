@@ -2274,120 +2274,120 @@ function BuildTaxonomyString(out_type)
         Taxonomy[25] = 'RSHO';
 
     if (gem$('#RoofCB2').val() == 0 && (out_type == 0))
-        Taxonomy[26] = '+RMT99';
+        Taxonomy[26] = 'RMT99';
     if (gem$('#RoofCB2').val() == 1)
-        Taxonomy[26] = '+RMN';
+        Taxonomy[26] = 'RMN';
     if (gem$('#RoofCB2').val() == 2)
-        Taxonomy[26] = '+RMT1';
+        Taxonomy[26] = 'RMT1';
     if (gem$('#RoofCB2').val() == 3)
-        Taxonomy[26] = '+RMT2';
+        Taxonomy[26] = 'RMT2';
     if (gem$('#RoofCB2').val() == 4)
-        Taxonomy[26] = '+RMT3';
+        Taxonomy[26] = 'RMT3';
     if (gem$('#RoofCB2').val() == 5)
-        Taxonomy[26] = '+RMT4';
+        Taxonomy[26] = 'RMT4';
     if (gem$('#RoofCB2').val() == 6)
-        Taxonomy[26] = '+RMT5';
+        Taxonomy[26] = 'RMT5';
     if (gem$('#RoofCB2').val() == 7)
-        Taxonomy[26] = '+RMT6';
+        Taxonomy[26] = 'RMT6';
     if (gem$('#RoofCB2').val() == 8)
-        Taxonomy[26] = '+RMT7';
+        Taxonomy[26] = 'RMT7';
     if (gem$('#RoofCB2').val() == 9)
-        Taxonomy[26] = '+RMT8';
+        Taxonomy[26] = 'RMT8';
     if (gem$('#RoofCB2').val() == 10)
-        Taxonomy[26] = '+RMT9';
+        Taxonomy[26] = 'RMT9';
     if (gem$('#RoofCB2').val() == 11)
-        Taxonomy[26] = '+RMT10';
+        Taxonomy[26] = 'RMT10';
     if (gem$('#RoofCB2').val() == 12)
-        Taxonomy[26] = '+RMT11';
+        Taxonomy[26] = 'RMT11';
     if (gem$('#RoofCB2').val() == 13)
-        Taxonomy[26] = '+RMTO';
+        Taxonomy[26] = 'RMTO';
 
     if (gem$('#RoofCB3').val() == 0) {
         if ((out_type == 0))
-            Taxonomy[27] = '+R99';
+            Taxonomy[27] = 'R99';
     }
     else {
         if (gem$('#RoofCB3').val() == 1) {
-            Taxonomy[27] = '+RM';
+            Taxonomy[27] = 'RM';
             if (gem$('#RoofCB4').val() == 0 && (out_type == 0))
-                Taxonomy[28] = '+RM99';
+                Taxonomy[28] = 'RM99';
             if (gem$('#RoofCB4').val() == 1)
-                Taxonomy[28] = '+RM1';
+                Taxonomy[28] = 'RM1';
             if (gem$('#RoofCB4').val() == 2)
-                Taxonomy[28] = '+RM2';
+                Taxonomy[28] = 'RM2';
             if (gem$('#RoofCB4').val() == 3)
-                Taxonomy[28] = '+RM3';
+                Taxonomy[28] = 'RM3';
         }
         else if (gem$('#RoofCB3').val() == 2) {
-            Taxonomy[27] = '+RE';
+            Taxonomy[27] = 'RE';
             if (gem$('#RoofCB4').val() == 0 && (out_type == 0))
-                Taxonomy[28] = '+RE99';
+                Taxonomy[28] = 'RE99';
             if (gem$('#RoofCB4').val() == 1)
-                Taxonomy[28] = '+RE1';
+                Taxonomy[28] = 'RE1';
         }
         else if (gem$('#RoofCB3').val() == 3) {
-            Taxonomy[27] = '+RC';
+            Taxonomy[27] = 'RC';
             if (gem$('#RoofCB4').val() == 0 && (out_type == 0))
-                Taxonomy[28] = '+RC99';
+                Taxonomy[28] = 'RC99';
             if (gem$('#RoofCB4').val() == 1)
-                Taxonomy[28] = '+RC1';
+                Taxonomy[28] = 'RC1';
             if (gem$('#RoofCB4').val() == 2)
-                Taxonomy[28] = '+RC2';
+                Taxonomy[28] = 'RC2';
             if (gem$('#RoofCB4').val() == 3)
-                Taxonomy[28] = '+RC3';
+                Taxonomy[28] = 'RC3';
             if (gem$('#RoofCB4').val() == 4)
-                Taxonomy[28] = '+RC4';
+                Taxonomy[28] = 'RC4';
         }
         else if (gem$('#RoofCB3').val() == 4) {
-            Taxonomy[27] = '+RME';
+            Taxonomy[27] = 'RME';
             if (gem$('#RoofCB4').val() == 0 && (out_type == 0))
-                Taxonomy[28] = '+RME99';
+                Taxonomy[28] = 'RME99';
             if (gem$('#RoofCB4').val() == 1)
-                Taxonomy[28] = '+RME1';
+                Taxonomy[28] = 'RME1';
             if (gem$('#RoofCB4').val() == 2)
-                Taxonomy[28] = '+RME2';
+                Taxonomy[28] = 'RME2';
             if (gem$('#RoofCB4').val() == 3)
-                Taxonomy[28] = '+RME3';
+                Taxonomy[28] = 'RME3';
         }
         else if (gem$('#RoofCB3').val() == 5) {
-            Taxonomy[27] = '+RWO';
+            Taxonomy[27] = 'RWO';
             if (gem$('#RoofCB4').val() == 0 && (out_type == 0))
-                Taxonomy[28] = '+RWO99';
+                Taxonomy[28] = 'RWO99';
             if (gem$('#RoofCB4').val() == 1)
-                Taxonomy[28] = '+RWO1';
+                Taxonomy[28] = 'RWO1';
             if (gem$('#RoofCB4').val() == 2)
-                Taxonomy[28] = '+RWO2';
+                Taxonomy[28] = 'RWO2';
             if (gem$('#RoofCB4').val() == 3)
-                Taxonomy[28] = '+RWO3';
+                Taxonomy[28] = 'RWO3';
             if (gem$('#RoofCB4').val() == 4)
-                Taxonomy[28] = '+RWO4';
+                Taxonomy[28] = 'RWO4';
             if (gem$('#RoofCB4').val() == 5)
-                Taxonomy[28] = '+RWO5';
+                Taxonomy[28] = 'RWO5';
         }
         else if (gem$('#RoofCB3').val() == 6) {
-            Taxonomy[27] = '+RFA';
+            Taxonomy[27] = 'RFA';
             if (gem$('#RoofCB4').val() == 0)
-                Taxonomy[28] = '+RFA1';
+                Taxonomy[28] = 'RFA1';
             if (gem$('#RoofCB4').val() == 1)
-                Taxonomy[28] = '+RFAO';
+                Taxonomy[28] = 'RFAO';
         }
         else if (gem$('#RoofCB3').val() == 7) {
-            Taxonomy[27] = '+RO';
+            Taxonomy[27] = 'RO';
         }
     }
 
     if (gem$('#RoofCB5').val() == 0 && (out_type == 0))
-        Taxonomy[29] = '+RWC99';
+        Taxonomy[29] = 'RWC99';
     if (gem$('#RoofCB5').val() == 1)
-        Taxonomy[29] = '+RWCN';
+        Taxonomy[29] = 'RWCN';
     if (gem$('#RoofCB5').val() == 2)
-        Taxonomy[29] = '+RWCP';
+        Taxonomy[29] = 'RWCP';
     if (gem$('#RoofCB5').val() == 3)
-        Taxonomy[29] = '+RTD99';
+        Taxonomy[29] = 'RTD99';
     if (gem$('#RoofCB5').val() == 4)
-        Taxonomy[29] = '+RTDN';
+        Taxonomy[29] = 'RTDN';
     if (gem$('#RoofCB5').val() == 5)
-        Taxonomy[29] = '+RTDP';
+        Taxonomy[29] = 'RTDP';
 
     if (gem$('#FloorCB1').val() == 0) {
         if ((out_type == 0))
@@ -2455,11 +2455,11 @@ function BuildTaxonomyString(out_type)
         }
     }
     if (gem$('#FloorCB3').val() == 0 && (out_type == 0))
-        Taxonomy[32] = '+FWC99';
+        Taxonomy[32] = 'FWC99';
     if (gem$('#FloorCB3').val() == 1)
-        Taxonomy[32] = '+FWCN';
+        Taxonomy[32] = 'FWCN';
     if (gem$('#FloorCB3').val() == 2)
-        Taxonomy[32] = '+FWCP';
+        Taxonomy[32] = 'FWCP';
 
     if (gem$('#FoundationsCB').val() == 0 && (out_type == 0))
         Taxonomy[33] = 'FOS99';
@@ -2543,6 +2543,33 @@ function BuildTaxonomyString(out_type)
           33 - Foundation
           */
 
+    /* roof special case */
+    var roof_atom_empty = true;
+    for (var i = 25 ; i <= 29 ; i++) {
+        if (Taxonomy[i] != '') {
+            if (roof_atom_empty) {
+                roof_atom_empty = false;
+            }
+            else{
+                Taxonomy[i] = "+" + Taxonomy[i];
+            }
+        }
+    }
+
+    /* floor special case */
+    var floor_atom_empty = true;
+    var floor_atom_primaries = [30, 32];
+    for (var idx in floor_atom_primaries) {
+        i = floor_atom_primaries[idx];
+        if (Taxonomy[i] != '') {
+            if (floor_atom_empty) {
+                floor_atom_empty = false;
+            }
+            else{
+                Taxonomy[i] = "+" + Taxonomy[i];
+            }
+        }
+    }
     ResTax = direction1 + '/' + Taxonomy[0] + Taxonomy[1] + Taxonomy[34] + Taxonomy[2] +
         '/' +Taxonomy[3] + Taxonomy[4] +
         '/' + direction2 + '/' + Taxonomy[5] + Taxonomy[6] + Taxonomy[35] + Taxonomy[7] +
@@ -2814,7 +2841,7 @@ function resultE_mgmt(event)
     var taxonomy = $(item).val();
     var error = "";
     $(item).css('background-color', col_orange);
-    
+
     if (event.type == 'input') {
         $(item).off('keyup', resultE_mgmt);
     }
@@ -2826,7 +2853,7 @@ function resultE_mgmt(event)
 
     do {
         ret = taxonomy_short2full(taxonomy);
-    
+
         if (ret) {
             if (ret.err_s) {
                 error = ret.err_s;
@@ -4591,21 +4618,19 @@ function populate(s, ret_s) {
     rosh = sar[13].split('+');
     rosh_label = rosh[0];
 
-    for (i = 0 ; i < roof_shap.length ; i++) {
-        if (rosh_label == roof_shap[i].id) {
-            rosh_id = rosh_label;
-            gem$('#RoofCB1').val(i);
-            taxt_RoofCB1Select(null);
-            break;
-        }
-    }
-    if (i == roof_shap.length) {
-        ret_s.s = "Not identified '" + rosh_label + "' as specification of roof shape.";
-        return (false);
-    }
-
-    for (sub_i = 1 ; sub_i < rosh.length ; sub_i++) {
+    for (sub_i = 0 ; sub_i < rosh.length ; sub_i++) {
         rosh_atom = rosh[sub_i];
+
+        // roof shape
+        for (i = 0 ; i < roof_shap.length ; i++) {
+            if (rosh_atom == roof_shap[i].id) {
+                gem$('#RoofCB1').val(i);
+                taxt_RoofCB1Select(null);
+                break;
+            }
+        }
+        if (i < roof_shap.length)
+            continue;
 
         // roof covering
         for (i = 0 ; i < roof_cove.length ; i++) {
@@ -4662,38 +4687,25 @@ function populate(s, ret_s) {
     //
     //  Floor
     //
-    var flma, flma_items, flma_label, flma_id, flma_vals, flma_atom;
+    var flma, flma_items, flma_label, flma_id = -1, flma_vals, flma_atom;
 
     flma = sar[14].split('+');
     flma_label = flma[0];
 
-    // floor system material
-    for (i = 0 ; i < floo_syma.length ; i++) {
-        if (flma_label == floo_syma[i].id) {
-            flma_id = flma_label;
-            gem$('#FloorCB1').val(i);
-            taxt_FloorCB1Select(null);
-            break;
-        }
-    }
-    if (i == floo_syma.length) {
-        ret_s.s = "Not identified '" + flma_label + "' as specification of floor system material.";
-        return (false);
-    }
-
-    for (sub_i = 1 ; sub_i < flma.length ; sub_i++) {
+    for (sub_i = 0 ; sub_i < flma.length ; sub_i++) {
         flma_atom = flma[sub_i];
 
-        // floor connections
-        for (i = 0 ; i < floo_conn[flma_id].length ; i++) {
+        // floor system material
+        for (i = 0 ; i < floo_syma.length ; i++) {
 
-            if (flma_atom == floo_conn[flma_id][i].id) {
-                gem$('#FloorCB2').val(i);
-                taxt_FloorCB2Select(null);
+            if (flma_atom == floo_syma[i].id) {
+                flma_id = floo_syma[i].id;
+                gem$('#FloorCB1').val(i);
+                taxt_FloorCB1Select(null);
                 break;
             }
         }
-        if (i < floo_conn[flma_id].length)
+        if (i < floo_syma.length)
             continue;
 
         // floor system type
@@ -4706,6 +4718,19 @@ function populate(s, ret_s) {
         }
         if (i < floo_syty.length)
             continue;
+
+        if (flma_id != -1) {
+            // floor connections
+            for (i = 0 ; i < floo_conn[flma_id].length ; i++) {
+                if (flma_atom == floo_conn[flma_id][i].id) {
+                    gem$('#FloorCB2').val(i);
+                    taxt_FloorCB2Select(null);
+                    break;
+                }
+            }
+            if (i < floo_conn[flma_id].length)
+                continue;
+        }
 
         ret_s.s = "Not identified '" + flma_atom + "' as specification of floor.";
         return (false);
