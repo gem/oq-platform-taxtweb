@@ -12,10 +12,16 @@ class VulnTaxonomiesTest(unittest.TestCase):
     @staticmethod
     def setup_class():
         pla.get('/taxtweb')
-        dontshow_tag, dontshow_val = tag_and_val_get("//div[@id='taxtweb_splash']//input[@name='dontshowmeagain']", 20)
-        dontshow_tag.click()
-        close_tag, close_val = tag_and_val_get("//div[@id='taxtweb_splash']//button[@name='close_btn']", 20)
-        close_tag.click()
+        try:
+            dontshow_tag = pla.xpath_finduniq(
+                "//div[@id='taxtweb_splash']//input[@name='dontshowmeagain']",
+                times=10)
+            dontshow_tag.click()
+            close_tag = pla.xpath_finduniq(
+                "//div[@id='taxtweb_splash']//button[@name='close_btn']")
+            close_tag.click()
+        except:
+            pass
 
 def tag_and_val_get(xpath, times):
     resulte_tag = pla.xpath_finduniq(xpath, times=times)
