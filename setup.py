@@ -9,7 +9,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='oq-platform-taxtweb',
-    version='1.0',
+    version='1.1.0',
 #    packages=find_packages(),
     packages=["openquakeplatform_taxtweb"],
     include_package_data=True,
