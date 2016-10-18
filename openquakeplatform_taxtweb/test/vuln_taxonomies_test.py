@@ -102,4 +102,5 @@ def generator():
             ct += 1
             r += 1
 
-generator()
+# FIXME: just to speedup tests temporarily
+# generator()
