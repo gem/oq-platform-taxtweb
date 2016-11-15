@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import unittest
-import os, sys
+import os, sys, time
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 
@@ -50,6 +50,7 @@ def make_function(func_name, taxonomy, run_slow):
              self.assertEqual(resulte_val, taxonomy_loc)
 
         if run_slow:
+            time.sleep(1)
             resulte_tag.click()   # Positions the cursor at the end of the string
             if len(resulte_val) > 0 and resulte_val[-1] == '/':
                 resulte_tag.send_keys(Keys.BACK_SPACE)
