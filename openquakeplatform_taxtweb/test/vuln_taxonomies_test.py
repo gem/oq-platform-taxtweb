@@ -1,10 +1,8 @@
 #!/usr/bin/env python
 import unittest
-import os, sys
-from selenium.webdriver.support.ui import WebDriverWait
+import os, sys, time
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
-import time
 
 from openquakeplatform.test import pla
 
@@ -39,7 +37,7 @@ def make_function(func_name, taxonomy, run_slow):
             taxonomy_loc = taxonomy_loc[0:-1]
 
         pla.get('/taxtweb/%s' % taxonomy_loc)
-        pla.waituntil_js(3, "gem_pageloaded == true;")
+        pla.waituntil_js(3, "window.gem_pageloaded == true;")
 
         typeoftax_tag, typeoftax_val = tag_and_val_get("//select[@id='OutTypeCB']", 20)
         typeoftax_sel = Select(typeoftax_tag)
@@ -52,6 +50,7 @@ def make_function(func_name, taxonomy, run_slow):
              self.assertEqual(resulte_val, taxonomy_loc)
 
         if run_slow:
+            time.sleep(1)
             resulte_tag.click()   # Positions the cursor at the end of the string
             if len(resulte_val) > 0 and resulte_val[-1] == '/':
                 resulte_tag.send_keys(Keys.BACK_SPACE)
