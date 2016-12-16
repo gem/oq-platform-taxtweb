@@ -91,11 +91,9 @@ def generator():
                 continue
             run_slow = False
             # these numbers are dimensioned to obtain 5 minutes test
-            # if ct < 25:
-            if ct < 3:
+            if ct < 25:
                 run_slow = True
-            # if ct >= 60:
-            if ct >= 6:
+            if ct >= 60:
                 break
             taxonomy = taxonomy.strip()
             func_name = "r%04d_%s_%s_test" % (r, taxonomy.replace('.', '~'), "slow" if run_slow else "fast")
