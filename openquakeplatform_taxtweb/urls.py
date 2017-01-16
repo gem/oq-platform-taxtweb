@@ -17,18 +17,15 @@
 #    License along with this program. If not, see
 #    <https://www.gnu.org/licenses/agpl.html>.
 
-from django.conf import settings
-
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
 from openquakeplatform_taxtweb import views
 
 # Uncomment the next two lines to enable the admin:
-from django.contrib import admin
-admin.autodiscover()
+# from django.contrib import admin
+# admin.autodiscover()
 
-urlpatterns = patterns(
-    '',
-    url(r'^/checker(?P<taxonomy>[^?]*)', views.checker, name='checker'),
+urlpatterns = [
+    url(r'^checker(?P<taxonomy>[^?]*)', views.checker, name='checker'),
     url(r'^(?P<taxonomy>[^?]*)', views.index, name='index'),
     url('', views.index, name='home'),
-)
+]
