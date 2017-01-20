@@ -20,9 +20,9 @@ from scipy import stats
 import numpy
 from lxml import etree
 from django.http import HttpResponse, HttpResponseNotFound, Http404
-from django.shortcuts import render_to_response
 from django.core import serializers
 from django.core.serializers.json import DjangoJSONEncoder
+from django.shortcuts import render
 from django.template import RequestContext
 from django.views.generic.detail import BaseDetailView
 from django.utils.cache import add_never_cache_headers
@@ -81,7 +81,7 @@ def index(request, **kwargs):
 
     taxonomy = kwargs['taxonomy'] if 'taxonomy' in kwargs else ""
 
-    return render_to_response(("taxtweb/index_popup.html" if is_popup else "taxtweb/index.html"),
+    return render(request, ("taxtweb/index_popup.html" if is_popup else "taxtweb/index.html"),
                               dict(taxonomy=taxonomy,
                                    is_popup=is_popup,
                                    tab_id=tab_id,
@@ -90,8 +90,7 @@ def index(request, **kwargs):
                                    sub1tab_content=sub1tab_content,
                                    taxt_prefix=taxt_prefix,
                                    jquery="$",
-                                   ),
-                              context_instance=RequestContext(request))
+                                   ))
 
 
 def checker(request, **kwargs):
@@ -114,7 +113,7 @@ def checker(request, **kwargs):
     tab_content = ""
     sub1tab_content = ""
 
-    return render_to_response("taxtweb/checker.html",
+    return render(request, "taxtweb/checker.html",
                               dict(taxonomy=taxonomy,
                                    is_popup=is_popup,
                                    tab_id=tab_id,
@@ -123,5 +122,4 @@ def checker(request, **kwargs):
                                    sub1tab_content=sub1tab_content,
                                    taxt_prefix=taxt_prefix,
                                    jquery="sim_dollar",
-                                   ),
-                              context_instance=RequestContext(request))
+                                   ))
