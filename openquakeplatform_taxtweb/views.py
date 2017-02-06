@@ -1,4 +1,4 @@
-# Copyright (c) 2015, GEM Foundation.
+# Copyright (c) 2015-2017, GEM Foundation.
 #
 # This program is free software: you can redistribute it and/or modify
 # under the terms of the GNU Affero General Public License as published
@@ -13,28 +13,15 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf import settings
-
-import json
-from scipy import stats
-import numpy
-from lxml import etree
-from django.http import HttpResponse, HttpResponseNotFound, Http404
-from django.core import serializers
-from django.core.serializers.json import DjangoJSONEncoder
 from django.shortcuts import render
-from django.template import RequestContext
-from django.views.generic.detail import BaseDetailView
-from django.utils.cache import add_never_cache_headers
-from django.utils.text import slugify
-from django.contrib.messages.api import get_messages
+
 
 def index(request, **kwargs):
     try:
         tab_id = int(request.GET.get("tab_id", 1))
         if tab_id < 1 or tab_id > 4:
             tab_id = 1
-    except ValueError as e:
+    except ValueError:
         tab_id = 1
 
     subtab_id = 1
@@ -44,7 +31,7 @@ def index(request, **kwargs):
             if subtab_id < 1 or subtab_id > 2:
                 subtab_id = 1
                 print "MOP: qui %d" % subtab_id
-        except ValueError as e:
+        except ValueError:
             subtab_id = 1
 
     if 'HTTP_HOST' in request.META:
@@ -53,11 +40,15 @@ def index(request, **kwargs):
         if request.META['HTTP_HOST'].startswith('taxtweb'):
             taxt_prefix = proto + '://' + request.META['HTTP_HOST']
         else:
-            taxt_prefix = proto + '://' + request.META['HTTP_HOST'] + '/taxtweb'
+            taxt_prefix = (proto + '://' + request.META['HTTP_HOST']
+                           + '/taxtweb')
     else:
         taxt_prefix = "http://taxtweb.openquake.org"
 
-    desc = [ 'Structural System', 'Building Information', 'Exterior Attributes', 'Roof/Floor/Foundation' ]
+    desc = ['Structural System',
+            'Building Information',
+            'Exterior Attributes',
+            'Roof/Floor/Foundation']
     tab_content = ""
     for i in range(0, len(desc)):
         tab_content = (tab_content +
@@ -81,16 +72,17 @@ def index(request, **kwargs):
 
     taxonomy = kwargs['taxonomy'] if 'taxonomy' in kwargs else ""
 
-    return render(request, ("taxtweb/index_popup.html" if is_popup else "taxtweb/index.html"),
-                              dict(taxonomy=taxonomy,
-                                   is_popup=is_popup,
-                                   tab_id=tab_id,
-                                   subtab_id=subtab_id,
-                                   tab_content=tab_content,
-                                   sub1tab_content=sub1tab_content,
-                                   taxt_prefix=taxt_prefix,
-                                   jquery="$",
-                                   ))
+    return render(request, ("taxtweb/index_popup.html" if is_popup
+                            else "taxtweb/index.html"),
+                  dict(taxonomy=taxonomy,
+                       is_popup=is_popup,
+                       tab_id=tab_id,
+                       subtab_id=subtab_id,
+                       tab_content=tab_content,
+                       sub1tab_content=sub1tab_content,
+                       taxt_prefix=taxt_prefix,
+                       jquery="$",
+                       ))
 
 
 def checker(request, **kwargs):
@@ -102,10 +94,10 @@ def checker(request, **kwargs):
         if request.META['HTTP_HOST'].startswith('taxtweb'):
             taxt_prefix = proto + '://' + request.META['HTTP_HOST']
         else:
-            taxt_prefix = proto + '://' + request.META['HTTP_HOST'] + '/taxtweb'
+            taxt_prefix = (proto + '://' + request.META['HTTP_HOST']
+                           + '/taxtweb')
     else:
         taxt_prefix = "http://taxtweb.openquake.org"
-
 
     is_popup = ""
     tab_id = ""
@@ -114,12 +106,12 @@ def checker(request, **kwargs):
     sub1tab_content = ""
 
     return render(request, "taxtweb/checker.html",
-                              dict(taxonomy=taxonomy,
-                                   is_popup=is_popup,
-                                   tab_id=tab_id,
-                                   subtab_id=subtab_id,
-                                   tab_content=tab_content,
-                                   sub1tab_content=sub1tab_content,
-                                   taxt_prefix=taxt_prefix,
-                                   jquery="sim_dollar",
-                                   ))
+                           dict(taxonomy=taxonomy,
+                                is_popup=is_popup,
+                                tab_id=tab_id,
+                                subtab_id=subtab_id,
+                                tab_content=tab_content,
+                                sub1tab_content=sub1tab_content,
+                                taxt_prefix=taxt_prefix,
+                                jquery="sim_dollar",
+                                ))
