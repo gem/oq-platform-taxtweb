@@ -109,12 +109,12 @@ def checker(request, **kwargs):
     sub1tab_content = ""
 
     return render(request, "taxtweb/checker.html",
-                           dict(taxonomy=taxonomy,
-                                is_popup=is_popup,
-                                tab_id=tab_id,
-                                subtab_id=subtab_id,
-                                tab_content=tab_content,
-                                sub1tab_content=sub1tab_content,
-                                taxt_prefix=taxt_prefix,
-                                jquery="sim_dollar",
-                                ))
+                  dict(taxonomy=taxonomy,
+                       is_popup=is_popup,
+                       tab_id=tab_id,
+                       subtab_id=subtab_id,
+                       tab_content=tab_content,
+                       sub1tab_content=sub1tab_content,
+                       taxt_prefix=taxt_prefix,
+                       jquery="sim_dollar",
+                       ))
