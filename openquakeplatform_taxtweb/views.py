@@ -17,7 +17,10 @@
 # along with OpenQuake. If not, see <http://www.gnu.org/licenses/>.
 
 from django.shortcuts import render
-
+try:
+    from openquakeplatform.settings import STANDALONE
+except ImportError:
+    STANDALONE=False
 
 def index(request, **kwargs):
     try:
@@ -60,8 +63,9 @@ def index(request, **kwargs):
                         (" tab_first" if i == 0 else ""), desc[i]))
 
     sub1desc = ['Direction X', 'Direction Y']
-    sub1help = ['http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/direction-x',
-                'http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/direction-y',
+    taxonomy_base = ('http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/' if not STANDALONE else '/taxonomy/')
+    sub1help = [taxonomy_base + 'direction-x',
+                taxonomy_base + 'direction-y',
                 ]
     sub1tab_content = ""
     for i in range(0, len(sub1desc)):
@@ -77,7 +81,8 @@ def index(request, **kwargs):
 
     return render(request, ("taxtweb/index_popup.html" if is_popup
                             else "taxtweb/index.html"),
-                  dict(taxonomy=taxonomy,
+                  dict(taxonomy_base=taxonomy_base,
+                       taxonomy=taxonomy,
                        is_popup=is_popup,
                        tab_id=tab_id,
                        subtab_id=subtab_id,
