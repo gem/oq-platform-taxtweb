@@ -63,7 +63,7 @@ def index(request, **kwargs):
                         (" tab_first" if i == 0 else ""), desc[i]))
 
     sub1desc = ['Direction X', 'Direction Y']
-    taxonomy_base = ('http://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/' if not STANDALONE else '/taxonomy/')
+    taxonomy_base = ('https://www.nexus.globalquakemodel.org/gem-building-taxonomy/overview/glossary/' if not STANDALONE else '/taxonomy/')
     sub1help = [taxonomy_base + 'direction-x',
                 taxonomy_base + 'direction-y',
                 ]
