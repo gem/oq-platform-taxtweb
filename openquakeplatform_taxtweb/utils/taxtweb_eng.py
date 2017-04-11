@@ -119,50 +119,190 @@ def taxt_Direction2RB1Click(taxt_radioitem):
 def taxt_Direction2RB3Click(taxt_radioitem):
     pass
 
+def taxt_OutTypeCBSelect(obj):
+    pass
+
+def taxt_SetDirection2(obj):
+    pass
+
+def taxt_MaterialCB11Select(obj):
+    pass
+
+def taxt_MaterialCB21Select(obj):
+    pass
+
+def taxt_MaterialCB31Select(obj):
+    pass
+
+def taxt_MaterialCB41Select(obj):
+    pass
+
+def taxt_SystemCB11Select(obj):
+    pass
+
+def taxt_SystemCB21Select(obj):
+    pass
+
+def taxt_MaterialCB12Select(obj):
+    pass
+
+def taxt_MaterialCB22Select(obj):
+    pass
+
+def taxt_MaterialCB32Select(obj):
+    pass
+
+def taxt_MaterialCB42Select(obj):
+    pass
+
+def taxt_SystemCB12Select(obj):
+    pass
+
+def taxt_SystemCB22Select(obj):
+    pass
+
+def taxt_HeightCB1Select(obj):
+    pass
+
+def taxt_HeightCB1Select(obj):
+    pass
+
+def taxt_HeightCB1Select(obj):
+    pass
+
+def taxt_HeightCB2Select(obj):
+    pass
+
+def taxt_HeightCB2Select(obj):
+    pass
+
+def taxt_HeightCB2Select(obj):
+    pass
+
+def taxt_HeightCB3Select(obj):
+    pass
+
+def taxt_HeightCB3Select(obj):
+    pass
+
+def taxt_HeightCB3Select(obj):
+    pass
+
+def taxt_HeightCB4Select(obj):
+    pass
+
+def taxt_HeightCB4Select(obj):
+    pass
+
+def taxt_DateCB1Select(obj):
+    pass
+
+def taxt_DateE1Change(obj):
+    pass
+
+def taxt_DateE2Change(obj):
+    pass
+
+def taxt_OccupancyCB1Select(obj):
+    pass
+
+def taxt_OccupancyCB2Select(obj):
+    pass
+
+def taxt_PositionCBSelect(obj):
+    pass
+
+def taxt_PlanShapeCBSelect(obj):
+    pass
+
+def taxt_RegularityCB1Select(obj):
+    pass
+
+def taxt_RegularityCB2Select(obj):
+    pass
+
+def taxt_RegularityCB3Select(obj):
+    pass
+
+def taxt_RegularityCB4Select(obj):
+    pass
+
+def taxt_RegularityCB5Select(obj):
+    pass
+
+def taxt_WallsCBSelect(obj):
+    pass
+
+def taxt_RoofCB1Select(obj):
+    pass
+
+def taxt_RoofCB2Select(obj):
+    pass
+
+def taxt_RoofCB3Select(obj):
+    pass
+
+def taxt_RoofCB4Select(obj):
+    pass
+
+def taxt_RoofCB5Select(obj):
+    pass
+
+def taxt_FoundationsCBSelect(obj):
+    pass
+
+def taxt_FloorCB1Select(obj):
+    pass
+
+def taxt_FloorCB2Select(obj):
+    pass
+
+def taxt_FloorCB3Select(obj):
+    pass
 
 class Taxonomy(object):
     def __init__(self):
         # dropdown
-        self.MaterialCB11 = TaxtSel()
-        self.MaterialCB21 = TaxtSel()
-        self.MaterialCB31 = TaxtSel()
-        self.MaterialCB41 = TaxtSel()
-        self.SystemCB11 = TaxtSel()
-        self.SystemCB21 = TaxtSel()
-        self.MaterialCB12 = TaxtSel()
-        self.MaterialCB22 = TaxtSel()
-        self.MaterialCB32 = TaxtSel()
-        self.MaterialCB42 = TaxtSel()
-        self.SystemCB12 = TaxtSel()
-        self.SystemCB22 = TaxtSel()
-        self.HeightCB1 = TaxtSel()
-        self.HeightCB2 = TaxtSel()
-        self.HeightCB3 = TaxtSel()
-        self.HeightCB4 = TaxtSel()
-        self.DateCB1 = TaxtSel()
-        self.OccupancyCB1 = TaxtSel()
-        self.OccupancyCB2 = TaxtSel()
-        self.PositionCB = TaxtSel()
-        self.PlanShapeCB = TaxtSel()
-        self.RegularityCB1 = TaxtSel()
-        self.RegularityCB2 = TaxtSel()
-        self.RegularityCB4 = TaxtSel()
-        self.RegularityCB3 = TaxtSel()
-        self.RegularityCB5 = TaxtSel()
-        self.WallsCB = TaxtSel()
-        self.RoofCB1 = TaxtSel()
-        self.RoofCB2 = TaxtSel()
-        self.RoofCB3 = TaxtSel()
-        self.RoofCB5 = TaxtSel()
-        self.RoofCB4 = TaxtSel()
-        self.FloorCB1 = TaxtSel()
-        self.FloorCB2 = TaxtSel()
-        self.FloorCB3 = TaxtSel()
-        self.FoundationsCB = TaxtSel()
-        self.OutTypeCB = TaxtSel()
+        self.MaterialCB11 = TaxtSel(change_cb=taxt_MaterialCB11Select)
+        self.MaterialCB21 = TaxtSel(change_cb=taxt_MaterialCB21Select)
+        self.MaterialCB31 = TaxtSel(change_cb=taxt_MaterialCB31Select)
+        self.MaterialCB41 = TaxtSel(change_cb=taxt_MaterialCB41Select)
+        self.SystemCB11 = TaxtSel(change_cb=taxt_SystemCB11Select)
+        self.SystemCB21 = TaxtSel(change_cb=taxt_SystemCB21Select)
+        self.MaterialCB12 = TaxtSel(change_cb=taxt_MaterialCB12Select)
+        self.MaterialCB22 = TaxtSel(change_cb=taxt_MaterialCB22Select)
+        self.MaterialCB32 = TaxtSel(change_cb=taxt_MaterialCB32Select)
+        self.MaterialCB42 = TaxtSel(change_cb=taxt_MaterialCB42Select)
+        self.SystemCB12 = TaxtSel(change_cb=taxt_SystemCB12Select)
+        self.SystemCB22 = TaxtSel(change_cb=taxt_SystemCB22Select)
+        self.HeightCB1 = TaxtSel(change_cb=taxt_HeightCB1Select)
+        self.HeightCB2 = TaxtSel(change_cb=taxt_HeightCB2Select)
+        self.HeightCB3 = TaxtSel(change_cb=taxt_HeightCB3Select)
+        self.HeightCB4 = TaxtSel(change_cb=taxt_HeightCB4Select)
+        self.DateCB1 = TaxtSel(change_cb=taxt_DateCB1Select)
+        self.OccupancyCB1 = TaxtSel(change_cb=taxt_OccupancyCB1Select)
+        self.OccupancyCB2 = TaxtSel(change_cb=taxt_OccupancyCB2Select)
+        self.PositionCB = TaxtSel(change_cb=taxt_PositionCBSelect)
+        self.PlanShapeCB = TaxtSel(change_cb=taxt_PlanShapeCBSelect)
+        self.RegularityCB1 = TaxtSel(change_cb=taxt_RegularityCB1Select)
+        self.RegularityCB2 = TaxtSel(change_cb=taxt_RegularityCB2Select)
+        self.RegularityCB4 = TaxtSel(change_cb=taxt_RegularityCB3Select)
+        self.RegularityCB3 = TaxtSel(change_cb=taxt_RegularityCB4Select)
+        self.RegularityCB5 = TaxtSel(change_cb=taxt_RegularityCB5Select)
+        self.WallsCB = TaxtSel(change_cb=taxt_WallsCBSelect)
+        self.RoofCB1 = TaxtSel(change_cb=taxt_RoofCB1Select)
+        self.RoofCB2 = TaxtSel(change_cb=taxt_RoofCB2Select)
+        self.RoofCB3 = TaxtSel(change_cb=taxt_RoofCB3Select)
+        self.RoofCB4 = TaxtSel(change_cb=taxt_RoofCB4Select)
+        self.RoofCB5 = TaxtSel(change_cb=taxt_RoofCB5Select)
+        self.FloorCB1 = TaxtSel(change_cb=taxt_FloorCB1Select)
+        self.FloorCB2 = TaxtSel(change_cb=taxt_FloorCB2Select)
+        self.FloorCB3 = TaxtSel(change_cb=taxt_FloorCB3Select)
+        self.FoundationsCB = TaxtSel(change_cb=taxt_FoundationsCBSelect)
+        self.OutTypeCB = TaxtSel(change_cb=taxt_OutTypeCBSelect)
 
         # boolean
-        self.DirectionCB = TaxtBool()
+        self.DirectionCB = TaxtBool(change_cb=taxt_SetDirection2)
 
         # radio
         self.Direction1RB1 = TaxtRadioItem(val="false", change_cb=taxt_Direction1RB1Click)
@@ -176,15 +316,15 @@ class Taxonomy(object):
         self.Direction2RB1.check(True)
 
         # strings
-        self.noStoreysE11 = TaxtStr()
-        self.noStoreysE12 = TaxtStr()
-        self.noStoreysE21 = TaxtStr()
-        self.noStoreysE22 = TaxtStr()
-        self.noStoreysE31 = TaxtStr()
-        self.noStoreysE32 = TaxtStr()
-        self.noStoreysE41 = TaxtStr()
-        self.DateE1 = TaxtStr()
-        self.DateE2 = TaxtStr()
+        self.noStoreysE11 = TaxtStr(change_cb=taxt_HeightCB1Select)
+        self.noStoreysE12 = TaxtStr(change_cb=taxt_HeightCB1Select)
+        self.noStoreysE21 = TaxtStr(change_cb=taxt_HeightCB2Select)
+        self.noStoreysE22 = TaxtStr(change_cb=taxt_HeightCB2Select)
+        self.noStoreysE31 = TaxtStr(change_cb=taxt_HeightCB3Select)
+        self.noStoreysE32 = TaxtStr(change_cb=taxt_HeightCB3Select)
+        self.noStoreysE41 = TaxtStr(change_cb=taxt_HeightCB4Select)
+        self.DateE1 = TaxtStr(change_cb=taxt_DateE1Change)
+        self.DateE2 = TaxtStr(change_cb=taxt_DateE2Change)
         self.resultE = TaxtStr()
 
 
