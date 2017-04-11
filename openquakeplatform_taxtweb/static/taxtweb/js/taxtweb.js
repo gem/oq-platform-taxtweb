@@ -3988,25 +3988,6 @@ function acheck(sar, pfx)
     return (null);
 }
 
-var material = [
-                 { id: 'MAT99', desc: 'Unknown Material' },
-                 { id: 'C99', desc: 'Concrete, unknown reinforcement' },
-                 { id: 'CU', desc: 'Concrete, unreinforced' },
-                 { id: 'CR', desc: 'Concrete, reinforced' },
-                 { id: 'SRC', desc: 'Concrete, composite with steel section' },
-                 { id: 'S', desc: 'Steel' },
-                 { id: 'ME', desc: 'Metal (except steel)' },
-                 { id: 'M99', desc: 'Masonry, unknown reinforcement' },
-                 { id: 'MUR', desc: 'Masonry, unreinforced' },
-                 { id: 'MCF', desc: 'Masonry, confined' },
-                 { id: 'MR', desc: 'Masonry, reinforced' },
-                 { id: 'E99', desc: 'Earth, unknown reinforcement' },
-                 { id: 'EU', desc: 'Earth, unreinforced' },
-                 { id: 'ER', desc: 'Earth, reinforced' },
-                 { id: 'W', desc: 'Wood' },
-                 { id: 'MATO', desc: 'Other material' }
-               ];
-
 function populate(s, ret_s) {
     var i;
     var sar, subar, dirx, diry, el;
