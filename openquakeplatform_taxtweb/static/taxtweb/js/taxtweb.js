@@ -866,8 +866,8 @@ function taxt_ValidateRegularity()
     gem$('#RegularityCB4').empty();
     gem$('#RegularityCB5').empty();
 
-    var disabled_cb2 = [], default_cb2 = 0;
-    var disabled_cb3 = [], default_cb3 = 0;
+    var default_cb2 = 0;
+    var default_cb3 = 0;
 
     if (gem$('#RegularityCB1').val() == 0 ||
         gem$('#RegularityCB1').val() == 1) {
