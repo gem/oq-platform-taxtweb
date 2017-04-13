@@ -881,7 +881,7 @@ function taxt_ValidateRegularity()
         /* RegularityCB2 related part */
         var RegularityCB2 = [];
         if (gem$('#RegularityCB3').val() == 0 || gem$('#RegularityCB3').val() == null) {
-            RegularityCB2.push({ _text: 'No irregularity', 'dataGemHelp': gem_taxonomy_base + 'no-irregularity--irn', disabled: '' });
+            RegularityCB2.push({ '_text': 'No irregularity', 'dataGemHelp': gem_taxonomy_base + 'no-irregularity--irn', disabled: '' });
             default_cb2 = 1;
         }
         else {
