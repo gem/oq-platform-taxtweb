@@ -251,10 +251,10 @@ def taxt_RegularityCB1Select(obj):
     pass
 
 def taxt_RegularityCB2Select(obj):
-    pass
+    taxonomy.taxt_RegularityCB2Select(obj)
 
 def taxt_RegularityCB3Select(obj):
-    pass
+    taxonomy.taxt_RegularityCB3Select(obj)
 
 def taxt_RegularityCB4Select(obj):
     pass
@@ -1176,6 +1176,122 @@ class Taxonomy(object):
             self.DateE1.disabled(False)
             self.DateE2.disabled(True)
 
+
+    def taxt_ValidateRegularity(self):
+        self.RegularityCB2.empty()
+        self.RegularityCB3.empty()
+        self.RegularityCB4.empty()
+        self.RegularityCB5.empty()
+
+        default_cb2 = 0
+        default_cb3 = 0
+
+        if (self.RegularityCB1.val() == 0 or
+            self.RegularityCB1.val() == 1):
+            self.RegularityCB2.disabled(True)
+            self.RegularityCB3.disabled(True)
+            self.RegularityCB4.disabled(True)
+            self.RegularityCB5.disabled(True)
+            self._gem_taxonomy_regularity_postinit = -1
+
+        elif self.RegularityCB1.val() == 2: # /* irregular case */
+            # /* RegularityCB2 related part */
+            reg_cb2_items = []
+            if self.RegularityCB3.val() == 0 or self.RegularityCB3.val() == -1:
+                reg_cb2_items.append('No irregularity')
+                self.RegularityCB2.first_disabled(True)
+                default_cb2 = 1
+            else:
+                reg_cb2_items.append('No irregularity')
+
+            reg_cb2_items.append('Torsion eccentricity')
+            reg_cb2_items.append('Re-entrant corner')
+            reg_cb2_items.append('Other plan irregularity')
+
+            self.RegularityCB2.disabled(False)
+            self.RegularityCB2.items(reg_cb2_items, val=0)
+            self.RegularityCB2.val(default_cb2)
+
+            # /* RegularityCB3 related part */
+            reg_cb3_items = []
+            if self.RegularityCB2.val() == 0 or self.RegularityCB2.val() == -1:
+                reg_cb3_items.append('No irregularity')
+                self.RegularityCB3.first_disabled(True)
+                default_cb3 = 1
+                self._gem_taxonomy_regularity_postinit = 2
+            else:
+                reg_cb3_items.append('No irregularity')
+
+            reg_cb3_items.append('Soft storey')
+            reg_cb3_items.append('Cripple wall')
+            reg_cb3_items.append('Short column')
+            reg_cb3_items.append('Pounding potential')
+            reg_cb3_items.append('Setback')
+            reg_cb3_items.append('Change in vertical structure')
+            reg_cb3_items.append('Other vertical irregularity')
+            self.RegularityCB3.disabled(False)
+            self.RegularityCB3.items(reg_cb3_items, val=0)
+            self.RegularityCB3.val(default_cb3)
+
+        taxt_RegularityCB2Select(-1)
+        taxt_RegularityCB3Select(-1)
+        if default_cb2 == 1:
+            self._gem_taxonomy_regularity_postinit = 2
+        elif default_cb3 == 1:
+            self._gem_taxonomy_regularity_postinit = 3
+
+
+    def taxt_ValidateRegularity2(self):
+
+        self.RegularityCB4.empty()
+
+        if self.RegularityCB1.val() < 2 or self.RegularityCB2.val() == 0 or self.RegularityCB2.val() == -1:
+            self.RegularityCB4.disabled(True)
+        else:
+            self.RegularityCB4.items([
+                'No irregularity',
+                'Torsion eccentricity',
+                'Re-entrant corner',
+                'Other plan irregularity',
+            ], val=0)
+            self.RegularityCB4.disabled(False)
+
+        taxt_ValidateRegularityCross23("2")
+
+
+
+    def taxt_ValidateRegularityCross23(who):
+        if who == "2":
+            if self.RegularityCB2.val() != 0:
+                self.RegularityCB3.first_disabled(False)
+            else:
+                self.RegularityCB3.first_disabled(True)
+
+        if who == "3":
+            if self.RegularityCB3.val() != 0:
+                self.RegularityCB2.first_disabled(False)
+            else:
+                self.RegularityCB2.first_disabled(True)
+
+    def taxt_RegularityCB2Select(self, obj):
+        self.taxt_RegularityCB2Select(obj)
+        self.taxt_ValidateRegularity2()
+        if self._gem_taxonomy_regularity_postinit == 3:
+            self.RegularityCB3.val(0)
+            self.taxt_ValidateRegularity3()
+
+        self._gem_taxonomy_regularity_postinit = -1;
+        self.taxt_BuildTaxonomy()
+
+
+    def taxt_RegularityCB3Select(self, obj):
+        self.taxt_ValidateRegularity3();
+        if self._gem_taxonomy_regularity_postinit == 2:
+            self.RegularityCB2.val(0)
+            self.taxt_ValidateRegularity2()
+
+        self._gem_taxonomy_regularity_postinit = -1
+        self.taxt_BuildTaxonomy()
 
 if __name__ == '__main__':
     taxonomy = Taxonomy('taxonomy', True)
