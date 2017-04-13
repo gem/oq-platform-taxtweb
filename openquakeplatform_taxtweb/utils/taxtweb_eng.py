@@ -2,8 +2,6 @@
 from utils.taxtweb_maps import *
 from utils.taxtweb_head import *
 
-from collections import OrderedDict
-
 class TaxtSel(object):
     def __init__(self, name, items=[], val=-1, disabled=False, change_cb=None):
         '''
@@ -201,31 +199,10 @@ def taxt_SystemCB22Select(obj):
 def taxt_HeightCB1Select(obj):
     pass
 
-def taxt_HeightCB1Select(obj):
-    pass
-
-def taxt_HeightCB1Select(obj):
-    pass
-
-def taxt_HeightCB2Select(obj):
-    pass
-
-def taxt_HeightCB2Select(obj):
-    pass
-
 def taxt_HeightCB2Select(obj):
     pass
 
 def taxt_HeightCB3Select(obj):
-    pass
-
-def taxt_HeightCB3Select(obj):
-    pass
-
-def taxt_HeightCB3Select(obj):
-    pass
-
-def taxt_HeightCB4Select(obj):
     pass
 
 def taxt_HeightCB4Select(obj):
