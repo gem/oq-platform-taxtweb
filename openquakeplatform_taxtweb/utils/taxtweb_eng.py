@@ -521,6 +521,10 @@ class Taxonomy(object):
 
         self.taxt_ValidateMaterial1()
         self.taxt_ValidateMaterial2()
+        self.taxt_ValidateRoof()
+        self.taxt_ValidateFloor()
+        self.taxt_ValidateHeight()
+        self.taxt_ValidateDate()
 
     def __str__(self):
         ret = "%s (Taxonomy)\n" % self._name
@@ -955,6 +959,204 @@ class Taxonomy(object):
 
         self.SystemCB12.val(0)
         self.taxt_ValidateSystem2()
+
+
+    def taxt_ValidateRoof(self):
+        self.RoofCB4.empty()
+        if self.RoofCB3.val() == 0 or self.RoofCB3.val() == 7:
+            self.RoofCB4.disabled(True)
+
+        elif self.RoofCB3.val() == 1:
+            self.RoofCB4.items([
+                'Masonry roof, unknown',
+                'Vaulted masonry roof',
+                'Shallow-arched masonry roof',
+                'Composite masonry and concrete roof system',
+            ], selected=0)
+            self.RoofCB4.disabled(False)
+
+        elif self.RoofCB3.val() == 2:
+            self.RoofCB4.items([
+                'Earthen roof, unknown',
+                'Vaulted earthen roofs',
+            ], selected=0)
+            self.RoofCB4.disabled(False)
+
+        elif self.RoofCB3.val() == 3:
+            self.RoofCB4.items([
+                'Concrete roof, unknown',
+                'Cast-in-place beamless RC roof',
+                'Cast-in-place beam-supported RC roof',
+                'Precast concrete roof with RC topping',
+                'Precast concrete roof without RC topping',
+            ], selected=0)
+            self.RoofCB4.disabled(False)
+
+        elif self.RoofCB3.val() == 4:
+            self.RoofCB4.items([
+                'Metal roof, unknown',
+                'Metal beams or trusses supporting light roofing',
+                'Metal roof beams supporting precast concrete slabs',
+                'Composite steel roof deck and concrete slab',
+            ], selected=0)
+            self.RoofCB4.disabled(False)
+
+        elif self.RoofCB3.val() == 5:
+            self.RoofCB4.items([
+                'Wooden roof, unknown',
+                'Wooden structure with light roof covering',
+                'Wooden beams or trusses with heavy roof covering',
+                'Wood-based sheets on rafters or purlins',
+                'Plywood panels or other light-weigth panels for roof',
+                'Bamboo, straw or thatch roof',
+            ], selected=0)
+            self.RoofCB4.disabled(False)
+
+        elif self.RoofCB3.val() == 6:
+            self.RoofCB4.items([
+                'Inflatable or tensile membrane roof',
+                'Fabric roof, other',
+            ], selected=0)
+            self.RoofCB4.disabled(False)
+
+
+    def taxt_ValidateFloor(self):
+        self.FloorCB2.empty()
+
+        if (self.FloorCB1.val() == 0 or self.FloorCB1.val() == 1 or self.FloorCB1.val() == 7):
+            self.FloorCB2.disabled(True)
+        elif self.FloorCB1.val() == 2:
+            self.FloorCB2.items([
+                'Masonry floor, unknown',
+                'Vaulted masonry floor',
+                'Shallow-arched masonry floor',
+                'Composite cast-in place RC and masonry floor',
+            ], selected=0)
+            self.FloorCB2.disabled(False)
+
+        elif self.FloorCB1.val() == 3:
+            self.FloorCB2.items([
+                'Earthen floor, unknown',
+            ], selected=0)
+            self.FloorCB2.disabled(False)
+
+        elif self.FloorCB1.val() == 4:
+            self.FloorCB2.items([
+                'Concrete floor, unknown',
+                'Cast-in-place beamless RC floor',
+                'Cast-in-place beam-supported RC floor',
+                'Precast concrete floor with RC topping',
+                'Precast concrete floor without RC topping',
+            ], selected=0)
+            self.FloorCB2.disabled(False)
+
+        elif self.FloorCB1.val() == 5:
+            self.FloorCB2.items([
+                'Metal floor, unknown',
+                'Metal beams, trusses or joists supporting light flooring',
+                'Metal floor beams supporting precast concrete slabs',
+                'Composite steel deck and concrete slab',
+            ], selected=0)
+            self.FloorCB2.disabled(False)
+
+        elif self.FloorCB1.val() == 6:
+            self.FloorCB2.items([
+                'Wooden floor, unknown',
+                'Wood beams/trusses & joists supporting light flooring',
+                'Wood beams/trusses & joists supporting heavy flooring',
+                'Wood-based sheets on joists or beams',
+                'Plywood panels or other light-weigth panels for floor',
+            ], selected=0)
+            self.FloorCB2.disabled(False)
+
+
+    def taxt_ValidateHeight(self):
+        self.HeightCB2.disabled(True)
+        self.HeightCB3.disabled(True)
+        self.HeightCB4.disabled(True)
+        self.noStoreysE11.disabled(True)
+        # self.noStoreysE11.removeClass('gem_field_alert')
+        self.noStoreysE12.disabled(True)
+        # self.noStoreysE12.removeClass('gem_field_alert')
+
+        self.noStoreysE21.disabled(True)
+        # self.noStoreysE21.removeClass('gem_field_alert')
+        self.noStoreysE22.disabled(True)
+        # self.noStoreysE22.removeClass('gem_field_alert')
+
+        self.noStoreysE31.disabled(True)
+        # self.noStoreysE31.removeClass('gem_field_alert')
+        self.noStoreysE32.disabled(True)
+        # self.noStoreysE32.removeClass('gem_field_alert')
+        self.noStoreysE41.disabled(True)
+        # self.noStoreysE41.removeClass('gem_field_alert')
+
+        if self.HeightCB1.val() > 0:
+            self.HeightCB2.disabled(False)
+            self.HeightCB3.disabled(False)
+            self.HeightCB4.disabled(False)
+            self.noStoreysE11.disabled(False)
+            self.noStoreysE12.disabled(False)
+
+            if self.HeightCB1.val() == 1:
+                self.noStoreysE11.disabled(False)
+                self.noStoreysE12.disabled(False)
+
+            else:
+                self.noStoreysE11.disabled(False)
+                self.noStoreysE12.disabled(True)
+
+
+            if self.HeightCB2.val() == 0:
+                self.noStoreysE21.disabled(True)
+                self.noStoreysE22.disabled(True)
+
+            elif self.HeightCB2.val() == 1:
+                self.noStoreysE21.disabled(False)
+                self.noStoreysE22.disabled(False)
+
+            else:
+                self.noStoreysE21.disabled(False)
+                self.noStoreysE22.disabled(True)
+
+
+            if self.HeightCB3.val() == 0:
+                self.noStoreysE31.disabled(True)
+                self.noStoreysE32.disabled(True)
+
+            elif self.HeightCB3.val() == 1:
+                self.noStoreysE31.disabled(False)
+                self.noStoreysE32.disabled(False)
+
+            else:
+                self.noStoreysE31.disabled(False)
+                self.noStoreysE32.disabled(True)
+
+
+            if self.HeightCB4.val() == 0:
+                self.noStoreysE41.disabled(True)
+
+            else:
+                self.noStoreysE41.disabled(False)
+
+
+        else:
+            self.noStoreysE11.disabled(True)
+            self.noStoreysE12.disabled(True)
+
+
+    def taxt_ValidateDate(self):
+        if self.DateCB1.val() == 0:
+            self.DateE1.disabled(True)
+            self.DateE2.disabled(True)
+
+        elif self.DateCB1.val() == 2:
+            self.DateE1.disabled(False)
+            self.DateE2.disabled(False)
+
+        else:
+            self.DateE1.disabled(False)
+            self.DateE2.disabled(True)
 
 
 if __name__ == '__main__':
