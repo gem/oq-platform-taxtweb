@@ -3877,9 +3877,9 @@ function taxt_Initiate(full) {
 
     // TAIL
     taxt_ValidateMaterial1();
-    taxt_ValidateSystem1();
+    // taxt_ValidateSystem1(); // disabled because already called at the end of taxt_ValidateMaterial1();
     taxt_ValidateMaterial2();
-    taxt_ValidateSystem2();
+    // taxt_ValidateSystem2(); // disabled because already called at the end of taxt_ValidateMaterial2();
     taxt_ValidateRoof();
     taxt_ValidateFloor();
     taxt_ValidateHeight();
