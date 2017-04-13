@@ -3672,7 +3672,6 @@ function taxt_Initiate(full) {
     /* HEX  */ HeightCB1.push({'_text': 'Exact number of storeys', 'dataGemHelp': gem_taxonomy_base + 'exact-number-of-storeys-above-ground--hex' });
     /* HAPP */ HeightCB1.push({'_text': 'Approximate number of storeys', 'dataGemHelp': gem_taxonomy_base + 'approximate-number-of-storeys-above-ground--happ' });
     select_populate('HeightCB1', HeightCB1);
-    gem$('#HeightCB1').val(0);
     gem$('#HeightCB1').on('change', taxt_HeightCB1Select);
     gem$('#noStoreysE11').on('change', taxt_HeightCB1Select);
     gem$('#noStoreysE12').on('change', taxt_HeightCB1Select);
@@ -3683,7 +3682,6 @@ function taxt_Initiate(full) {
     /* HBEX  */ HeightCB2.push({'_text': 'Exact number of storeys', 'dataGemHelp': gem_taxonomy_base + 'exact-number-of-storeys-below-ground--hbex' });
     /* HBAPP */ HeightCB2.push({'_text': 'Approximate number of storeys', 'dataGemHelp': gem_taxonomy_base + 'approximate-number-of-storeys-below-ground--hbapp' });
     select_populate('HeightCB2', HeightCB2);
-    gem$('#HeightCB2').val(0);
     gem$('#HeightCB2').on('change', taxt_HeightCB2Select);
     gem$('#noStoreysE21').on('change', taxt_HeightCB2Select);
     gem$('#noStoreysE22').on('change', taxt_HeightCB2Select);
@@ -3694,7 +3692,6 @@ function taxt_Initiate(full) {
     /* HFEX  */ HeightCB3.push({'_text': 'Exact height above grade', 'dataGemHelp': gem_taxonomy_base + 'exact-height-of-ground-floor-level-above-grade--hfex' });
     /* HFAPP */ HeightCB3.push({'_text': 'Approximate height above grade', 'dataGemHelp': gem_taxonomy_base + 'approximate-height-of-ground-floor-level-above-grade--hfapp' });
     select_populate('HeightCB3', HeightCB3);
-    gem$('#HeightCB3').val(0);
     gem$('#HeightCB3').on('change', taxt_HeightCB3Select);
     gem$('#noStoreysE31').on('change', taxt_HeightCB3Select);
     gem$('#noStoreysE32').on('change', taxt_HeightCB3Select);
@@ -3703,7 +3700,6 @@ function taxt_Initiate(full) {
     /* HD99  */ HeightCB4.push({'_text': 'Unknown slope', 'dataGemHelp': gem_taxonomy_base + 'slope-of-the-ground-unknown--hd99' });
     /* HD    */ HeightCB4.push({'_text': 'Slope of the ground', 'dataGemHelp': gem_taxonomy_base + 'slope-of-the-ground--hd' });
     select_populate('HeightCB4', HeightCB4);
-    gem$('#HeightCB4').val(0);
     gem$('#HeightCB4').on('change', taxt_HeightCB4Select);
     gem$('#noStoreysE41').on('change', taxt_HeightCB4Select);
 
@@ -3714,7 +3710,6 @@ function taxt_Initiate(full) {
     /* YPRE */ DateCB1.push({'_text': 'Latest possible date of construction or retrofit', 'dataGemHelp': gem_taxonomy_base + 'Latest-possible-date-of-construction-or-retrofit--ypre' });
     /* YAPP */ DateCB1.push({'_text': 'Approximate date of construction or retrofit', 'dataGemHelp': gem_taxonomy_base + 'approximate-date-of-construction-or-retrofit--yapp' });
     select_populate('DateCB1', DateCB1);
-    gem$('#DateCB1').val(0);
     gem$('#DateCB1').on('change', taxt_DateCB1Select);
     gem$('#DateE1').on('change', taxt_DateE1Change);
     gem$('#DateE2').on('change', taxt_DateE2Change);
@@ -3731,7 +3726,6 @@ function taxt_Initiate(full) {
     /* EDU   */ OccupancyCB1.push({'_text': 'Education', 'dataGemHelp': gem_taxonomy_base + 'education--edu' });
     /* OCO   */ OccupancyCB1.push({'_text': 'Other occupancy type', 'dataGemHelp': gem_taxonomy_base + 'other-occupancy-type--oco' });
     select_populate('OccupancyCB1', OccupancyCB1);
-    gem$('#OccupancyCB1').val(0);
     gem$('#OccupancyCB1').on('change', taxt_OccupancyCB1Select);
     gem$('#OccupancyCB2').on('change', taxt_OccupancyCB2Select);
 
@@ -3742,7 +3736,6 @@ function taxt_Initiate(full) {
     /* BP2  */ PositionCB.push({'_text': 'Adjoining building(s) on two sides', 'dataGemHelp': gem_taxonomy_base + 'adjoining-buildings-on-two-sides--bp2' });
     /* BP3  */ PositionCB.push({'_text': 'Adjoining building(s) on three sides', 'dataGemHelp': gem_taxonomy_base + 'adjoining-buildings-on-three-sides--bp3' });
     select_populate('PositionCB', PositionCB);
-    gem$('#PositionCB').val(0);
     gem$('#PositionCB').on('change', taxt_PositionCBSelect);
 
     var PlanShapeCB = [];
@@ -3767,7 +3760,6 @@ function taxt_Initiate(full) {
     /* PLFPO  */ PlanShapeCB.push({'_text': 'Polygonal, with an opening in plan', 'dataGemHelp': gem_taxonomy_base + 'polygonal-with-an-opening-in-plan--plfpo' });
     /* PLFI   */ PlanShapeCB.push({'_text': 'Irregular plan shape', 'dataGemHelp': gem_taxonomy_base + 'irregular-plan-shape--plfi' });
     select_populate('PlanShapeCB', PlanShapeCB);
-    gem$('#PlanShapeCB').val(0);
     gem$('#PlanShapeCB').on('change', taxt_PlanShapeCBSelect);
 
     var RegularityCB1 = [];
@@ -3795,7 +3787,6 @@ function taxt_Initiate(full) {
     /* EWCB */  WallsCB.push({'_text': 'Cement-based boards for exterior walls', 'dataGemHelp': gem_taxonomy_base + 'cement-based-boards--ewcb' });
     /* EWO  */  WallsCB.push({'_text': 'Material of exterior walls, other', 'dataGemHelp': gem_taxonomy_base + 'material-of-exterior-wall-other--ewo' });
     select_populate('WallsCB', WallsCB);
-    gem$('#WallsCB').val(0);
     gem$('#WallsCB').on('change', taxt_WallsCBSelect);
 
     var RoofCB1 = [];
@@ -3811,7 +3802,6 @@ function taxt_Initiate(full) {
     /* RSH9   */ RoofCB1.push({'_text': 'Complex irregular', 'dataGemHelp': gem_taxonomy_base + 'complex-irregular--rsh9' });
     /* RSHO   */ RoofCB1.push({'_text': 'Roof shape, other', 'dataGemHelp': gem_taxonomy_base + 'roof-shape-other--rsho' });
     select_populate('RoofCB1', RoofCB1);
-    gem$('#RoofCB1').val(0);
     gem$('#RoofCB1').on('change', taxt_RoofCB1Select);
 
     var RoofCB2 = [];
@@ -3830,7 +3820,6 @@ function taxt_Initiate(full) {
     /* RMT11 */ RoofCB2.push({'_text': 'Tensile membrane or fabric roof', 'dataGemHelp': gem_taxonomy_base + 'tensile-membrane-or-fabric-roof--rmt11' });
     /* RMTO  */ RoofCB2.push({'_text': 'Roof covering, other', 'dataGemHelp': gem_taxonomy_base + 'roof-covering-other--rmto' });
     select_populate('RoofCB2', RoofCB2);
-    gem$('#RoofCB2').val(0);
     gem$('#RoofCB2').on('change', taxt_RoofCB2Select);
 
     var RoofCB3 = [];
@@ -3841,9 +3830,8 @@ function taxt_Initiate(full) {
     /* RME */ RoofCB3.push({'_text': 'Metal roof', 'dataGemHelp': gem_taxonomy_base + 'metal--rme' });
     /* RWO */ RoofCB3.push({'_text': 'Wooden roof', 'dataGemHelp': gem_taxonomy_base + 'wood--rwo' });
     /* RFA */ RoofCB3.push({'_text': 'Fabric roof', 'dataGemHelp': gem_taxonomy_base + 'fabric--rfa' });
-    /* RO  */ RoofCB3.push({'_text': 'Roof material,other', 'dataGemHelp': gem_taxonomy_base + 'roof-material-other--ro' });
+    /* RO  */ RoofCB3.push({'_text': 'Roof material, other', 'dataGemHelp': gem_taxonomy_base + 'roof-material-other--ro' });
     select_populate('RoofCB3', RoofCB3);
-    gem$('#RoofCB3').val(0);
     gem$('#RoofCB3').on('change', taxt_RoofCB3Select);
     gem$('#RoofCB4').on('change', taxt_RoofCB4Select);
 
@@ -3855,7 +3843,6 @@ function taxt_Initiate(full) {
     /* RTDN  */ RoofCB5.push({'_text': 'Roof tie-down not provided', 'dataGemHelp': gem_taxonomy_base + 'roof-tie-down-not-provided--rtdn' });
     /* RTDP  */ RoofCB5.push({'_text': 'Roof tie-down present', 'dataGemHelp': gem_taxonomy_base + 'roof-tie-down-present--rtdp' });
     select_populate('RoofCB5', RoofCB5);
-    gem$('#RoofCB5').val(0);
     gem$('#RoofCB5').on('change', taxt_RoofCB5Select);
 
     var FoundationsCB = [];
@@ -3866,7 +3853,6 @@ function taxt_Initiate(full) {
     /* FOSDN  */ FoundationsCB.push({'_text': 'Deep foundation, with no lateral capacity', 'dataGemHelp': gem_taxonomy_base + 'deep-foundation-no-lateral-capacity--fosdn' });
     /* FOSO   */ FoundationsCB.push({'_text': 'Foundation, other', 'dataGemHelp': gem_taxonomy_base + 'foundation-other--foso' });
     select_populate('FoundationsCB', FoundationsCB);
-    gem$('#FoundationsCB').val(0);
     gem$('#FoundationsCB').on('change', taxt_FoundationsCBSelect);
 
     var FloorCB1 = [];
@@ -3879,7 +3865,6 @@ function taxt_Initiate(full) {
     /* FW  */ FloorCB1.push({'_text': 'Wooden floor', 'dataGemHelp': gem_taxonomy_base + 'wood--fw' });
     /* FO  */ FloorCB1.push({'_text': 'Floor material, other', 'dataGemHelp': gem_taxonomy_base + 'floor-material-other--fo' });
     select_populate('FloorCB1', FloorCB1);
-    gem$('#FloorCB1').val(0);
     gem$('#FloorCB1').on('change', taxt_FloorCB1Select);
     gem$('#FloorCB2').on('change', taxt_FloorCB2Select);
 
@@ -3888,7 +3873,6 @@ function taxt_Initiate(full) {
     /* FWCN  */ FloorCB3.push({'_text': 'Floor-wall diaphragm connection not provided', 'dataGemHelp': gem_taxonomy_base + 'floor-wall-diaphragm-connection-not-provided--fwcn' });
     /* FWCP  */ FloorCB3.push({'_text': 'Floor-wall diaphragm connection present', 'dataGemHelp': gem_taxonomy_base + 'floor-wall-diaphragm-connection-present--fwcp' });
     select_populate('FloorCB3', FloorCB3);
-    gem$('#FloorCB3').val(0);
     gem$('#FloorCB3').on('change', taxt_FloorCB3Select);
 
     // TAIL
