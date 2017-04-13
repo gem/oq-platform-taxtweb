@@ -21,6 +21,7 @@ class TaxtSel(object):
             self._val = val
 
         self._disabled = disabled
+        self._first_disabled = False
         self._change_cb = change_cb
 
     def empty(self):
@@ -32,6 +33,12 @@ class TaxtSel(object):
             return self._disabled
         else:
             self._disabled = disabled
+
+    def first_disabled(self, first_disabled=None):
+        if first_disabled != None:
+            self._first_disabled = first_disabled
+
+        return self._first_disabled
 
     def items(self, items=None, val=0):
         '''
@@ -48,6 +55,8 @@ class TaxtSel(object):
     def val(self, val=-1):
         # print "%s VAL HERE: %d" % (self._name, val)
         if val != -1:
+            if val == 0 and self._first_disabled == True:
+                raise ValueError
             self._val = val
             if self._change_cb:
                 self._change_cb(self)
