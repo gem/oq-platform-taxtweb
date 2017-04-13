@@ -4,93 +4,101 @@ from utils.taxtweb_head import *
 
 from collections import OrderedDict
 
-class TaxtSel(object):    
+class TaxtSel(object):
     def __init__(self, items=[], selected=-1, disabled=False, change_cb=None):
         '''
         items => list of 1 element dicts
         selected => int identifing current selected item
         '''
-        self.items = items
-        self.selected = selected
-        self.disabled = disabled
-        self.change_cb = change_cb
+        self._items = items[:]
+        self._selected = selected
+        self._disabled = disabled
+        self._change_cb = change_cb
 
     def empty(self):
-        self.items = []
-        self.selected = -1
+        self._items = []
+        self._selected = -1
 
     def disabled(self, disabled=None):
         if disabled == None:
-            return self.disabled
+            return self._disabled
         else:
-            self.disabled = disabled
-        
+            self._disabled = disabled
+
     def items(self, items=None):
         '''
         items => list of 1 element dicts
         selected => int identifing current selected item
         '''
         if items == None:
-            items = []
+            return self._items
         else:
-            self.items = items[:]
+            self._items = items[:]
 
     def selected(self, selected=-1):
-        self.selected = selected
-        if self.change_cb:
-            self.change_cb()
-        
+        if selected != -1:
+            self._selected = selected
+            if self._change_cb:
+                self._change_cb(self)
+
+        return self._selected
+
 
 class TaxtBool(object):
     def __init__(self, val=False, change_cb=None):
-        self.val = val
-        self.change_cb = change_cb
+        self._val = val
+        self._change_cb = change_cb
 
     def val(self, val=None):
         if val == None:
-            return self.val
+            return self._val
         else:
-            self.val = val
-            if self.change_cb:
-                self.change_cb()
-            return self.val
+            self._val = val
+            if self._change_cb:
+                self._change_cb(self)
+            return self._val
 
 class TaxtRadioItem(object):
     def __init__(self, val=None, checked=False, radio=None, change_cb=None):
-        self.val = val
-        self.checked = checked
-        self.change_cb = change_cb
-        self.radio = radio
+        self._val = val
+        self._checked = checked
+        self._change_cb = change_cb
+        self._radio = radio
+
+    def radio(self, radio=None):
+        if (radio == None):
+            return self._radio
+        else:
+            self._radio = radio
 
     def val(self, val=None):
         if val != None:
-            self.val = val
+            self._val = val
+            if self._change_cb:
+                self._change_cb(self)
 
-        return self.val
+        return self._val
 
-    def check(self, is_checked=False):
+    def checked(self, is_checked=False):
         if is_checked == True:
-            if self.radio != None:
-                for item in self.radio.items:
-                    item.check(False)
-        self.checked = is_checked
+            if self._radio != None:
+                for item in self._radio._items:
+                    item.checked(False)
+        self._checked = is_checked
 
-        return self.checked
+        return self._checked
 
 
 class TaxtRadio(object):
     def __init__(self, items=[]):
-        self.items = items[:]
+        self._items = items[:]
         for item in items:
-            item.radio = self
+            item.radio(self)
 
     def item_add(self, item):
         self.items.append(item)
-        item.radio = self
+        item.radio(self)
 
-
-
-        
 
 class TaxtStr(object):
     def __init__(self, val=None, change_cb=None):
@@ -103,7 +111,7 @@ class TaxtStr(object):
         else:
             self.val = val
             if self.change_cb:
-                self.change_cb()
+                self.change_cb(self)
             return self.val
 
 
