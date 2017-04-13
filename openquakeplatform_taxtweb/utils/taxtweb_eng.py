@@ -2,6 +2,8 @@
 from utils.taxtweb_maps import *
 from utils.taxtweb_head import *
 
+taxonomy = None
+
 class TaxtSel(object):
     def __init__(self, name, items=[], val=-1, disabled=False, change_cb=None):
         '''
@@ -128,18 +130,25 @@ class TaxtRadio(object):
 
 
 class TaxtStr(object):
-    def __init__(self, val=None, change_cb=None):
-        self.val = val
-        self.change_cb = change_cb
+    def __init__(self, val=None, change_cb=None, disabled=None):
+        self._val = val
+        self._change_cb = change_cb
+        self._disabled = disabled
 
     def val(self, val=None):
         if val == None:
-            return self.val
+            return self._val
         else:
-            self.val = val
-            if self.change_cb:
-                self.change_cb(self)
-            return self.val
+            self._val = val
+            if self._change_cb:
+                self._change_cb(self)
+            return self._val
+
+    def disabled(self, disabled=None):
+        if disabled == None:
+            return self._disabled
+        else:
+            self._disabled = disabled
 
 
 def taxt_Direction1RB1Click(taxt_radioitem):
