@@ -187,201 +187,6 @@ class TaxtStr(object):
             self._disabled = disabled
 
 
-def taxt_Direction1RB1Click(taxt_radioitem=None):
-    taxonomy.Direction2RB1.checked(True)
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_Direction1RB2Click(taxt_radioitem=None):
-    taxonomy.Direction2RB3.checked(True)
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_Direction2RB1Click(taxt_radioitem=None):
-    taxonomy.Direction1RB1.checked(True)
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_Direction2RB3Click(taxt_radioitem=None):
-    taxonomy.Direction1RB2.checked(True)
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_OutTypeCBSelect(obj=None):
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_SetDirection2(obj=None):
-    if taxonomy.DirectionCB.checked():
-        taxonomy.MaterialCB12.val(taxonomy.MaterialCB11.val())
-        taxt_MaterialCB12Select()
-        taxonomy.MaterialCB22.val(taxonomy.MaterialCB21.val())
-        taxt_MaterialCB22Select()
-        taxonomy.MaterialCB32.val(taxonomy.MaterialCB31.val())
-        taxt_MaterialCB32Select()
-        taxonomy.MaterialCB42.val(taxonomy.MaterialCB41.val())
-        taxt_MaterialCB42Select()
-        taxonomy.SystemCB12.val(taxonomy.SystemCB11.val())
-        taxt_SystemCB12Select()
-        taxonomy.SystemCB22.val(taxonomy.SystemCB21.val())
-        taxt_SystemCB22Select()
-
-def taxt_MaterialCB11Select(obj):
-    taxonomy.taxt_ValidateMaterial1()
-    taxt_SetDirection2()
-    if taxonomy.DirectionCB.checked():
-        taxonomy.taxt_ValidateMaterial2()
-
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_MaterialCB21Select(obj=None):
-    taxt_SetDirection2()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_MaterialCB31Select(obj=None):
-    taxt_SetDirection2()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_MaterialCB41Select(obj=None):
-    taxt_SetDirection2()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_SystemCB11Select(obj=None):
-    taxt_SetDirection2()
-    taxonomy.taxt_ValidateSystem1()
-    if taxonomy.DirectionCB.checked():
-        taxonomy.taxt_ValidateSystem2()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_SystemCB21Select(obj=None):
-    taxt_SetDirection2()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_BreakDirection2(obj=None):
-        # /* the check is performed just when called with parameter (triggered indirectly
-        #   from an event or if forced by another function */
-        if obj is None:
-            return
-
-        if taxonomy.DirectionCB.checked():
-            if (taxonomy.MaterialCB12.val() != taxonomy.MaterialCB11.val() or
-                taxonomy.MaterialCB22.val() != taxonomy.MaterialCB21.val() or
-                taxonomy.MaterialCB32.val() != taxonomy.MaterialCB31.val() or
-                taxonomy.MaterialCB42.val() != taxonomy.MaterialCB41.val() or
-                taxonomy.SystemCB12.val() != taxonomy.SystemCB11.val() or
-                taxonomy.SystemCB22.val() != taxonomy.SystemCB21.val()):
-                taxonomy.DirectionCB.checked(False)
-
-
-def taxt_MaterialCB12Select(obj=None):
-    taxonomy.taxt_ValidateMaterial2()
-    taxt_BreakDirection2(obj)
-    taxonomy.taxt_ValidateSystem2()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_MaterialCB22Select(obj):
-    taxt_BreakDirection2(obj)
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_MaterialCB32Select(obj):
-    taxt_BreakDirection2(obj)
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_MaterialCB42Select(obj):
-    taxt_BreakDirection2(obj)
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_SystemCB12Select(obj):
-    taxonomy.taxt_ValidateSystem2()
-    taxt_BreakDirection2(obj)
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_SystemCB22Select(obj):
-    taxt_BreakDirection2(obj)
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_HeightCB1Select(obj):
-    taxonomy.taxt_ValidateHeight()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_HeightCB2Select(obj):
-    taxonomy.taxt_ValidateHeight()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_HeightCB3Select(obj):
-    taxonomy.taxt_ValidateHeight()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_HeightCB4Select(obj):
-    taxonomy.taxt_ValidateHeight()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_DateCB1Select(obj):
-    taxonomy.taxt_ValidateDate()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_DateE1Change(obj):
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_DateE2Change(obj):
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_OccupancyCB1Select(obj):
-    taxonomy.taxt_ValidateOccupancy()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_OccupancyCB2Select(obj):
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_PositionCBSelect(obj):
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_PlanShapeCBSelect(obj):
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_RegularityCB1Select(obj):
-    taxonomy.taxt_ValidateRegularity()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_RegularityCB2Select(obj):
-    taxonomy.taxt_RegularityCB2Select(obj)
-
-def taxt_RegularityCB3Select(obj):
-    taxonomy.taxt_RegularityCB3Select(obj)
-
-def taxt_RegularityCB4Select(obj):
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_RegularityCB5Select(obj):
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_WallsCBSelect(obj):
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_RoofCB1Select(obj):
-    taxonomy.taxt_ValidateRoof()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_RoofCB2Select(obj):
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_RoofCB3Select(obj):
-    taxonomy.taxt_ValidateRoof()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_RoofCB4Select(obj):
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_RoofCB5Select(obj):
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_FoundationsCBSelect(obj):
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_FloorCB1Select(obj):
-    taxonomy.taxt_ValidateFloor()
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_FloorCB2Select(obj):
-    taxonomy.taxt_BuildTaxonomy()
-
-def taxt_FloorCB3Select(obj):
-    taxonomy.taxt_BuildTaxonomy()
 
 
 class Taxonomy(object):
@@ -391,18 +196,18 @@ class Taxonomy(object):
             self.OutTypeCB = TaxtSel('OutTypeCB', ['Full',
                                       'Omit Unknown',
                                       'Short'],
-                                     change_cb=taxt_OutTypeCBSelect)
+                                     change_cb=self.taxt_OutTypeCBSelect)
             self.OutTypeCB.val(2)
 
-        self.DirectionCB = TaxtBool("DirectionCB", val=True, change_cb=taxt_SetDirection2)
+        self.DirectionCB = TaxtBool("DirectionCB", val=True, change_cb=self.taxt_SetDirection2)
 
-        self.Direction1RB1 = TaxtRadioItem(val="false", change_cb=taxt_Direction1RB1Click)
-        self.Direction1RB2 = TaxtRadioItem(val="true", change_cb=taxt_Direction1RB2Click)
+        self.Direction1RB1 = TaxtRadioItem(val="false", change_cb=self.taxt_Direction1RB1Click)
+        self.Direction1RB2 = TaxtRadioItem(val="true", change_cb=self.taxt_Direction1RB2Click)
         self._Direction1R = TaxtRadio(items=[self.Direction1RB1, self.Direction1RB2])
         self.Direction1RB1.checked(True)
 
-        self.Direction2RB1 = TaxtRadioItem(val="unspec", change_cb=taxt_Direction2RB1Click)
-        self.Direction2RB3 = TaxtRadioItem(val="spec", change_cb=taxt_Direction2RB3Click)
+        self.Direction2RB1 = TaxtRadioItem(val="unspec", change_cb=self.taxt_Direction2RB1Click)
+        self.Direction2RB3 = TaxtRadioItem(val="spec", change_cb=self.taxt_Direction2RB3Click)
         self._Direction2R = TaxtRadio(items=[self.Direction2RB1, self.Direction2RB3])
         self.Direction2RB1.checked(True)
 
@@ -422,12 +227,12 @@ class Taxonomy(object):
                                      'Earth, unreinforced',
                                      'Earth, reinforced',
                                      'Wood',
-                                     'Other material'], val=0, change_cb=taxt_MaterialCB11Select)
-        self.MaterialCB21 = TaxtSel('MaterialCB21', change_cb=taxt_MaterialCB21Select)
-        self.MaterialCB31 = TaxtSel('MaterialCB31', change_cb=taxt_MaterialCB31Select)
-        self.MaterialCB41 = TaxtSel('MaterialCB41', change_cb=taxt_MaterialCB41Select)
-        self.SystemCB11 = TaxtSel('SystemCB11', change_cb=taxt_SystemCB11Select)
-        self.SystemCB21 = TaxtSel('SystemCB21', change_cb=taxt_SystemCB21Select)
+                                     'Other material'], val=0, change_cb=self.taxt_MaterialCB11Select)
+        self.MaterialCB21 = TaxtSel('MaterialCB21', change_cb=self.taxt_MaterialCB21Select)
+        self.MaterialCB31 = TaxtSel('MaterialCB31', change_cb=self.taxt_MaterialCB31Select)
+        self.MaterialCB41 = TaxtSel('MaterialCB41', change_cb=self.taxt_MaterialCB41Select)
+        self.SystemCB11 = TaxtSel('SystemCB11', change_cb=self.taxt_SystemCB11Select)
+        self.SystemCB21 = TaxtSel('SystemCB21', change_cb=self.taxt_SystemCB21Select)
 
         self.MaterialCB12 = TaxtSel('MaterialCB12', ['Unknown Material',
                                      'Concrete, unknown reinforcement',
@@ -444,20 +249,20 @@ class Taxonomy(object):
                                      'Earth, unreinforced',
                                      'Earth, reinforced',
                                      'Wood',
-                                     'Other material'], change_cb=taxt_MaterialCB12Select)
-        self.MaterialCB22 = TaxtSel('MaterialCB22', change_cb=taxt_MaterialCB22Select)
-        self.MaterialCB32 = TaxtSel('MaterialCB32', change_cb=taxt_MaterialCB32Select)
-        self.MaterialCB42 = TaxtSel('MaterialCB42', change_cb=taxt_MaterialCB42Select)
-        self.SystemCB12 = TaxtSel('SystemCB12', change_cb=taxt_SystemCB12Select)
-        self.SystemCB22 = TaxtSel('SystemCB22', change_cb=taxt_SystemCB22Select)
+                                     'Other material'], change_cb=self.taxt_MaterialCB12Select)
+        self.MaterialCB22 = TaxtSel('MaterialCB22', change_cb=self.taxt_MaterialCB22Select)
+        self.MaterialCB32 = TaxtSel('MaterialCB32', change_cb=self.taxt_MaterialCB32Select)
+        self.MaterialCB42 = TaxtSel('MaterialCB42', change_cb=self.taxt_MaterialCB42Select)
+        self.SystemCB12 = TaxtSel('SystemCB12', change_cb=self.taxt_SystemCB12Select)
+        self.SystemCB22 = TaxtSel('SystemCB22', change_cb=self.taxt_SystemCB22Select)
 
         self.HeightCB1 = TaxtSel('HeightCB1', ['Unknown number of storeys',
                                   'Range of the number of storeys',
                                   'Exact number of storeys',
                                   'Approximate number of storeys'],
-                                 val=0, change_cb=taxt_HeightCB1Select)
-        self.noStoreysE11 = TaxtStr(change_cb=taxt_HeightCB1Select)
-        self.noStoreysE12 = TaxtStr(change_cb=taxt_HeightCB1Select)
+                                 val=0, change_cb=self.taxt_HeightCB1Select)
+        self.noStoreysE11 = TaxtStr(change_cb=self.taxt_HeightCB1Select)
+        self.noStoreysE12 = TaxtStr(change_cb=self.taxt_HeightCB1Select)
 
 
 
@@ -465,31 +270,31 @@ class Taxonomy(object):
                                   'Range of the number of storeys',
                                   'Exact number of storeys',
                                   'Approximate number of storeys'],
-                                 val=0, change_cb=taxt_HeightCB2Select)
-        self.noStoreysE21 = TaxtStr(change_cb=taxt_HeightCB2Select)
-        self.noStoreysE22 = TaxtStr(change_cb=taxt_HeightCB2Select)
+                                 val=0, change_cb=self.taxt_HeightCB2Select)
+        self.noStoreysE21 = TaxtStr(change_cb=self.taxt_HeightCB2Select)
+        self.noStoreysE22 = TaxtStr(change_cb=self.taxt_HeightCB2Select)
 
         self.HeightCB3 = TaxtSel('HeightCB3', ['Height above grade unknown',
                                   'Range of height above grade',
                                   'Exact height above grade',
                                   'Approximate height above grade'],
-                                 val=0, change_cb=taxt_HeightCB3Select)
-        self.noStoreysE31 = TaxtStr(change_cb=taxt_HeightCB3Select)
-        self.noStoreysE32 = TaxtStr(change_cb=taxt_HeightCB3Select)
+                                 val=0, change_cb=self.taxt_HeightCB3Select)
+        self.noStoreysE31 = TaxtStr(change_cb=self.taxt_HeightCB3Select)
+        self.noStoreysE32 = TaxtStr(change_cb=self.taxt_HeightCB3Select)
 
         self.HeightCB4 = TaxtSel('HeightCB4', ['Unknown slope',
                                   'Slope of the ground'],
-                                  val=0, change_cb=taxt_HeightCB4Select)
-        self.noStoreysE41 = TaxtStr(change_cb=taxt_HeightCB4Select)
+                                  val=0, change_cb=self.taxt_HeightCB4Select)
+        self.noStoreysE41 = TaxtStr(change_cb=self.taxt_HeightCB4Select)
 
         self.DateCB1 = TaxtSel('DateCB1', ['Year unknown',
                                 'Exact date of construction or retrofit',
                                 'Bounds for the date of construction or retrofit',
                                 'Latest possible date of construction or retrofit',
                                 'Approximate date of construction or retrofit'],
-                               val=0, change_cb=taxt_DateCB1Select)
-        self.DateE1 = TaxtStr(change_cb=taxt_DateE1Change)
-        self.DateE2 = TaxtStr(change_cb=taxt_DateE2Change)
+                               val=0, change_cb=self.taxt_DateCB1Select)
+        self.DateE1 = TaxtStr(change_cb=self.taxt_DateE1Change)
+        self.DateE2 = TaxtStr(change_cb=self.taxt_DateE2Change)
 
         self.OccupancyCB1 = TaxtSel('OccupancyCB1', ['Unknown occupancy type',
                                      'Residential',
@@ -501,15 +306,15 @@ class Taxonomy(object):
                                      'Government',
                                      'Education',
                                      'Other occupancy type'],
-                                    val=0, change_cb=taxt_OccupancyCB1Select)
-        self.OccupancyCB2 = TaxtSel('OccupancyCB2', change_cb=taxt_OccupancyCB2Select)
+                                    val=0, change_cb=self.taxt_OccupancyCB1Select)
+        self.OccupancyCB2 = TaxtSel('OccupancyCB2', change_cb=self.taxt_OccupancyCB2Select)
 
         self.PositionCB = TaxtSel('PositionCB', ['Unknown building position',
                                    'Detached building',
                                    'Adjoining building(s) on one side',
                                    'Adjoining building(s) on two sides',
                                    'Adjoining building(s) on three sides'],
-                                  val=0, change_cb=taxt_PositionCBSelect)
+                                  val=0, change_cb=self.taxt_PositionCBSelect)
 
         self.PlanShapeCB = TaxtSel('PlanShapeCB', ['Unknown plan shape',
                                     'Square, solid',
@@ -531,16 +336,16 @@ class Taxonomy(object):
                                     'Polygonal, solid',
                                     'Polygonal, with an opening in plan',
                                     'Irregular plan shape'],
-                                   val=0, change_cb=taxt_PlanShapeCBSelect)
+                                   val=0, change_cb=self.taxt_PlanShapeCBSelect)
 
         self.RegularityCB1 = TaxtSel('RegularityCB1', ['Unknown structural irregularity',
                                       'Regular structure',
                                       'Irregular structure'],
-                                     val=0, change_cb=taxt_RegularityCB1Select)
-        self.RegularityCB2 = TaxtSel('RegularityCB2', change_cb=taxt_RegularityCB2Select)
-        self.RegularityCB4 = TaxtSel('RegularityCB4', change_cb=taxt_RegularityCB3Select)
-        self.RegularityCB3 = TaxtSel('RegularityCB3', change_cb=taxt_RegularityCB4Select)
-        self.RegularityCB5 = TaxtSel('RegularityCB5', change_cb=taxt_RegularityCB5Select)
+                                     val=0, change_cb=self.taxt_RegularityCB1Select)
+        self.RegularityCB2 = TaxtSel('RegularityCB2', change_cb=self.taxt_RegularityCB2Select)
+        self.RegularityCB4 = TaxtSel('RegularityCB4', change_cb=self.taxt_RegularityCB3Select)
+        self.RegularityCB3 = TaxtSel('RegularityCB3', change_cb=self.taxt_RegularityCB4Select)
+        self.RegularityCB5 = TaxtSel('RegularityCB5', change_cb=self.taxt_RegularityCB5Select)
 
         self.WallsCB = TaxtSel('WallsCB', ['Unknown material of exterior walls',
                                 'Concrete exterior walls',
@@ -554,7 +359,7 @@ class Taxonomy(object):
                                 'Plastic/vinyl exterior walls, various',
                                 'Cement-based boards for exterior walls',
                                 'Material of exterior walls, other'],
-                               val=0, change_cb=taxt_WallsCBSelect)
+                               val=0, change_cb=self.taxt_WallsCBSelect)
 
         self.RoofCB1 = TaxtSel('RoofCB1', ['Unknown roof shape',
                                 'Flat',
@@ -567,7 +372,7 @@ class Taxonomy(object):
                                 'Complex regular',
                                 'Complex irregular',
                                 'Roof shape, other'],
-                               val=0, change_cb=taxt_RoofCB1Select)
+                               val=0, change_cb=self.taxt_RoofCB1Select)
         self.RoofCB2 = TaxtSel('RoofCB2', ['Unknown roof covering',
                                 'Concrete roof, no covering',
                                 'Clay or concrete tile roof covering',
@@ -582,7 +387,7 @@ class Taxonomy(object):
                                 'Solar panelled roofs',
                                 'Tensile membrane or fabric roof',
                                 'Roof covering, other'],
-                               val=0, change_cb=taxt_RoofCB2Select)
+                               val=0, change_cb=self.taxt_RoofCB2Select)
 
         self.RoofCB3 = TaxtSel('RoofCB3', ['Roof material, unknown',
                                 'Masonry roof',
@@ -592,16 +397,16 @@ class Taxonomy(object):
                                 'Wooden roof',
                                 'Fabric roof',
                                 'Roof material,other'],
-                               val=0, change_cb=taxt_RoofCB3Select)
+                               val=0, change_cb=self.taxt_RoofCB3Select)
 
-        self.RoofCB4 = TaxtSel('RoofCB4', change_cb=taxt_RoofCB4Select)
+        self.RoofCB4 = TaxtSel('RoofCB4', change_cb=self.taxt_RoofCB4Select)
         self.RoofCB5 = TaxtSel('RoofCB5', ['Roof-wall diaphragm connection unknown',
                                 'Roof-wall diaphragm connection not provided',
                                 'Roof-wall diaphragm connection present',
                                 'Roof tie-down unknown',
                                 'Roof tie-down not provided',
                                 'Roof tie-down present'],
-                               val=0, change_cb=taxt_RoofCB5Select)
+                               val=0, change_cb=self.taxt_RoofCB5Select)
 
         self.FoundationsCB = TaxtSel('FoundationsCB', ['Unknown foundation system',
                                       'Shallow foundation, with lateral capacity',
@@ -609,7 +414,7 @@ class Taxonomy(object):
                                       'Deep foundation, with lateral capacity',
                                       'Deep foundation, with no lateral capacity',
                                       'Foundation, other'],
-                                     val=0, change_cb=taxt_FoundationsCBSelect)
+                                     val=0, change_cb=self.taxt_FoundationsCBSelect)
 
         self.FloorCB1 = TaxtSel('FloorCB1', ['Floor material, unknown',
                                  'No elevated or suspended floor material (single-storey)',
@@ -619,12 +424,12 @@ class Taxonomy(object):
                                  'Metal floor',
                                  'Wooden floor',
                                  'Floor material, other'],
-                                val=0, change_cb=taxt_FloorCB1Select)
-        self.FloorCB2 = TaxtSel('FloorCB2', change_cb=taxt_FloorCB2Select)
+                                val=0, change_cb=self.taxt_FloorCB1Select)
+        self.FloorCB2 = TaxtSel('FloorCB2', change_cb=self.taxt_FloorCB2Select)
         self.FloorCB3 = TaxtSel('FloorCB3', ['Floor-wall diaphragm connection, unknown',
                                  'Floor-wall diaphragm connection not provided',
                                  'Floor-wall diaphragm connection present'],
-                                val=0, change_cb=taxt_FloorCB3Select)
+                                val=0, change_cb=self.taxt_FloorCB3Select)
 
         self.resultE = TaxtStr()
 
@@ -682,6 +487,202 @@ class Taxonomy(object):
 
         return ret
 
+    def taxt_Direction1RB1Click(self, taxt_radioitem=None):
+        self.Direction2RB1.checked(True)
+        self.taxt_BuildTaxonomy()
+
+    def taxt_Direction1RB2Click(self, taxt_radioitem=None):
+        self.Direction2RB3.checked(True)
+        self.taxt_BuildTaxonomy()
+
+    def taxt_Direction2RB1Click(self, taxt_radioitem=None):
+        self.Direction1RB1.checked(True)
+        self.taxt_BuildTaxonomy()
+
+    def taxt_Direction2RB3Click(self, taxt_radioitem=None):
+        self.Direction1RB2.checked(True)
+        self.taxt_BuildTaxonomy()
+
+    def taxt_OutTypeCBSelect(self, obj=None):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_SetDirection2(self, obj=None):
+        if self.DirectionCB.checked():
+            self.MaterialCB12.val(self.MaterialCB11.val())
+            self.taxt_MaterialCB12Select()
+            self.MaterialCB22.val(self.MaterialCB21.val())
+            self.taxt_MaterialCB22Select()
+            self.MaterialCB32.val(self.MaterialCB31.val())
+            self.taxt_MaterialCB32Select()
+            self.MaterialCB42.val(self.MaterialCB41.val())
+            self.taxt_MaterialCB42Select()
+            self.SystemCB12.val(self.SystemCB11.val())
+            self.taxt_SystemCB12Select()
+            self.SystemCB22.val(self.SystemCB21.val())
+            self.taxt_SystemCB22Select()
+
+    def taxt_MaterialCB11Select(self, obj):
+        self.taxt_ValidateMaterial1()
+        self.taxt_SetDirection2()
+        if self.DirectionCB.checked():
+            self.taxt_ValidateMaterial2()
+
+        self.taxt_BuildTaxonomy()
+
+    def taxt_MaterialCB21Select(self, obj=None):
+        self.taxt_SetDirection2()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_MaterialCB31Select(self, obj=None):
+        self.taxt_SetDirection2()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_MaterialCB41Select(self, obj=None):
+        self.taxt_SetDirection2()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_SystemCB11Select(self, obj=None):
+        self.taxt_SetDirection2()
+        self.taxt_ValidateSystem1()
+        if self.DirectionCB.checked():
+            self.taxt_ValidateSystem2()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_SystemCB21Select(self, obj=None):
+        self.taxt_SetDirection2()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_BreakDirection2(self, obj=None):
+        # /* the check is performed just when called with parameter (triggered indirectly
+        #   from an event or if forced by another function */
+        if obj is None:
+            return
+
+        if self.DirectionCB.checked():
+            if (self.MaterialCB12.val() != self.MaterialCB11.val() or
+                self.MaterialCB22.val() != self.MaterialCB21.val() or
+                self.MaterialCB32.val() != self.MaterialCB31.val() or
+                self.MaterialCB42.val() != self.MaterialCB41.val() or
+                self.SystemCB12.val() != self.SystemCB11.val() or
+                self.SystemCB22.val() != self.SystemCB21.val()):
+                self.DirectionCB.checked(False)
+
+
+    def taxt_MaterialCB12Select(self, obj=None):
+        self.taxt_ValidateMaterial2()
+        self.taxt_BreakDirection2(obj)
+        self.taxt_ValidateSystem2()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_MaterialCB22Select(self, obj):
+        self.taxt_BreakDirection2(obj)
+        self.taxt_BuildTaxonomy()
+
+    def taxt_MaterialCB32Select(self, obj):
+        self.taxt_BreakDirection2(obj)
+        self.taxt_BuildTaxonomy()
+
+    def taxt_MaterialCB42Select(self, obj):
+        self.taxt_BreakDirection2(obj)
+        self.taxt_BuildTaxonomy()
+
+    def taxt_SystemCB12Select(self, obj):
+        self.taxt_ValidateSystem2()
+        self.taxt_BreakDirection2(obj)
+        self.taxt_BuildTaxonomy()
+
+    def taxt_SystemCB22Select(self, obj):
+        self.taxt_BreakDirection2(obj)
+        self.taxt_BuildTaxonomy()
+
+    def taxt_HeightCB1Select(self, obj):
+        self.taxt_ValidateHeight()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_HeightCB2Select(self, obj):
+        self.taxt_ValidateHeight()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_HeightCB3Select(self, obj):
+        self.taxt_ValidateHeight()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_HeightCB4Select(self, obj):
+        self.taxt_ValidateHeight()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_DateCB1Select(self, obj):
+        self.taxt_ValidateDate()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_DateE1Change(self, obj):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_DateE2Change(self, obj):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_OccupancyCB1Select(self, obj):
+        self.taxt_ValidateOccupancy()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_OccupancyCB2Select(self, obj):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_PositionCBSelect(self, obj):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_PlanShapeCBSelect(self, obj):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_RegularityCB1Select(self, obj):
+        self.taxt_ValidateRegularity()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_RegularityCB2Select(self, obj):
+        self.taxt_RegularityCB2Select(obj)
+
+    def taxt_RegularityCB3Select(self, obj):
+        self.taxt_RegularityCB3Select(obj)
+
+    def taxt_RegularityCB4Select(self, obj):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_RegularityCB5Select(self, obj):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_WallsCBSelect(self, obj):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_RoofCB1Select(self, obj):
+        self.taxt_ValidateRoof()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_RoofCB2Select(self, obj):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_RoofCB3Select(self, obj):
+        self.taxt_ValidateRoof()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_RoofCB4Select(self, obj):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_RoofCB5Select(self, obj):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_FoundationsCBSelect(self, obj):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_FloorCB1Select(self, obj):
+        self.taxt_ValidateFloor()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_FloorCB2Select(self, obj):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_FloorCB3Select(self, obj):
+        self.taxt_BuildTaxonomy()
+    
     def taxt_ValidateSystem1(self):
 
         self.SystemCB21.empty()
@@ -2870,9 +2871,6 @@ class Taxonomy(object):
 
 
         return (ResTax)
-
-
-
 
 if __name__ == '__main__':
     taxonomy = Taxonomy('taxonomy', True)
