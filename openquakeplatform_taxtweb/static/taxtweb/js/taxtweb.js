@@ -1421,12 +1421,6 @@ function taxt_Direction2RB3Click(obj) // Ok
     taxt_BuildTaxonomy();
 }
 
-function taxt_OmitCBClick(obj) // Ok
-{
-    taxt_BuildTaxonomy();
-}
-
-
 
 function BuildTaxonomyString(out_type)
 {
