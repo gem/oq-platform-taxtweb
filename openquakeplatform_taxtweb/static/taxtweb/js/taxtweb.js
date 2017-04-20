@@ -4163,7 +4163,7 @@ function populate(s, ret_s) {
 
         if (h_type == hsfx_99) {
             if (h_items.length != 1) {
-                ret_s.s = "Height: '" + h_label + "' type requires no values, " + is_or_are_given(h_vals.length);
+                ret_s.s = "Height: '" + h_label + "' type requires no values, " + is_or_are_given(h_items.length);
                 return (false);
             }
         }
@@ -4187,7 +4187,7 @@ function populate(s, ret_s) {
                 return (false);
             }
             h_vals = h_items[1].split(',');
-            if (typeof(h_items[1]) == 'undefined' || h_vals.length != 1) {
+            if (h_vals.length != 1) {
                 ret_s.s = "Height: '" + h_label + "' type requires exactly 1 value, " + is_or_are_given(h_vals.length);
                 return (false);
             }
