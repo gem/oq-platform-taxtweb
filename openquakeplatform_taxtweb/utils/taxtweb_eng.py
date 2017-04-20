@@ -1,6 +1,12 @@
 #!/usr/bin/env python
-from utils.taxtweb_maps import *
-from utils.taxtweb_head import *
+import math
+
+from utils.taxtweb_maps import (
+    material, date_type, occu_type, bupo_type, plsh_type, stir_type,
+    plan_irre, plan_seco, vert_irre, vert_seco, wall_type, roof_shap,
+    roof_cove, roof_mate, roof_conn, floo_syma, floo_syty, foun_type,)
+from utils.taxtweb_head import (mat_tech, mat_tead, mat_prop, llrs_type,
+                                llrs_duct, occu_spec, roof_sys, floo_conn)
 
 taxonomy = None
 
@@ -29,6 +35,9 @@ def is_in_rect_angle_float(s):
     if float(s) > 90.0:
         return False
     return True
+
+def is_or_are_given(n):
+    return n + (" is" if n <= 1 else " are") + " given."
 
 class TaxtSel(object):
     def __init__(self, name, items=[], val=-1, disabled=False, change_cb=None):
@@ -118,6 +127,9 @@ class TaxtBool(object):
                 self._change_cb(self)
             return self._val
 
+    def checked(self, val=None):
+        return self.val(val)
+
     def __str__(self):
         return "  %s (Bool)\n    %s\n" % (self._name, "True" if self._val else "False")
 
@@ -192,12 +204,16 @@ class TaxtStr(object):
 class Taxonomy(object):
     def __init__(self, name, full):
         self._name = name
+
+        self._gem_taxonomy_regularity_postinit = -1
+        self._gem_taxonomy_form = ""
+        self._gem_taxonomy_form_full = ""
+
         if full:
             self.OutTypeCB = TaxtSel('OutTypeCB', ['Full',
                                       'Omit Unknown',
                                       'Short'],
-                                     change_cb=self.taxt_OutTypeCBSelect)
-            self.OutTypeCB.val(2)
+                                     val=2, change_cb=self.taxt_OutTypeCBSelect)
 
         self.DirectionCB = TaxtBool("DirectionCB", val=True, change_cb=self.taxt_SetDirection2)
 
@@ -574,115 +590,127 @@ class Taxonomy(object):
         self.taxt_ValidateSystem2()
         self.taxt_BuildTaxonomy()
 
-    def taxt_MaterialCB22Select(self, obj):
+    def taxt_MaterialCB22Select(self, obj=None):
         self.taxt_BreakDirection2(obj)
         self.taxt_BuildTaxonomy()
 
-    def taxt_MaterialCB32Select(self, obj):
+    def taxt_MaterialCB32Select(self, obj=None):
         self.taxt_BreakDirection2(obj)
         self.taxt_BuildTaxonomy()
 
-    def taxt_MaterialCB42Select(self, obj):
+    def taxt_MaterialCB42Select(self, obj=None):
         self.taxt_BreakDirection2(obj)
         self.taxt_BuildTaxonomy()
 
-    def taxt_SystemCB12Select(self, obj):
+    def taxt_SystemCB12Select(self, obj=None):
         self.taxt_ValidateSystem2()
         self.taxt_BreakDirection2(obj)
         self.taxt_BuildTaxonomy()
 
-    def taxt_SystemCB22Select(self, obj):
+    def taxt_SystemCB22Select(self, obj=None):
         self.taxt_BreakDirection2(obj)
         self.taxt_BuildTaxonomy()
 
-    def taxt_HeightCB1Select(self, obj):
+    def taxt_HeightCB1Select(self, obj=None):
         self.taxt_ValidateHeight()
         self.taxt_BuildTaxonomy()
 
-    def taxt_HeightCB2Select(self, obj):
+    def taxt_HeightCB2Select(self, obj=None):
         self.taxt_ValidateHeight()
         self.taxt_BuildTaxonomy()
 
-    def taxt_HeightCB3Select(self, obj):
+    def taxt_HeightCB3Select(self, obj=None):
         self.taxt_ValidateHeight()
         self.taxt_BuildTaxonomy()
 
-    def taxt_HeightCB4Select(self, obj):
+    def taxt_HeightCB4Select(self, obj=None):
         self.taxt_ValidateHeight()
         self.taxt_BuildTaxonomy()
 
-    def taxt_DateCB1Select(self, obj):
+    def taxt_DateCB1Select(self, obj=None):
         self.taxt_ValidateDate()
         self.taxt_BuildTaxonomy()
 
-    def taxt_DateE1Change(self, obj):
+    def taxt_DateE1Change(self, obj=None):
         self.taxt_BuildTaxonomy()
 
-    def taxt_DateE2Change(self, obj):
+    def taxt_DateE2Change(self, obj=None):
         self.taxt_BuildTaxonomy()
 
-    def taxt_OccupancyCB1Select(self, obj):
+    def taxt_OccupancyCB1Select(self, obj=None):
         self.taxt_ValidateOccupancy()
         self.taxt_BuildTaxonomy()
 
-    def taxt_OccupancyCB2Select(self, obj):
+    def taxt_OccupancyCB2Select(self, obj=None):
         self.taxt_BuildTaxonomy()
 
-    def taxt_PositionCBSelect(self, obj):
+    def taxt_PositionCBSelect(self, obj=None):
         self.taxt_BuildTaxonomy()
 
-    def taxt_PlanShapeCBSelect(self, obj):
+    def taxt_PlanShapeCBSelect(self, obj=None):
         self.taxt_BuildTaxonomy()
 
-    def taxt_RegularityCB1Select(self, obj):
+    def taxt_RegularityCB1Select(self, obj=None):
         self.taxt_ValidateRegularity()
         self.taxt_BuildTaxonomy()
 
-    def taxt_RegularityCB2Select(self, obj):
-        self.taxt_RegularityCB2Select(obj)
+    def taxt_RegularityCB2Select(self, obj=None):
+        self.taxt_ValidateRegularity2()
+        if self._gem_taxonomy_regularity_postinit == 3:
+            self.RegularityCB3.val(0)
+            self.taxt_ValidateRegularity3()
 
-    def taxt_RegularityCB3Select(self, obj):
-        self.taxt_RegularityCB3Select(obj)
-
-    def taxt_RegularityCB4Select(self, obj):
+        self._gem_taxonomy_regularity_postinit = -1
         self.taxt_BuildTaxonomy()
 
-    def taxt_RegularityCB5Select(self, obj):
+    def taxt_RegularityCB3Select(self, obj=None):
+        self.taxt_ValidateRegularity3()
+        if self._gem_taxonomy_regularity_postinit == 2:
+            self.RegularityCB2.val(0)
+            self.taxt_ValidateRegularity2()
+
+        self._gem_taxonomy_regularity_postinit = -1
         self.taxt_BuildTaxonomy()
 
-    def taxt_WallsCBSelect(self, obj):
+    def taxt_RegularityCB4Select(self, obj=None):
         self.taxt_BuildTaxonomy()
 
-    def taxt_RoofCB1Select(self, obj):
+    def taxt_RegularityCB5Select(self, obj=None):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_WallsCBSelect(self, obj=None):
+        self.taxt_BuildTaxonomy()
+
+    def taxt_RoofCB1Select(self, obj=None):
         self.taxt_ValidateRoof()
         self.taxt_BuildTaxonomy()
 
-    def taxt_RoofCB2Select(self, obj):
+    def taxt_RoofCB2Select(self, obj=None):
         self.taxt_BuildTaxonomy()
 
-    def taxt_RoofCB3Select(self, obj):
+    def taxt_RoofCB3Select(self, obj=None):
         self.taxt_ValidateRoof()
         self.taxt_BuildTaxonomy()
 
-    def taxt_RoofCB4Select(self, obj):
+    def taxt_RoofCB4Select(self, obj=None):
         self.taxt_BuildTaxonomy()
 
-    def taxt_RoofCB5Select(self, obj):
+    def taxt_RoofCB5Select(self, obj=None):
         self.taxt_BuildTaxonomy()
 
-    def taxt_FoundationsCBSelect(self, obj):
+    def taxt_FoundationsCBSelect(self, obj=None):
         self.taxt_BuildTaxonomy()
 
-    def taxt_FloorCB1Select(self, obj):
+    def taxt_FloorCB1Select(self, obj=None):
         self.taxt_ValidateFloor()
         self.taxt_BuildTaxonomy()
 
-    def taxt_FloorCB2Select(self, obj):
+    def taxt_FloorCB2Select(self, obj=None):
         self.taxt_BuildTaxonomy()
 
-    def taxt_FloorCB3Select(self, obj):
+    def taxt_FloorCB3Select(self, obj=None):
         self.taxt_BuildTaxonomy()
-    
+
     def taxt_ValidateSystem1(self):
 
         self.SystemCB21.empty()
@@ -1329,8 +1357,8 @@ class Taxonomy(object):
             self.RegularityCB3.items(reg_cb3_items, val=0)
             self.RegularityCB3.val(default_cb3)
 
-        taxt_RegularityCB2Select(-1)
-        taxt_RegularityCB3Select(-1)
+        self.taxt_RegularityCB2Select(-1)
+        self.taxt_RegularityCB3Select(-1)
         if default_cb2 == 1:
             self._gem_taxonomy_regularity_postinit = 2
         elif default_cb3 == 1:
@@ -1355,6 +1383,29 @@ class Taxonomy(object):
         self.taxt_ValidateRegularityCross23("2")
 
 
+    def taxt_ValidateRegularity3(self):
+
+        self.RegularityCB5.empty()
+
+        if (self.RegularityCB1.val() < 2 or self.RegularityCB3.val() == 0
+            or self.RegularityCB3.val() == None):
+            self.RegularityCB5.disabled(True)
+
+        else:
+            self.RegularityCB5.items([
+                'No irregularity',
+                'Soft storey',
+                'Cripple wall',
+                'Short column',
+                'Pounding potential',
+                'Setback',
+                'Change in vertical structure',
+                'Other vertical irregularity',
+            ], val=0)
+            self.RegularityCB5.disabled(False)
+
+        self.taxt_ValidateRegularityCross23("3")
+
 
     def taxt_ValidateRegularityCross23(self, who):
         if who == "2":
@@ -1368,25 +1419,6 @@ class Taxonomy(object):
                 self.RegularityCB2.first_disabled(False)
             else:
                 self.RegularityCB2.first_disabled(True)
-
-    def taxt_RegularityCB2Select(self, obj):
-        self.taxt_ValidateRegularity2()
-        if self._gem_taxonomy_regularity_postinit == 3:
-            self.RegularityCB3.val(0)
-            self.taxt_ValidateRegularity3()
-
-        self._gem_taxonomy_regularity_postinit = -1
-        self.taxt_BuildTaxonomy()
-
-
-    def taxt_RegularityCB3Select(self, obj):
-        self.taxt_ValidateRegularity3()
-        if self._gem_taxonomy_regularity_postinit == 2:
-            self.RegularityCB2.val(0)
-            self.taxt_ValidateRegularity2()
-
-        self._gem_taxonomy_regularity_postinit = -1
-        self.taxt_BuildTaxonomy()
 
     def taxt_ValidateOccupancy(self):
 
@@ -1621,7 +1653,7 @@ class Taxonomy(object):
 
             # swap items if wrong order
             if h31 and h32:
-                if parseFloat(self.noStoreysE31.val()) > parseFloat(self.noStoreysE32.val()):
+                if float(self.noStoreysE31.val()) > float(self.noStoreysE32.val()):
                     swap = self.noStoreysE31.val()
                     self.noStoreysE31.val(self.noStoreysE32.val())
                     self.noStoreysE32.val(swap)
@@ -1695,7 +1727,7 @@ class Taxonomy(object):
 
 
     def BuildTaxonomyString(self, out_type):
-        self.Taxonomy = [0] * 50
+        taxonomy = [0] * 50
 
         ResTax = None
         direction1 = None
@@ -1704,1036 +1736,1036 @@ class Taxonomy(object):
         # /* Structural System: Direction X */
 
         if self.MaterialCB11.val() == 0 and (out_type == 0):
-            Taxonomy[0] = 'MAT99'
+            taxonomy[0] = 'MAT99'
         if self.MaterialCB11.val() == 1:
-            Taxonomy[0] = 'C99'
+            taxonomy[0] = 'C99'
         if self.MaterialCB11.val() == 2:
-            Taxonomy[0] = 'CU'
+            taxonomy[0] = 'CU'
         if self.MaterialCB11.val() == 3:
-            Taxonomy[0] = 'CR'
+            taxonomy[0] = 'CR'
         if self.MaterialCB11.val() == 4:
-            Taxonomy[0] = 'SRC'
+            taxonomy[0] = 'SRC'
 
         if (self.MaterialCB11.val() > 0) and (self.MaterialCB11.val() < 5):
             if (self.MaterialCB21.val() == 0) and (out_type == 0):
-                Taxonomy[1] = '+CT99'
+                taxonomy[1] = '+CT99'
             if self.MaterialCB21.val() == 1:
-                Taxonomy[1] = '+CIP'
+                taxonomy[1] = '+CIP'
             if self.MaterialCB21.val() == 2:
-                Taxonomy[1] = '+PC'
+                taxonomy[1] = '+PC'
             if self.MaterialCB21.val() == 3:
-                Taxonomy[1] = '+CIPPS'
+                taxonomy[1] = '+CIPPS'
             if self.MaterialCB21.val() == 4:
-                Taxonomy[1] = '+PCPS'
+                taxonomy[1] = '+PCPS'
 
         if self.MaterialCB11.val() == 5:
-            Taxonomy[0] = 'S'
+            taxonomy[0] = 'S'
             if self.MaterialCB21.val() == 0 and (out_type == 0):
-                Taxonomy[1] = '+S99'
+                taxonomy[1] = '+S99'
             if self.MaterialCB21.val() == 1:
-                Taxonomy[1] = '+SL'
+                taxonomy[1] = '+SL'
             if self.MaterialCB21.val() == 2:
-                Taxonomy[1] = '+SR'
+                taxonomy[1] = '+SR'
             if self.MaterialCB21.val() == 3:
-                Taxonomy[1] = '+SO'
+                taxonomy[1] = '+SO'
 
 
         if self.MaterialCB11.val() == 6:
-            Taxonomy[0] = 'ME'
+            taxonomy[0] = 'ME'
             if self.MaterialCB21.val() == 0 and (out_type == 0):
-                Taxonomy[1] = '+ME99'
+                taxonomy[1] = '+ME99'
             if self.MaterialCB21.val() == 1:
-                Taxonomy[1] = '+MEIR'
+                taxonomy[1] = '+MEIR'
             if self.MaterialCB21.val() == 2:
-                Taxonomy[1] = '+MEO'
+                taxonomy[1] = '+MEO'
 
 
         if self.MaterialCB11.val() == 5:
             if self.MaterialCB31.val() == 0 and (out_type == 0):
-                Taxonomy[2] = '+SC99'
+                taxonomy[2] = '+SC99'
             if self.MaterialCB31.val() == 1:
-                Taxonomy[2] = '+WEL'
+                taxonomy[2] = '+WEL'
             if self.MaterialCB31.val() == 2:
-                Taxonomy[2] = '+RIV'
+                taxonomy[2] = '+RIV'
             if self.MaterialCB31.val() == 3:
-                Taxonomy[2] = '+BOL'
+                taxonomy[2] = '+BOL'
 
 
         if self.MaterialCB11.val() > 6 and self.MaterialCB11.val() < 11:
             if self.MaterialCB11.val() == 7:
-                Taxonomy[0] = 'M99'
+                taxonomy[0] = 'M99'
             if self.MaterialCB11.val() == 8:
-                Taxonomy[0] = 'MUR'
+                taxonomy[0] = 'MUR'
             if self.MaterialCB11.val() == 9:
-                Taxonomy[0] = 'MCF'
+                taxonomy[0] = 'MCF'
 
             if self.MaterialCB21.val() == 0 and (out_type == 0):
-                Taxonomy[1] = '+MUN99'
+                taxonomy[1] = '+MUN99'
             if self.MaterialCB21.val() == 1:
-                Taxonomy[1] = '+ADO'
+                taxonomy[1] = '+ADO'
             if self.MaterialCB21.val() == 2:
-                Taxonomy[1] = '+ST99'
+                taxonomy[1] = '+ST99'
             if self.MaterialCB21.val() == 3:
-                Taxonomy[1] = '+STRUB'
+                taxonomy[1] = '+STRUB'
             if self.MaterialCB21.val() == 4:
-                Taxonomy[1] = '+STDRE'
+                taxonomy[1] = '+STDRE'
             if self.MaterialCB21.val() == 5:
-                Taxonomy[1] = '+CL99'
+                taxonomy[1] = '+CL99'
             if self.MaterialCB21.val() == 6:
-                Taxonomy[1] = '+CLBRS'
+                taxonomy[1] = '+CLBRS'
             if self.MaterialCB21.val() == 7:
-                Taxonomy[1] = '+CLBRH'
+                taxonomy[1] = '+CLBRH'
             if self.MaterialCB21.val() == 8:
-                Taxonomy[1] = '+CLBLH'
+                taxonomy[1] = '+CLBLH'
             if self.MaterialCB21.val() == 9:
-                Taxonomy[1] = '+CB99'
+                taxonomy[1] = '+CB99'
             if self.MaterialCB21.val() == 10:
-                Taxonomy[1] = '+CBS'
+                taxonomy[1] = '+CBS'
             if self.MaterialCB21.val() == 11:
-                Taxonomy[1] = '+CBH'
+                taxonomy[1] = '+CBH'
             if self.MaterialCB21.val() == 12:
-                Taxonomy[1] = '+MO'
+                taxonomy[1] = '+MO'
 
             if self.MaterialCB11.val() == 10:
-                Taxonomy[0] = 'MR'
+                taxonomy[0] = 'MR'
                 if (self.MaterialCB41.val() == 0) and (out_type == 0):
-                    Taxonomy[34] = '+MR99'
+                    taxonomy[34] = '+MR99'
                 if self.MaterialCB41.val() == 1:
-                    Taxonomy[34] = '+RS'
+                    taxonomy[34] = '+RS'
                 if self.MaterialCB41.val() == 2:
-                    Taxonomy[34] = '+RW'
+                    taxonomy[34] = '+RW'
                 if self.MaterialCB41.val() == 3:
-                    Taxonomy[34] = '+RB'
+                    taxonomy[34] = '+RB'
                 if self.MaterialCB41.val() == 4:
-                    Taxonomy[34] = '+RCM'
+                    taxonomy[34] = '+RCM'
                 if self.MaterialCB41.val() == 5:
-                    Taxonomy[34] = '+RCB'
+                    taxonomy[34] = '+RCB'
 
 
             if (self.MaterialCB31.val() == 0) and (out_type == 0):
-                Taxonomy[2] = '+MO99'
+                taxonomy[2] = '+MO99'
             if self.MaterialCB31.val() == 1:
-                Taxonomy[2] = '+MON'
+                taxonomy[2] = '+MON'
             if self.MaterialCB31.val() == 2:
-                Taxonomy[2] = '+MOM'
+                taxonomy[2] = '+MOM'
             if self.MaterialCB31.val() == 3:
-                Taxonomy[2] = '+MOL'
+                taxonomy[2] = '+MOL'
             if self.MaterialCB31.val() == 4:
-                Taxonomy[2] = '+MOC'
+                taxonomy[2] = '+MOC'
             if self.MaterialCB31.val() == 5:
-                Taxonomy[2] = '+MOCL'
+                taxonomy[2] = '+MOCL'
             if self.MaterialCB31.val() == 6:
-                Taxonomy[2] = '+SP99'
+                taxonomy[2] = '+SP99'
             if self.MaterialCB31.val() == 7:
-                Taxonomy[2] = '+SPLI'
+                taxonomy[2] = '+SPLI'
             if self.MaterialCB31.val() == 8:
-                Taxonomy[2] = '+SPSA'
+                taxonomy[2] = '+SPSA'
             if self.MaterialCB31.val() == 9:
-                Taxonomy[2] = '+SPTU'
+                taxonomy[2] = '+SPTU'
             if self.MaterialCB31.val() == 10:
-                Taxonomy[2] = '+SPSL'
+                taxonomy[2] = '+SPSL'
             if self.MaterialCB31.val() == 11:
-                Taxonomy[2] = '+SPGR'
+                taxonomy[2] = '+SPGR'
             if self.MaterialCB31.val() == 12:
-                Taxonomy[2] = '+SPBA'
+                taxonomy[2] = '+SPBA'
             if self.MaterialCB31.val() == 13:
-                Taxonomy[2] = '+SPO'
+                taxonomy[2] = '+SPO'
 
 
         if (self.MaterialCB11.val()>10) and (self.MaterialCB11.val()<14):
             if self.MaterialCB11.val() == 11:
-                Taxonomy[0] = 'E99'
+                taxonomy[0] = 'E99'
             if self.MaterialCB11.val() == 12:
-                Taxonomy[0] = 'EU'
+                taxonomy[0] = 'EU'
             if self.MaterialCB11.val() == 13:
-                Taxonomy[0] = 'ER'
+                taxonomy[0] = 'ER'
 
             if (self.MaterialCB21.val() == 0) and (out_type == 0):
-                Taxonomy[1] = '+ET99'
+                taxonomy[1] = '+ET99'
             if self.MaterialCB21.val() == 1:
-                Taxonomy[1] = '+ETR'
+                taxonomy[1] = '+ETR'
             if self.MaterialCB21.val() == 2:
-                Taxonomy[1] = '+ETC'
+                taxonomy[1] = '+ETC'
             if self.MaterialCB21.val() == 3:
-                Taxonomy[1] = '+ETO'
+                taxonomy[1] = '+ETO'
 
 
         if self.MaterialCB11.val() == 14:
-            Taxonomy[0] = 'W'
+            taxonomy[0] = 'W'
             if (self.MaterialCB21.val() == 0) and (out_type == 0):
-                Taxonomy[1] = '+W99'
+                taxonomy[1] = '+W99'
             if self.MaterialCB21.val() == 1:
-                Taxonomy[1] = '+WHE'
+                taxonomy[1] = '+WHE'
             if self.MaterialCB21.val() == 2:
-                Taxonomy[1] = '+WLI'
+                taxonomy[1] = '+WLI'
             if self.MaterialCB21.val() == 3:
-                Taxonomy[1] = '+WS'
+                taxonomy[1] = '+WS'
             if self.MaterialCB21.val() == 4:
-                Taxonomy[1] = '+WWD'
+                taxonomy[1] = '+WWD'
             if self.MaterialCB21.val() == 5:
-                Taxonomy[1] = '+WBB'
+                taxonomy[1] = '+WBB'
             if self.MaterialCB21.val() == 6:
-                Taxonomy[1] = '+WO'
+                taxonomy[1] = '+WO'
 
 
         if self.MaterialCB11.val() == 15:
-            Taxonomy[0] = 'MATO'
+            taxonomy[0] = 'MATO'
 
         if (self.SystemCB11.val() == 0) and (out_type == 0):
-            Taxonomy[3] = 'L99'
+            taxonomy[3] = 'L99'
 
         if (self.MaterialCB11.val() > 10) and (self.MaterialCB11.val() < 14):
             if self.SystemCB11.val() == 1:
-                Taxonomy[3] = 'LN'
+                taxonomy[3] = 'LN'
             if self.SystemCB11.val() == 2:
-                Taxonomy[3] = 'LWAL'
+                taxonomy[3] = 'LWAL'
             if self.SystemCB11.val() == 3:
-                Taxonomy[3] = 'LH'
+                taxonomy[3] = 'LH'
             if self.SystemCB11.val() == 4:
-                Taxonomy[3] = 'LO'
+                taxonomy[3] = 'LO'
 
         elif ((self.MaterialCB11.val()>6) and (self.MaterialCB11.val()<11)) or (self.MaterialCB11.val() == 14):
             if self.SystemCB11.val() == 1:
-                Taxonomy[3] = 'LN'
+                taxonomy[3] = 'LN'
             if self.SystemCB11.val() == 2:
-                Taxonomy[3] = 'LFM'
+                taxonomy[3] = 'LFM'
             if self.SystemCB11.val() == 3:
-                Taxonomy[3] = 'LPB'
+                taxonomy[3] = 'LPB'
             if self.SystemCB11.val() == 4:
-                Taxonomy[3] = 'LWAL'
+                taxonomy[3] = 'LWAL'
             if self.SystemCB11.val() == 5:
-                Taxonomy[3] = 'LH'
+                taxonomy[3] = 'LH'
             if self.SystemCB11.val() == 6:
-                Taxonomy[3] = 'LO'
+                taxonomy[3] = 'LO'
 
         else:
             if self.SystemCB11.val() == 1:
-                Taxonomy[3] = 'LN'
+                taxonomy[3] = 'LN'
             if self.SystemCB11.val() == 2:
-                Taxonomy[3] = 'LFM'
+                taxonomy[3] = 'LFM'
             if self.SystemCB11.val() == 3:
-                Taxonomy[3] = 'LFINF'
+                taxonomy[3] = 'LFINF'
             if self.SystemCB11.val() == 4:
-                Taxonomy[3] = 'LFBR'
+                taxonomy[3] = 'LFBR'
             if self.SystemCB11.val() == 5:
-                Taxonomy[3] = 'LPB'
+                taxonomy[3] = 'LPB'
             if self.SystemCB11.val() == 6:
-                Taxonomy[3] = 'LWAL'
+                taxonomy[3] = 'LWAL'
             if self.SystemCB11.val() == 7:
-                Taxonomy[3] = 'LDUAL'
+                taxonomy[3] = 'LDUAL'
             if self.SystemCB11.val() == 8:
-                Taxonomy[3] = 'LFLS'
+                taxonomy[3] = 'LFLS'
             if self.SystemCB11.val() == 9:
-                Taxonomy[3] = 'LFLSINF'
+                taxonomy[3] = 'LFLSINF'
             if self.SystemCB11.val() == 10:
-                Taxonomy[3] = 'LH'
+                taxonomy[3] = 'LH'
             if self.SystemCB11.val() == 11:
-                Taxonomy[3] = 'LO'
+                taxonomy[3] = 'LO'
 
 
         if self.SystemCB11.val() > 0:
             if (self.SystemCB21.val() == 0) and (out_type == 0):
-                Taxonomy[4] = '+DU99'
+                taxonomy[4] = '+DU99'
             if self.SystemCB21.val() == 1:
-                Taxonomy[4] = '+DUC'
+                taxonomy[4] = '+DUC'
             if self.SystemCB21.val() == 2:
-                Taxonomy[4] = '+DNO'
+                taxonomy[4] = '+DNO'
             if self.SystemCB21.val() == 3:
-                Taxonomy[4] = '+DBD'
+                taxonomy[4] = '+DBD'
 
 
         # /* Structural System: Direction Y */
 
         if self.MaterialCB12.val() == 0 and (out_type == 0):
-            Taxonomy[5] = 'MAT99'
+            taxonomy[5] = 'MAT99'
         if self.MaterialCB12.val() == 1:
-            Taxonomy[5] = 'C99'
+            taxonomy[5] = 'C99'
         if self.MaterialCB12.val() == 2:
-            Taxonomy[5] = 'CU'
+            taxonomy[5] = 'CU'
         if self.MaterialCB12.val() == 3:
-            Taxonomy[5] = 'CR'
+            taxonomy[5] = 'CR'
         if self.MaterialCB12.val() == 4:
-            Taxonomy[5] = 'SRC'
+            taxonomy[5] = 'SRC'
 
         if (self.MaterialCB12.val() > 0) and (self.MaterialCB12.val() < 5):
             if (self.MaterialCB22.val() == 0) and (out_type == 0):
-                Taxonomy[6] = '+CT99'
+                taxonomy[6] = '+CT99'
             if self.MaterialCB22.val() == 1:
-                Taxonomy[6] = '+CIP'
+                taxonomy[6] = '+CIP'
             if self.MaterialCB22.val() == 2:
-                Taxonomy[6] = '+PC'
+                taxonomy[6] = '+PC'
             if self.MaterialCB22.val() == 3:
-                Taxonomy[6] = '+CIPPS'
+                taxonomy[6] = '+CIPPS'
             if self.MaterialCB22.val() == 4:
-                Taxonomy[6] = '+PCPS'
+                taxonomy[6] = '+PCPS'
 
         if self.MaterialCB12.val() == 5:
-            Taxonomy[5] = 'S'
+            taxonomy[5] = 'S'
             if self.MaterialCB22.val() == 0 and (out_type == 0):
-                Taxonomy[6] = '+S99'
+                taxonomy[6] = '+S99'
             if self.MaterialCB22.val() == 1:
-                Taxonomy[6] = '+SL'
+                taxonomy[6] = '+SL'
             if self.MaterialCB22.val() == 2:
-                Taxonomy[6] = '+SR'
+                taxonomy[6] = '+SR'
             if self.MaterialCB22.val() == 3:
-                Taxonomy[6] = '+SO'
+                taxonomy[6] = '+SO'
 
 
         if self.MaterialCB12.val() == 6:
-            Taxonomy[5] = 'ME'
+            taxonomy[5] = 'ME'
             if self.MaterialCB22.val() == 0 and (out_type == 0):
-                Taxonomy[6] = '+ME99'
+                taxonomy[6] = '+ME99'
             if self.MaterialCB22.val() == 1:
-                Taxonomy[6] = '+MEIR'
+                taxonomy[6] = '+MEIR'
             if self.MaterialCB22.val() == 2:
-                Taxonomy[6] = '+MEO'
+                taxonomy[6] = '+MEO'
 
 
         if self.MaterialCB12.val() == 5:
             if self.MaterialCB32.val() == 0 and (out_type == 0):
-                Taxonomy[7] = '+SC99'
+                taxonomy[7] = '+SC99'
             if self.MaterialCB32.val() == 1:
-                Taxonomy[7] = '+WEL'
+                taxonomy[7] = '+WEL'
             if self.MaterialCB32.val() == 2:
-                Taxonomy[7] = '+RIV'
+                taxonomy[7] = '+RIV'
             if self.MaterialCB32.val() == 3:
-                Taxonomy[7] = '+BOL'
+                taxonomy[7] = '+BOL'
 
 
         if self.MaterialCB12.val() > 6 and self.MaterialCB12.val() < 11:
             if self.MaterialCB12.val() == 7:
-                Taxonomy[5] = 'M99'
+                taxonomy[5] = 'M99'
             if self.MaterialCB12.val() == 8:
-                Taxonomy[5] = 'MUR'
+                taxonomy[5] = 'MUR'
             if self.MaterialCB12.val() == 9:
-                Taxonomy[5] = 'MCF'
+                taxonomy[5] = 'MCF'
 
             if self.MaterialCB22.val() == 0 and (out_type == 0):
-                Taxonomy[6] = '+MUN99'
+                taxonomy[6] = '+MUN99'
             if self.MaterialCB22.val() == 1:
-                Taxonomy[6] = '+ADO'
+                taxonomy[6] = '+ADO'
             if self.MaterialCB22.val() == 2:
-                Taxonomy[6] = '+ST99'
+                taxonomy[6] = '+ST99'
             if self.MaterialCB22.val() == 3:
-                Taxonomy[6] = '+STRUB'
+                taxonomy[6] = '+STRUB'
             if self.MaterialCB22.val() == 4:
-                Taxonomy[6] = '+STDRE'
+                taxonomy[6] = '+STDRE'
             if self.MaterialCB22.val() == 5:
-                Taxonomy[6] = '+CL99'
+                taxonomy[6] = '+CL99'
             if self.MaterialCB22.val() == 6:
-                Taxonomy[6] = '+CLBRS'
+                taxonomy[6] = '+CLBRS'
             if self.MaterialCB22.val() == 7:
-                Taxonomy[6] = '+CLBRH'
+                taxonomy[6] = '+CLBRH'
             if self.MaterialCB22.val() == 8:
-                Taxonomy[6] = '+CLBLH'
+                taxonomy[6] = '+CLBLH'
             if self.MaterialCB22.val() == 9:
-                Taxonomy[6] = '+CB99'
+                taxonomy[6] = '+CB99'
             if self.MaterialCB22.val() == 10:
-                Taxonomy[6] = '+CBS'
+                taxonomy[6] = '+CBS'
             if self.MaterialCB22.val() == 11:
-                Taxonomy[6] = '+CBH'
+                taxonomy[6] = '+CBH'
             if self.MaterialCB22.val() == 12:
-                Taxonomy[6] = '+MO'
+                taxonomy[6] = '+MO'
 
             if self.MaterialCB12.val() == 10:
-                Taxonomy[5] = 'MR'
+                taxonomy[5] = 'MR'
                 if (self.MaterialCB42.val() == 0) and (out_type == 0):
-                    Taxonomy[35] = '+MR99'
+                    taxonomy[35] = '+MR99'
                 if self.MaterialCB42.val() == 1:
-                    Taxonomy[35] = '+RS'
+                    taxonomy[35] = '+RS'
                 if self.MaterialCB42.val() == 2:
-                    Taxonomy[35] = '+RW'
+                    taxonomy[35] = '+RW'
                 if self.MaterialCB42.val() == 3:
-                    Taxonomy[35] = '+RB'
+                    taxonomy[35] = '+RB'
                 if self.MaterialCB42.val() == 4:
-                    Taxonomy[35] = '+RCM'
+                    taxonomy[35] = '+RCM'
                 if self.MaterialCB42.val() == 5:
-                    Taxonomy[35] = '+RCB'
+                    taxonomy[35] = '+RCB'
 
 
             if (self.MaterialCB32.val() == 0) and (out_type == 0):
-                Taxonomy[7] = '+MO99'
+                taxonomy[7] = '+MO99'
             if self.MaterialCB32.val() == 1:
-                Taxonomy[7] = '+MON'
+                taxonomy[7] = '+MON'
             if self.MaterialCB32.val() == 2:
-                Taxonomy[7] = '+MOM'
+                taxonomy[7] = '+MOM'
             if self.MaterialCB32.val() == 3:
-                Taxonomy[7] = '+MOL'
+                taxonomy[7] = '+MOL'
             if self.MaterialCB32.val() == 4:
-                Taxonomy[7] = '+MOC'
+                taxonomy[7] = '+MOC'
             if self.MaterialCB32.val() == 5:
-                Taxonomy[7] = '+MOCL'
+                taxonomy[7] = '+MOCL'
             if self.MaterialCB32.val() == 6:
-                Taxonomy[7] = '+SP99'
+                taxonomy[7] = '+SP99'
             if self.MaterialCB32.val() == 7:
-                Taxonomy[7] = '+SPLI'
+                taxonomy[7] = '+SPLI'
             if self.MaterialCB32.val() == 8:
-                Taxonomy[7] = '+SPSA'
+                taxonomy[7] = '+SPSA'
             if self.MaterialCB32.val() == 9:
-                Taxonomy[7] = '+SPTU'
+                taxonomy[7] = '+SPTU'
             if self.MaterialCB32.val() == 10:
-                Taxonomy[7] = '+SPSL'
+                taxonomy[7] = '+SPSL'
             if self.MaterialCB32.val() == 11:
-                Taxonomy[7] = '+SPGR'
+                taxonomy[7] = '+SPGR'
             if self.MaterialCB32.val() == 12:
-                Taxonomy[7] = '+SPBA'
+                taxonomy[7] = '+SPBA'
             if self.MaterialCB32.val() == 13:
-                Taxonomy[7] = '+SPO'
+                taxonomy[7] = '+SPO'
 
 
         if (self.MaterialCB12.val() > 10) and (self.MaterialCB12.val() < 14):
             if self.MaterialCB12.val() == 11:
-                Taxonomy[5] = 'E99'
+                taxonomy[5] = 'E99'
             if self.MaterialCB12.val() == 12:
-                Taxonomy[5] = 'EU'
+                taxonomy[5] = 'EU'
             if self.MaterialCB12.val() == 13:
-                Taxonomy[5] = 'ER'
+                taxonomy[5] = 'ER'
 
             if (self.MaterialCB22.val() == 0) and (out_type == 0):
-                Taxonomy[6] = '+ET99'
+                taxonomy[6] = '+ET99'
             if self.MaterialCB22.val() == 1:
-                Taxonomy[6] = '+ETR'
+                taxonomy[6] = '+ETR'
             if self.MaterialCB22.val() == 2:
-                Taxonomy[6] = '+ETC'
+                taxonomy[6] = '+ETC'
             if self.MaterialCB22.val() == 3:
-                Taxonomy[6] = '+ETO'
+                taxonomy[6] = '+ETO'
 
 
         if self.MaterialCB12.val() == 14:
-            Taxonomy[5] = 'W'
+            taxonomy[5] = 'W'
             if (self.MaterialCB22.val() == 0) and (out_type == 0):
-                Taxonomy[6] = '+W99'
+                taxonomy[6] = '+W99'
             if self.MaterialCB22.val() == 1:
-                Taxonomy[6] = '+WHE'
+                taxonomy[6] = '+WHE'
             if self.MaterialCB22.val() == 2:
-                Taxonomy[6] = '+WLI'
+                taxonomy[6] = '+WLI'
             if self.MaterialCB22.val() == 3:
-                Taxonomy[6] = '+WS'
+                taxonomy[6] = '+WS'
             if self.MaterialCB22.val() == 4:
-                Taxonomy[6] = '+WWD'
+                taxonomy[6] = '+WWD'
             if self.MaterialCB22.val() == 5:
-                Taxonomy[6] = '+WBB'
+                taxonomy[6] = '+WBB'
             if self.MaterialCB22.val() == 6:
-                Taxonomy[6] = '+WO'
+                taxonomy[6] = '+WO'
 
 
         if self.MaterialCB12.val() == 15:
-            Taxonomy[5] = 'MATO'
+            taxonomy[5] = 'MATO'
 
         if (self.SystemCB12.val() == 0) and (out_type == 0):
-            Taxonomy[8] = 'L99'
+            taxonomy[8] = 'L99'
 
         if (self.MaterialCB12.val() > 10) and (self.MaterialCB12.val() < 14):
             if self.SystemCB12.val() == 1:
-                Taxonomy[8] = 'LN'
+                taxonomy[8] = 'LN'
             if self.SystemCB12.val() == 2:
-                Taxonomy[8] = 'LWAL'
+                taxonomy[8] = 'LWAL'
             if self.SystemCB12.val() == 3:
-                Taxonomy[8] = 'LH'
+                taxonomy[8] = 'LH'
             if self.SystemCB12.val() == 4:
-                Taxonomy[8] = 'LO'
+                taxonomy[8] = 'LO'
 
         elif ((self.MaterialCB12.val() > 6) and (self.MaterialCB12.val() < 11)) or (self.MaterialCB12.val() == 14):
             if self.SystemCB12.val() == 1:
-                Taxonomy[8] = 'LN'
+                taxonomy[8] = 'LN'
             if self.SystemCB12.val() == 2:
-                Taxonomy[8] = 'LFM'
+                taxonomy[8] = 'LFM'
             if self.SystemCB12.val() == 3:
-                Taxonomy[8] = 'LPB'
+                taxonomy[8] = 'LPB'
             if self.SystemCB12.val() == 4:
-                Taxonomy[8] = 'LWAL'
+                taxonomy[8] = 'LWAL'
             if self.SystemCB12.val() == 5:
-                Taxonomy[8] = 'LH'
+                taxonomy[8] = 'LH'
             if self.SystemCB12.val() == 6:
-                Taxonomy[8] = 'LO'
+                taxonomy[8] = 'LO'
 
         else:
             if self.SystemCB12.val() == 1:
-                Taxonomy[8] = 'LN'
+                taxonomy[8] = 'LN'
             if self.SystemCB12.val() == 2:
-                Taxonomy[8] = 'LFM'
+                taxonomy[8] = 'LFM'
             if self.SystemCB12.val() == 3:
-                Taxonomy[8] = 'LFINF'
+                taxonomy[8] = 'LFINF'
             if self.SystemCB12.val() == 4:
-                Taxonomy[8] = 'LFBR'
+                taxonomy[8] = 'LFBR'
             if self.SystemCB12.val() == 5:
-                Taxonomy[8] = 'LPB'
+                taxonomy[8] = 'LPB'
             if self.SystemCB12.val() == 6:
-                Taxonomy[8] = 'LWAL'
+                taxonomy[8] = 'LWAL'
             if self.SystemCB12.val() == 7:
-                Taxonomy[8] = 'LDUAL'
+                taxonomy[8] = 'LDUAL'
             if self.SystemCB12.val() == 8:
-                Taxonomy[8] = 'LFLS'
+                taxonomy[8] = 'LFLS'
             if self.SystemCB12.val() == 9:
-                Taxonomy[8] = 'LFLSINF'
+                taxonomy[8] = 'LFLSINF'
             if self.SystemCB12.val() == 10:
-                Taxonomy[8] = 'LH'
+                taxonomy[8] = 'LH'
             if self.SystemCB12.val() == 11:
-                Taxonomy[8] = 'LO'
+                taxonomy[8] = 'LO'
 
 
         if self.SystemCB12.val() > 0:
             if (self.SystemCB22.val() == 0) and (out_type == 0):
-                Taxonomy[9] = '+DU99'
+                taxonomy[9] = '+DU99'
             if self.SystemCB22.val() == 1:
-                Taxonomy[9] = '+DUC'
+                taxonomy[9] = '+DUC'
             if self.SystemCB22.val() == 2:
-                Taxonomy[9] = '+DNO'
+                taxonomy[9] = '+DNO'
             if self.SystemCB22.val() == 3:
-                Taxonomy[9] = '+DBD'
+                taxonomy[9] = '+DBD'
 
 
         if self.DateCB1.val() == 0  and (out_type == 0):
-            Taxonomy[10] = 'Y99'
+            taxonomy[10] = 'Y99'
         if self.DateCB1.val() == 1:
-            Taxonomy[10] = 'YEX:' + self.DateE1.val()
+            taxonomy[10] = 'YEX:' + self.DateE1.val()
         elif self.DateCB1.val() == 2:
-            Taxonomy[10] = 'YBET:' + self.DateE1.val() + "," + self.DateE2.val()
+            taxonomy[10] = 'YBET:' + self.DateE1.val() + "," + self.DateE2.val()
         elif self.DateCB1.val() == 3:
-            Taxonomy[10] = 'YPRE:' + self.DateE1.val()
+            taxonomy[10] = 'YPRE:' + self.DateE1.val()
         elif self.DateCB1.val() == 4:
-            Taxonomy[10] = 'YAPP:' + self.DateE1.val()
+            taxonomy[10] = 'YAPP:' + self.DateE1.val()
 
         if self.HeightCB1.val() == 0:
             if (out_type == 0):
-                Taxonomy[11] ='H99'
+                taxonomy[11] ='H99'
 
         else:
             if self.HeightCB1.val() == 1:
-                Taxonomy[11] = 'HBET:' + self.noStoreysE11.val() + ',' + self.noStoreysE12.val()
+                taxonomy[11] = 'HBET:' + self.noStoreysE11.val() + ',' + self.noStoreysE12.val()
             if self.HeightCB1.val() == 2:
-                Taxonomy[11] = 'HEX:' + self.noStoreysE11.val()
+                taxonomy[11] = 'HEX:' + self.noStoreysE11.val()
             if self.HeightCB1.val() == 3:
-                Taxonomy[11] = 'HAPP:' + self.noStoreysE11.val()
+                taxonomy[11] = 'HAPP:' + self.noStoreysE11.val()
 
             if self.HeightCB2.val() == 0 and (out_type == 0):
-                Taxonomy[12] = '+HB99'
+                taxonomy[12] = '+HB99'
             if self.HeightCB2.val() == 1:
-                Taxonomy[12] = '+HBBET:' + self.noStoreysE21.val() + ',' + self.noStoreysE22.val()
+                taxonomy[12] = '+HBBET:' + self.noStoreysE21.val() + ',' + self.noStoreysE22.val()
             if self.HeightCB2.val() == 2:
-                Taxonomy[12] = '+HBEX:' + self.noStoreysE21.val()
+                taxonomy[12] = '+HBEX:' + self.noStoreysE21.val()
             if self.HeightCB2.val() == 3:
-                Taxonomy[12] = '+HBAPP:' + self.noStoreysE21.val()
+                taxonomy[12] = '+HBAPP:' + self.noStoreysE21.val()
 
             if self.HeightCB3.val() == 0 and (out_type == 0):
-                Taxonomy[13] = '+HF99'
+                taxonomy[13] = '+HF99'
             if self.HeightCB3.val() == 1:
-                Taxonomy[13] = '+HFBET:' + self.noStoreysE31.val() + ',' + self.noStoreysE32.val()
+                taxonomy[13] = '+HFBET:' + self.noStoreysE31.val() + ',' + self.noStoreysE32.val()
             if self.HeightCB3.val() == 2:
-                Taxonomy[13] = '+HFEX:' + self.noStoreysE31.val()
+                taxonomy[13] = '+HFEX:' + self.noStoreysE31.val()
             if self.HeightCB3.val() == 3:
-                Taxonomy[13] = '+HFAPP:' + self.noStoreysE31.val()
+                taxonomy[13] = '+HFAPP:' + self.noStoreysE31.val()
 
             if self.HeightCB4.val() == 0 and (out_type == 0):
-                Taxonomy[14] = '+HD99'
+                taxonomy[14] = '+HD99'
             if self.HeightCB4.val() == 1:
-                Taxonomy[14] = '+HD:' + self.noStoreysE41.val()
+                taxonomy[14] = '+HD:' + self.noStoreysE41.val()
 
 
         if self.OccupancyCB1.val() == 0:
             if (out_type == 0):
-                Taxonomy[15] = 'OC99'
+                taxonomy[15] = 'OC99'
 
         elif self.OccupancyCB1.val() == 1:
-            Taxonomy[15] = 'RES'
+            taxonomy[15] = 'RES'
             if self.OccupancyCB2.val() == 0 and (out_type == 0):
-                Taxonomy[16] = '+RES99'
+                taxonomy[16] = '+RES99'
             if self.OccupancyCB2.val() == 1:
-                Taxonomy[16] = '+RES1'
+                taxonomy[16] = '+RES1'
             if self.OccupancyCB2.val() == 2:
-                Taxonomy[16] = '+RES2'
+                taxonomy[16] = '+RES2'
             if self.OccupancyCB2.val() == 3:
-                Taxonomy[16] = '+RES2A'
+                taxonomy[16] = '+RES2A'
             if self.OccupancyCB2.val() == 4:
-                Taxonomy[16] = '+RES2B'
+                taxonomy[16] = '+RES2B'
             if self.OccupancyCB2.val() == 5:
-                Taxonomy[16] = '+RES2C'
+                taxonomy[16] = '+RES2C'
             if self.OccupancyCB2.val() == 6:
-                Taxonomy[16] = '+RES2D'
+                taxonomy[16] = '+RES2D'
             if self.OccupancyCB2.val() == 7:
-                Taxonomy[16] = '+RES2E'
+                taxonomy[16] = '+RES2E'
             if self.OccupancyCB2.val() == 8:
-                Taxonomy[16] = '+RES2F'
+                taxonomy[16] = '+RES2F'
             if self.OccupancyCB2.val() == 9:
-                Taxonomy[16] = '+RES3'
+                taxonomy[16] = '+RES3'
             if self.OccupancyCB2.val() == 10:
-                Taxonomy[16] = '+RES4'
+                taxonomy[16] = '+RES4'
             if self.OccupancyCB2.val() == 11:
-                Taxonomy[16] = '+RES5'
+                taxonomy[16] = '+RES5'
             if self.OccupancyCB2.val() == 12:
-                Taxonomy[16] = '+RES6'
+                taxonomy[16] = '+RES6'
 
         elif self.OccupancyCB1.val() == 2:
-            Taxonomy[15] = 'COM'
+            taxonomy[15] = 'COM'
             if self.OccupancyCB2.val() == 0 and (out_type == 0):
-                Taxonomy[16] = '+COM99'
+                taxonomy[16] = '+COM99'
             if self.OccupancyCB2.val() == 1:
-                Taxonomy[16] = '+COM1'
+                taxonomy[16] = '+COM1'
             if self.OccupancyCB2.val() == 2:
-                Taxonomy[16] = '+COM2'
+                taxonomy[16] = '+COM2'
             if self.OccupancyCB2.val() == 3:
-                Taxonomy[16] = '+COM3'
+                taxonomy[16] = '+COM3'
             if self.OccupancyCB2.val() == 4:
-                Taxonomy[16] = '+COM4'
+                taxonomy[16] = '+COM4'
             if self.OccupancyCB2.val() == 5:
-                Taxonomy[16] = '+COM5'
+                taxonomy[16] = '+COM5'
             if self.OccupancyCB2.val() == 6:
-                Taxonomy[16] = '+COM6'
+                taxonomy[16] = '+COM6'
             if self.OccupancyCB2.val() == 7:
-                Taxonomy[16] = '+COM7'
+                taxonomy[16] = '+COM7'
             if self.OccupancyCB2.val() == 8:
-                Taxonomy[16] = '+COM8'
+                taxonomy[16] = '+COM8'
             if self.OccupancyCB2.val() == 9:
-                Taxonomy[16] = '+COM9'
+                taxonomy[16] = '+COM9'
             if self.OccupancyCB2.val() == 10:
-                Taxonomy[16] = '+COM10'
+                taxonomy[16] = '+COM10'
             if self.OccupancyCB2.val() == 11:
-                Taxonomy[16] = '+COM11'
+                taxonomy[16] = '+COM11'
 
         elif self.OccupancyCB1.val() == 3:
-            Taxonomy[15] = 'MIX'
+            taxonomy[15] = 'MIX'
             if self.OccupancyCB2.val() == 0 and (out_type == 0):
-                Taxonomy[16] = '+MIX99'
+                taxonomy[16] = '+MIX99'
             if self.OccupancyCB2.val() == 1:
-                Taxonomy[16] = '+MIX1'
+                taxonomy[16] = '+MIX1'
             if self.OccupancyCB2.val() == 2:
-                Taxonomy[16] = '+MIX2'
+                taxonomy[16] = '+MIX2'
             if self.OccupancyCB2.val() == 3:
-                Taxonomy[16] = '+MIX3'
+                taxonomy[16] = '+MIX3'
             if self.OccupancyCB2.val() == 4:
-                Taxonomy[16] = '+MIX4'
+                taxonomy[16] = '+MIX4'
             if self.OccupancyCB2.val() == 5:
-                Taxonomy[16] = '+MIX5'
+                taxonomy[16] = '+MIX5'
             if self.OccupancyCB2.val() == 6:
-                Taxonomy[16] = '+MIX6'
+                taxonomy[16] = '+MIX6'
 
         elif self.OccupancyCB1.val() == 4:
-            Taxonomy[15] = 'IND'
+            taxonomy[15] = 'IND'
             if self.OccupancyCB2.val() == 0 and (out_type == 0):
-                Taxonomy[16] = '+IND99'
+                taxonomy[16] = '+IND99'
             if self.OccupancyCB2.val() == 1:
-                Taxonomy[16] = '+IND1'
+                taxonomy[16] = '+IND1'
             if self.OccupancyCB2.val() == 2:
-                Taxonomy[16] = '+IND2'
+                taxonomy[16] = '+IND2'
 
         elif self.OccupancyCB1.val() == 5:
-            Taxonomy[15] = 'AGR'
+            taxonomy[15] = 'AGR'
             if self.OccupancyCB2.val() == 0 and (out_type == 0):
-                Taxonomy[16] = '+AGR99'
+                taxonomy[16] = '+AGR99'
             if self.OccupancyCB2.val() == 1:
-                Taxonomy[16] = '+AGR1'
+                taxonomy[16] = '+AGR1'
             if self.OccupancyCB2.val() == 2:
-                Taxonomy[16] = '+AGR2'
+                taxonomy[16] = '+AGR2'
             if self.OccupancyCB2.val() == 3:
-                Taxonomy[16] = '+AGR3'
+                taxonomy[16] = '+AGR3'
 
         elif self.OccupancyCB1.val() == 6:
-            Taxonomy[15] = 'ASS'
+            taxonomy[15] = 'ASS'
             if self.OccupancyCB2.val() == 0 and (out_type == 0):
-                Taxonomy[16] = '+ASS99'
+                taxonomy[16] = '+ASS99'
             if self.OccupancyCB2.val() == 1:
-                Taxonomy[16] = '+ASS1'
+                taxonomy[16] = '+ASS1'
             if self.OccupancyCB2.val() == 2:
-                Taxonomy[16] = '+ASS2'
+                taxonomy[16] = '+ASS2'
             if self.OccupancyCB2.val() == 3:
-                Taxonomy[16] = '+ASS3'
+                taxonomy[16] = '+ASS3'
             if self.OccupancyCB2.val() == 4:
-                Taxonomy[16] = '+ASS4'
+                taxonomy[16] = '+ASS4'
 
         elif self.OccupancyCB1.val() == 7:
-            Taxonomy[15] = 'GOV'
+            taxonomy[15] = 'GOV'
             if self.OccupancyCB2.val() == 0 and (out_type == 0):
-                Taxonomy[16] = '+GOV99'
+                taxonomy[16] = '+GOV99'
             if self.OccupancyCB2.val() == 1:
-                Taxonomy[16] = '+GOV1'
+                taxonomy[16] = '+GOV1'
             if self.OccupancyCB2.val() == 2:
-                Taxonomy[16] = '+GOV2'
+                taxonomy[16] = '+GOV2'
 
         elif self.OccupancyCB1.val() == 8:
-            Taxonomy[15] = 'EDU'
+            taxonomy[15] = 'EDU'
             if self.OccupancyCB2.val() == 0 and (out_type == 0):
-                Taxonomy[16] = '+EDU99'
+                taxonomy[16] = '+EDU99'
             if self.OccupancyCB2.val() == 1:
-                Taxonomy[16] = '+EDU1'
+                taxonomy[16] = '+EDU1'
             if self.OccupancyCB2.val() == 2:
-                Taxonomy[16] = '+EDU2'
+                taxonomy[16] = '+EDU2'
             if self.OccupancyCB2.val() == 3:
-                Taxonomy[16] = '+EDU3'
+                taxonomy[16] = '+EDU3'
             if self.OccupancyCB2.val() == 4:
-                Taxonomy[16] = '+EDU4'
+                taxonomy[16] = '+EDU4'
 
         elif self.OccupancyCB1.val() == 9:
-            Taxonomy[15] = 'OCO'
+            taxonomy[15] = 'OCO'
 
 
         if self.PositionCB.val() == 0 and (out_type == 0):
-            Taxonomy[17] = 'BP99'
+            taxonomy[17] = 'BP99'
         elif self.PositionCB.val() == 1:
-            Taxonomy[17] = 'BPD'
+            taxonomy[17] = 'BPD'
         elif self.PositionCB.val() == 2:
-            Taxonomy[17] = 'BP1'
+            taxonomy[17] = 'BP1'
         elif self.PositionCB.val() == 3:
-            Taxonomy[17] = 'BP2'
+            taxonomy[17] = 'BP2'
         elif self.PositionCB.val() == 4:
-            Taxonomy[17] = 'BP3'
+            taxonomy[17] = 'BP3'
         elif self.PositionCB.val() == 5:
-            Taxonomy[17] = 'BPI'
+            taxonomy[17] = 'BPI'
 
         if self.PlanShapeCB.val() == 0 and (out_type == 0):
-            Taxonomy[18] = 'PLF99'
+            taxonomy[18] = 'PLF99'
         elif self.PlanShapeCB.val() == 1:
-            Taxonomy[18] = 'PLFSQ'
+            taxonomy[18] = 'PLFSQ'
         elif self.PlanShapeCB.val() == 2:
-            Taxonomy[18] = 'PLFSQO'
+            taxonomy[18] = 'PLFSQO'
         elif self.PlanShapeCB.val() == 3:
-            Taxonomy[18] = 'PLFR'
+            taxonomy[18] = 'PLFR'
         elif self.PlanShapeCB.val() == 4:
-            Taxonomy[18] = 'PLFRO'
+            taxonomy[18] = 'PLFRO'
         elif self.PlanShapeCB.val() == 5:
-            Taxonomy[18] = 'PLFL'
+            taxonomy[18] = 'PLFL'
         elif self.PlanShapeCB.val() == 6:
-            Taxonomy[18] = 'PLFC'
+            taxonomy[18] = 'PLFC'
         elif self.PlanShapeCB.val() == 7:
-            Taxonomy[18] = 'PLFCO'
+            taxonomy[18] = 'PLFCO'
         elif self.PlanShapeCB.val() == 8:
-            Taxonomy[18] = 'PLFD'
+            taxonomy[18] = 'PLFD'
         elif self.PlanShapeCB.val() == 9:
-            Taxonomy[18] = 'PLFDO'
+            taxonomy[18] = 'PLFDO'
         elif self.PlanShapeCB.val() == 10:
-            Taxonomy[18] = 'PLFE'
+            taxonomy[18] = 'PLFE'
         elif self.PlanShapeCB.val() == 11:
-            Taxonomy[18] = 'PLFH'
+            taxonomy[18] = 'PLFH'
         elif self.PlanShapeCB.val() == 12:
-            Taxonomy[18] = 'PLFS'
+            taxonomy[18] = 'PLFS'
         elif self.PlanShapeCB.val() == 13:
-            Taxonomy[18] = 'PLFT'
+            taxonomy[18] = 'PLFT'
         elif self.PlanShapeCB.val() == 14:
-            Taxonomy[18] = 'PLFU'
+            taxonomy[18] = 'PLFU'
         elif self.PlanShapeCB.val() == 15:
-            Taxonomy[18] = 'PLFX'
+            taxonomy[18] = 'PLFX'
         elif self.PlanShapeCB.val() == 16:
-            Taxonomy[18] = 'PLFY'
+            taxonomy[18] = 'PLFY'
         elif self.PlanShapeCB.val() == 17:
-            Taxonomy[18] = 'PLFP'
+            taxonomy[18] = 'PLFP'
         elif self.PlanShapeCB.val() == 18:
-            Taxonomy[18] = 'PLFPO'
+            taxonomy[18] = 'PLFPO'
         elif self.PlanShapeCB.val() == 19:
-            Taxonomy[18] = 'PLFI'
+            taxonomy[18] = 'PLFI'
 
         if self.RegularityCB1.val() == 0:
             if (out_type == 0):
-                Taxonomy[19] = 'IR99'
+                taxonomy[19] = 'IR99'
 
         else:
             if self.RegularityCB1.val() == 1:
-                Taxonomy[19] = 'IRRE'
+                taxonomy[19] = 'IRRE'
             if self.RegularityCB1.val() == 2:
-                Taxonomy[19] = 'IRIR'
+                taxonomy[19] = 'IRIR'
                 if self.RegularityCB2.val() == 0 and (out_type == 0):
-                    Taxonomy[20] = '+IRPP:IRN'
+                    taxonomy[20] = '+IRPP:IRN'
                 if self.RegularityCB2.val() == 1:
-                    Taxonomy[20] = '+IRPP:TOR'
+                    taxonomy[20] = '+IRPP:TOR'
                 if self.RegularityCB2.val() == 2:
-                    Taxonomy[20] = '+IRPP:REC'
+                    taxonomy[20] = '+IRPP:REC'
                 if self.RegularityCB2.val() == 3:
-                    Taxonomy[20] = '+IRPP:IRHO'
+                    taxonomy[20] = '+IRPP:IRHO'
 
                 if self.RegularityCB3.val() == 0 and (out_type == 0):
-                    Taxonomy[21] = '+IRVP:IRN'
+                    taxonomy[21] = '+IRVP:IRN'
                 if self.RegularityCB3.val() == 1:
-                    Taxonomy[21] = '+IRVP:SOS'
+                    taxonomy[21] = '+IRVP:SOS'
                 if self.RegularityCB3.val() == 2:
-                    Taxonomy[21] = '+IRVP:CRW'
+                    taxonomy[21] = '+IRVP:CRW'
                 if self.RegularityCB3.val() == 3:
-                    Taxonomy[21] = '+IRVP:SHC'
+                    taxonomy[21] = '+IRVP:SHC'
                 if self.RegularityCB3.val() == 4:
-                    Taxonomy[21] = '+IRVP:POP'
+                    taxonomy[21] = '+IRVP:POP'
                 if self.RegularityCB3.val() == 5:
-                    Taxonomy[21] = '+IRVP:SET'
+                    taxonomy[21] = '+IRVP:SET'
                 if self.RegularityCB3.val() == 6:
-                    Taxonomy[21] = '+IRVP:CHV'
+                    taxonomy[21] = '+IRVP:CHV'
                 if self.RegularityCB3.val() == 7:
-                    Taxonomy[21] = '+IRVP:IRVO'
+                    taxonomy[21] = '+IRVP:IRVO'
 
                 if self.RegularityCB2.val() > 0:
                     if self.RegularityCB4.val() == 0:
-                        Taxonomy[22] = '+IRPS:IRN'
+                        taxonomy[22] = '+IRPS:IRN'
                     if self.RegularityCB4.val() == 1:
-                        Taxonomy[22] = '+IRPS:TOR'
+                        taxonomy[22] = '+IRPS:TOR'
                     if self.RegularityCB4.val() == 2:
-                        Taxonomy[22] = '+IRPS:REC'
+                        taxonomy[22] = '+IRPS:REC'
                     if self.RegularityCB4.val() == 3:
-                        Taxonomy[22] = '+IRPS:IRHO'
+                        taxonomy[22] = '+IRPS:IRHO'
 
                 if self.RegularityCB3.val() > 0:
                     if self.RegularityCB5.val() == 0:
-                        Taxonomy[23] = '+IRVS:IRN'
+                        taxonomy[23] = '+IRVS:IRN'
                     if self.RegularityCB5.val() == 1:
-                        Taxonomy[23] = '+IRVS:SOS'
+                        taxonomy[23] = '+IRVS:SOS'
                     if self.RegularityCB5.val() == 2:
-                        Taxonomy[23] = '+IRVS:CRW'
+                        taxonomy[23] = '+IRVS:CRW'
                     if self.RegularityCB5.val() == 3:
-                        Taxonomy[23] = '+IRVS:SHC'
+                        taxonomy[23] = '+IRVS:SHC'
                     if self.RegularityCB5.val() == 4:
-                        Taxonomy[23] = '+IRVS:POP'
+                        taxonomy[23] = '+IRVS:POP'
                     if self.RegularityCB5.val() == 5:
-                        Taxonomy[23] = '+IRVS:SET'
+                        taxonomy[23] = '+IRVS:SET'
                     if self.RegularityCB5.val() == 6:
-                        Taxonomy[23] = '+IRVS:CHV'
+                        taxonomy[23] = '+IRVS:CHV'
                     if self.RegularityCB5.val() == 7:
-                        Taxonomy[23] = '+IRVS:IRVO'
+                        taxonomy[23] = '+IRVS:IRVO'
 
 
 
 
         if self.WallsCB.val() == 0 and (out_type == 0):
-            Taxonomy[24] = 'EW99'
+            taxonomy[24] = 'EW99'
         if self.WallsCB.val() == 1:
-            Taxonomy[24] = 'EWC'
+            taxonomy[24] = 'EWC'
         if self.WallsCB.val() == 2:
-            Taxonomy[24] = 'EWG'
+            taxonomy[24] = 'EWG'
         if self.WallsCB.val() == 3:
-            Taxonomy[24] = 'EWE'
+            taxonomy[24] = 'EWE'
         if self.WallsCB.val() == 4:
-            Taxonomy[24] = 'EWMA'
+            taxonomy[24] = 'EWMA'
         if self.WallsCB.val() == 5:
-            Taxonomy[24] = 'EWME'
+            taxonomy[24] = 'EWME'
         if self.WallsCB.val() == 6:
-            Taxonomy[24] = 'EWV'
+            taxonomy[24] = 'EWV'
         if self.WallsCB.val() == 7:
-            Taxonomy[24] = 'EWW'
+            taxonomy[24] = 'EWW'
         if self.WallsCB.val() == 8:
-            Taxonomy[24] = 'EWSL'
+            taxonomy[24] = 'EWSL'
         if self.WallsCB.val() == 9:
-            Taxonomy[24] = 'EWPL'
+            taxonomy[24] = 'EWPL'
         if self.WallsCB.val() == 10:
-            Taxonomy[24] = 'EWCB'
+            taxonomy[24] = 'EWCB'
         if self.WallsCB.val() == 11:
-            Taxonomy[24] = 'EWO'
+            taxonomy[24] = 'EWO'
 
         if self.RoofCB1.val() == 0 and (out_type == 0):
-            Taxonomy[25] = 'RSH99'
+            taxonomy[25] = 'RSH99'
         if self.RoofCB1.val() == 1:
-            Taxonomy[25] = 'RSH1'
+            taxonomy[25] = 'RSH1'
         if self.RoofCB1.val() == 2:
-            Taxonomy[25] = 'RSH2'
+            taxonomy[25] = 'RSH2'
         if self.RoofCB1.val() == 3:
-            Taxonomy[25] = 'RSH3'
+            taxonomy[25] = 'RSH3'
         if self.RoofCB1.val() == 4:
-            Taxonomy[25] = 'RSH4'
+            taxonomy[25] = 'RSH4'
         if self.RoofCB1.val() == 5:
-            Taxonomy[25] = 'RSH5'
+            taxonomy[25] = 'RSH5'
         if self.RoofCB1.val() == 6:
-            Taxonomy[25] = 'RSH6'
+            taxonomy[25] = 'RSH6'
         if self.RoofCB1.val() == 7:
-            Taxonomy[25] = 'RSH7'
+            taxonomy[25] = 'RSH7'
         if self.RoofCB1.val() == 8:
-            Taxonomy[25] = 'RSH8'
+            taxonomy[25] = 'RSH8'
         if self.RoofCB1.val() == 9:
-            Taxonomy[25] = 'RSH9'
+            taxonomy[25] = 'RSH9'
         if self.RoofCB1.val() == 10:
-            Taxonomy[25] = 'RSHO'
+            taxonomy[25] = 'RSHO'
 
         if self.RoofCB2.val() == 0 and (out_type == 0):
-            Taxonomy[26] = 'RMT99'
+            taxonomy[26] = 'RMT99'
         if self.RoofCB2.val() == 1:
-            Taxonomy[26] = 'RMN'
+            taxonomy[26] = 'RMN'
         if self.RoofCB2.val() == 2:
-            Taxonomy[26] = 'RMT1'
+            taxonomy[26] = 'RMT1'
         if self.RoofCB2.val() == 3:
-            Taxonomy[26] = 'RMT2'
+            taxonomy[26] = 'RMT2'
         if self.RoofCB2.val() == 4:
-            Taxonomy[26] = 'RMT3'
+            taxonomy[26] = 'RMT3'
         if self.RoofCB2.val() == 5:
-            Taxonomy[26] = 'RMT4'
+            taxonomy[26] = 'RMT4'
         if self.RoofCB2.val() == 6:
-            Taxonomy[26] = 'RMT5'
+            taxonomy[26] = 'RMT5'
         if self.RoofCB2.val() == 7:
-            Taxonomy[26] = 'RMT6'
+            taxonomy[26] = 'RMT6'
         if self.RoofCB2.val() == 8:
-            Taxonomy[26] = 'RMT7'
+            taxonomy[26] = 'RMT7'
         if self.RoofCB2.val() == 9:
-            Taxonomy[26] = 'RMT8'
+            taxonomy[26] = 'RMT8'
         if self.RoofCB2.val() == 10:
-            Taxonomy[26] = 'RMT9'
+            taxonomy[26] = 'RMT9'
         if self.RoofCB2.val() == 11:
-            Taxonomy[26] = 'RMT10'
+            taxonomy[26] = 'RMT10'
         if self.RoofCB2.val() == 12:
-            Taxonomy[26] = 'RMT11'
+            taxonomy[26] = 'RMT11'
         if self.RoofCB2.val() == 13:
-            Taxonomy[26] = 'RMTO'
+            taxonomy[26] = 'RMTO'
 
         if self.RoofCB3.val() == 0:
             if (out_type == 0):
-                Taxonomy[27] = 'R99'
+                taxonomy[27] = 'R99'
 
         else:
             if self.RoofCB3.val() == 1:
-                Taxonomy[27] = 'RM'
+                taxonomy[27] = 'RM'
                 if self.RoofCB4.val() == 0 and (out_type == 0):
-                    Taxonomy[28] = 'RM99'
+                    taxonomy[28] = 'RM99'
                 if self.RoofCB4.val() == 1:
-                    Taxonomy[28] = 'RM1'
+                    taxonomy[28] = 'RM1'
                 if self.RoofCB4.val() == 2:
-                    Taxonomy[28] = 'RM2'
+                    taxonomy[28] = 'RM2'
                 if self.RoofCB4.val() == 3:
-                    Taxonomy[28] = 'RM3'
+                    taxonomy[28] = 'RM3'
 
             elif self.RoofCB3.val() == 2:
-                Taxonomy[27] = 'RE'
+                taxonomy[27] = 'RE'
                 if self.RoofCB4.val() == 0 and (out_type == 0):
-                    Taxonomy[28] = 'RE99'
+                    taxonomy[28] = 'RE99'
                 if self.RoofCB4.val() == 1:
-                    Taxonomy[28] = 'RE1'
+                    taxonomy[28] = 'RE1'
 
             elif self.RoofCB3.val() == 3:
-                Taxonomy[27] = 'RC'
+                taxonomy[27] = 'RC'
                 if self.RoofCB4.val() == 0 and (out_type == 0):
-                    Taxonomy[28] = 'RC99'
+                    taxonomy[28] = 'RC99'
                 if self.RoofCB4.val() == 1:
-                    Taxonomy[28] = 'RC1'
+                    taxonomy[28] = 'RC1'
                 if self.RoofCB4.val() == 2:
-                    Taxonomy[28] = 'RC2'
+                    taxonomy[28] = 'RC2'
                 if self.RoofCB4.val() == 3:
-                    Taxonomy[28] = 'RC3'
+                    taxonomy[28] = 'RC3'
                 if self.RoofCB4.val() == 4:
-                    Taxonomy[28] = 'RC4'
+                    taxonomy[28] = 'RC4'
 
             elif self.RoofCB3.val() == 4:
-                Taxonomy[27] = 'RME'
+                taxonomy[27] = 'RME'
                 if self.RoofCB4.val() == 0 and (out_type == 0):
-                    Taxonomy[28] = 'RME99'
+                    taxonomy[28] = 'RME99'
                 if self.RoofCB4.val() == 1:
-                    Taxonomy[28] = 'RME1'
+                    taxonomy[28] = 'RME1'
                 if self.RoofCB4.val() == 2:
-                    Taxonomy[28] = 'RME2'
+                    taxonomy[28] = 'RME2'
                 if self.RoofCB4.val() == 3:
-                    Taxonomy[28] = 'RME3'
+                    taxonomy[28] = 'RME3'
 
             elif self.RoofCB3.val() == 5:
-                Taxonomy[27] = 'RWO'
+                taxonomy[27] = 'RWO'
                 if self.RoofCB4.val() == 0 and (out_type == 0):
-                    Taxonomy[28] = 'RWO99'
+                    taxonomy[28] = 'RWO99'
                 if self.RoofCB4.val() == 1:
-                    Taxonomy[28] = 'RWO1'
+                    taxonomy[28] = 'RWO1'
                 if self.RoofCB4.val() == 2:
-                    Taxonomy[28] = 'RWO2'
+                    taxonomy[28] = 'RWO2'
                 if self.RoofCB4.val() == 3:
-                    Taxonomy[28] = 'RWO3'
+                    taxonomy[28] = 'RWO3'
                 if self.RoofCB4.val() == 4:
-                    Taxonomy[28] = 'RWO4'
+                    taxonomy[28] = 'RWO4'
                 if self.RoofCB4.val() == 5:
-                    Taxonomy[28] = 'RWO5'
+                    taxonomy[28] = 'RWO5'
 
             elif self.RoofCB3.val() == 6:
-                Taxonomy[27] = 'RFA'
+                taxonomy[27] = 'RFA'
                 if self.RoofCB4.val() == 0:
-                    Taxonomy[28] = 'RFA1'
+                    taxonomy[28] = 'RFA1'
                 if self.RoofCB4.val() == 1:
-                    Taxonomy[28] = 'RFAO'
+                    taxonomy[28] = 'RFAO'
 
             elif self.RoofCB3.val() == 7:
-                Taxonomy[27] = 'RO'
+                taxonomy[27] = 'RO'
 
 
 
         if self.RoofCB5.val() == 0 and (out_type == 0):
-            Taxonomy[29] = 'RWC99'
+            taxonomy[29] = 'RWC99'
         if self.RoofCB5.val() == 1:
-            Taxonomy[29] = 'RWCN'
+            taxonomy[29] = 'RWCN'
         if self.RoofCB5.val() == 2:
-            Taxonomy[29] = 'RWCP'
+            taxonomy[29] = 'RWCP'
         if self.RoofCB5.val() == 3:
-            Taxonomy[29] = 'RTD99'
+            taxonomy[29] = 'RTD99'
         if self.RoofCB5.val() == 4:
-            Taxonomy[29] = 'RTDN'
+            taxonomy[29] = 'RTDN'
         if self.RoofCB5.val() == 5:
-            Taxonomy[29] = 'RTDP'
+            taxonomy[29] = 'RTDP'
 
         if self.FloorCB1.val() == 0:
             if (out_type == 0):
-                Taxonomy[30] = 'F99'
+                taxonomy[30] = 'F99'
 
         elif self.FloorCB1.val() == 1:
-            Taxonomy[30] = 'FN'
+            taxonomy[30] = 'FN'
 
         else:
             if self.FloorCB1.val() == 2:
-                Taxonomy[30] = 'FM'
+                taxonomy[30] = 'FM'
                 if self.FloorCB2.val() == 0 and (out_type == 0):
-                    Taxonomy[31] = '+FM99'
+                    taxonomy[31] = '+FM99'
                 if self.FloorCB2.val() == 1:
-                    Taxonomy[31] = '+FM1'
+                    taxonomy[31] = '+FM1'
                 if self.FloorCB2.val() == 2:
-                    Taxonomy[31] = '+FM2'
+                    taxonomy[31] = '+FM2'
                 if self.FloorCB2.val() == 3:
-                    Taxonomy[31] = '+FM3'
+                    taxonomy[31] = '+FM3'
 
             elif self.FloorCB1.val() == 3:
-                Taxonomy[30] = 'FE'
+                taxonomy[30] = 'FE'
                 if self.FloorCB2.val() == 0 and (out_type == 0):
-                    Taxonomy[31] = '+FE99'
+                    taxonomy[31] = '+FE99'
 
             elif self.FloorCB1.val() == 4:
-                Taxonomy[30] = 'FC'
+                taxonomy[30] = 'FC'
                 if self.FloorCB2.val() == 0 and (out_type == 0):
-                    Taxonomy[31] = '+FC99'
+                    taxonomy[31] = '+FC99'
                 if self.FloorCB2.val() == 1:
-                    Taxonomy[31] = '+FC1'
+                    taxonomy[31] = '+FC1'
                 if self.FloorCB2.val() == 2:
-                    Taxonomy[31] = '+FC2'
+                    taxonomy[31] = '+FC2'
                 if self.FloorCB2.val() == 3:
-                    Taxonomy[31] = '+FC3'
+                    taxonomy[31] = '+FC3'
                 if self.FloorCB2.val() == 4:
-                    Taxonomy[31] = '+FC4'
+                    taxonomy[31] = '+FC4'
 
             elif self.FloorCB1.val() == 5:
-                Taxonomy[30] = 'FME'
+                taxonomy[30] = 'FME'
                 if self.FloorCB2.val() == 0 and (out_type == 0):
-                    Taxonomy[31] = '+FME99'
+                    taxonomy[31] = '+FME99'
                 if self.FloorCB2.val() == 1:
-                    Taxonomy[31] = '+FME1'
+                    taxonomy[31] = '+FME1'
                 if self.FloorCB2.val() == 2:
-                    Taxonomy[31] = '+FME2'
+                    taxonomy[31] = '+FME2'
                 if self.FloorCB2.val() == 3:
-                    Taxonomy[31] = '+FME3'
+                    taxonomy[31] = '+FME3'
 
             elif self.FloorCB1.val() == 6:
-                Taxonomy[30] = 'FW'
+                taxonomy[30] = 'FW'
                 if self.FloorCB2.val() == 0 and (out_type == 0):
-                    Taxonomy[31] = '+FW99'
+                    taxonomy[31] = '+FW99'
                 if self.FloorCB2.val() == 1:
-                    Taxonomy[31] = '+FW1'
+                    taxonomy[31] = '+FW1'
                 if self.FloorCB2.val() == 2:
-                    Taxonomy[31] = '+FW2'
+                    taxonomy[31] = '+FW2'
                 if self.FloorCB2.val() == 3:
-                    Taxonomy[31] = '+FW3'
+                    taxonomy[31] = '+FW3'
                 if self.FloorCB2.val() == 4:
-                    Taxonomy[31] = '+FW4'
+                    taxonomy[31] = '+FW4'
 
             elif self.FloorCB1.val() == 7:
-                Taxonomy[30] = 'FO'
+                taxonomy[30] = 'FO'
 
 
         if self.FloorCB3.val() == 0 and (out_type == 0):
-            Taxonomy[32] = 'FWC99'
+            taxonomy[32] = 'FWC99'
         if self.FloorCB3.val() == 1:
-            Taxonomy[32] = 'FWCN'
+            taxonomy[32] = 'FWCN'
         if self.FloorCB3.val() == 2:
-            Taxonomy[32] = 'FWCP'
+            taxonomy[32] = 'FWCP'
 
         if self.FoundationsCB.val() == 0 and (out_type == 0):
-            Taxonomy[33] = 'FOS99'
+            taxonomy[33] = 'FOS99'
         if self.FoundationsCB.val() == 1:
-            Taxonomy[33] = 'FOSSL'
+            taxonomy[33] = 'FOSSL'
         if self.FoundationsCB.val() == 2:
-            Taxonomy[33] = 'FOSN'
+            taxonomy[33] = 'FOSN'
         if self.FoundationsCB.val() == 3:
-            Taxonomy[33] = 'FOSDL'
+            taxonomy[33] = 'FOSDL'
         if self.FoundationsCB.val() == 4:
-            Taxonomy[33] = 'FOSDN'
+            taxonomy[33] = 'FOSDN'
         if self.FoundationsCB.val() == 5:
-            Taxonomy[33] = 'FOSO'
+            taxonomy[33] = 'FOSO'
 
 
         # // TAIL
@@ -2807,33 +2839,33 @@ class Taxonomy(object):
         # /* roof special case */
         roof_atom_empty = True
         for i in range(25, 30):
-            if Taxonomy[i] != '':
+            if taxonomy[i] != '':
                 if roof_atom_empty:
                     roof_atom_empty = False
                 else:
-                    Taxonomy[i] = "+" + Taxonomy[i]
+                    taxonomy[i] = "+" + str(taxonomy[i])
 
 
         # /* floor special case */
         floor_atom_empty = True
         floor_atom_primaries = [30, 32]
         for i in floor_atom_primaries:
-            if Taxonomy[i] != '':
+            if taxonomy[i] != '':
                 if floor_atom_empty:
                     floor_atom_empty = False
                 else:
-                    Taxonomy[i] = "+" + Taxonomy[i]
+                    taxonomy[i] = "+" + str(taxonomy[i])
 
 
-        ResTax = (direction1 + '/' + Taxonomy[0] + Taxonomy[1] + Taxonomy[34] + Taxonomy[2] +
-            '/' +Taxonomy[3] + Taxonomy[4] +
-            '/' + direction2 + '/' + Taxonomy[5] + Taxonomy[6] + Taxonomy[35] + Taxonomy[7] +
-            '/' + Taxonomy[8] + Taxonomy[9] +
-            '/' + Taxonomy[11] + Taxonomy[12] + Taxonomy[13] + Taxonomy[14] + '/' + Taxonomy[10] +
-            '/' + Taxonomy[15] + Taxonomy[16] + '/' + Taxonomy[17] + '/' + Taxonomy[18] +
-            '/' + Taxonomy[19] + Taxonomy[20] + Taxonomy[22] + Taxonomy[21] + Taxonomy[23] +
-            '/' + Taxonomy[24] + '/' + Taxonomy[25] + Taxonomy[26] + Taxonomy[27] + Taxonomy[28] + Taxonomy[29] +
-            '/' + Taxonomy[30] + Taxonomy[31] + Taxonomy[32] + '/' + Taxonomy[33])
+        ResTax = (str(direction1) + '/' + str(taxonomy[0]) + str(taxonomy[1]) + str(taxonomy[34]) + str(taxonomy[2]) +
+                  '/' + str(taxonomy[3]) + str(taxonomy[4]) +
+                  '/' + direction2 + '/' + str(taxonomy[5]) + str(taxonomy[6]) + str(taxonomy[35]) + str(taxonomy[7]) +
+                  '/' + str(taxonomy[8]) + str(taxonomy[9]) +
+                  '/' + str(taxonomy[11]) + str(taxonomy[12]) + str(taxonomy[13]) + str(taxonomy[14]) + '/' + str(taxonomy[10]) +
+                  '/' + str(taxonomy[15]) + str(taxonomy[16]) + '/' + str(taxonomy[17]) + '/' + str(taxonomy[18]) +
+                  '/' + str(taxonomy[19]) + str(taxonomy[20]) + str(taxonomy[22]) + str(taxonomy[21]) + str(taxonomy[23]) +
+                  '/' + str(taxonomy[24]) + '/' + str(taxonomy[25]) + str(taxonomy[26]) + str(taxonomy[27]) + str(taxonomy[28]) + str(taxonomy[29]) +
+                  '/' + str(taxonomy[30]) + str(taxonomy[31]) + str(taxonomy[32]) + '/' + str(taxonomy[33]))
 
         if out_type == 2:
             is_first = True
@@ -2872,6 +2904,774 @@ class Taxonomy(object):
 
         return (ResTax)
 
+
+
+    def populate(self, s, ret_s):
+        # var i
+        # var sar, subar, el
+
+        sar = s.split('/')
+        self.DirectionCB.checked(False)
+
+        #
+        #  Direction
+        #
+        dirx = sar[0]
+        diry = sar[3]
+        if dirx == "DX+D99" and diry == "DY+D99":
+            self.Direction1RB1.checked(True)
+            self.taxt_Direction1RB1Click(None)
+
+        elif dirx == "DX+PF" and diry == "DY+OF":
+            self.Direction1RB2.checked(True)
+            self.taxt_Direction1RB2Click(None)
+
+        else:
+            ret_s.s = "Not valid 'Direction specifications' found."
+            return False
+
+
+        #
+        #  Material
+        #
+        mat_ddown = ['MaterialCB11', 'MaterialCB12']
+        mat_selec = ['taxt_MaterialCB11Select', 'taxt_MaterialCB12Select']
+        mat_tecn_ddown = ['MaterialCB21', 'MaterialCB22']
+        mat_tecn_selec = ['taxt_MaterialCB21Select', 'taxt_MaterialCB22Select']
+        mat_tead_ddown = ['MaterialCB41', 'MaterialCB42']
+        mat_tead_selec = ['taxt_MaterialCB41Select', 'taxt_MaterialCB42Select']
+        mat_prop_ddown = ['MaterialCB31', 'MaterialCB32']
+        mat_prop_selec = ['taxt_MaterialCB31Select', 'taxt_MaterialCB32Select']
+        llrs_ddown = ['SystemCB11', 'SystemCB12']
+        llrs_selec = ['taxt_SystemCB11Select', 'taxt_SystemCB12Select']
+        llrs_duct_ddown = ['SystemCB21', 'SystemCB22']
+        llrs_duct_selec = ['taxt_SystemCB21Select', 'taxt_SystemCB22Select']
+
+        # var llrs_atom
+
+        for direct in range(0, 2):
+            mat = sar[1+(direct * 3)].split('+')
+            llrs = sar[2+(direct * 3)].split('+')
+
+            if len(mat) < 1:
+                ret_s.s = "Not defined material for 'Direction " + ("X" if direct == 0 else "Y") + "'"
+                return (False)
+
+            if len(llrs) < 1:
+                ret_s.s = "Not defined LLRS for 'Direction " + ("X" if direct == 0 else "Y") + "'"
+                return (False)
+
+
+            for i in range(0, len(material)):
+                if mat[0] == material[i].id:
+                    mat_id = mat[0]
+                    getattr(self, mat_ddown[direct]).val(i)
+                    getattr(self, mat_selec[direct])()
+                    break
+            else:
+                ret_s.s = "Not identified '" + mat[0] + "' material for 'Direction " + ("X" if direct == 0 else "Y") + "'"
+                return (False)
+
+            for sub_i in range(1 , len(mat)):
+                mat_atom = mat[sub_i]
+
+                # Material technology
+                completed = False
+                for i in range( 0, len(mat_tech[mat_id])):
+                    if mat_atom == mat_tech[mat_id][i].id:
+                        getattr(self, mat_tecn_ddown[direct]).val(i)
+                        getattr(self, mat_tecn_selec[direct])()
+                        break
+                else:
+                    completed = True
+
+                if not completed:
+                    continue
+
+                # Material technology added
+                completed = False
+                for i in range(0, len(mat_tead[mat_id])):
+                    if mat_atom == mat_tead[mat_id][i].id:
+                        getattr(self, mat_tead_ddown[direct]).val(i)
+                        getattr(self, mat_tead_selec[direct])()
+                        break
+                else:
+                    completed = True
+
+                if not completed:
+                    continue
+
+                # Material properties
+                completed = False
+                for i in range(0, len(mat_prop[mat_id])):
+                    if mat_atom == mat_prop[mat_id][i].id:
+                        getattr(self, mat_prop_ddown[direct]).val(i)
+                        getattr(self, mat_prop_selec[direct])()
+                        break
+                else:
+                    completed = True
+
+                if not completed:
+                    continue
+
+                ret_s.s = "Not identified '" + mat_atom + "' as specification of '" + mat_id + "' material for 'Direction " + ("X" if direct == 0 else "Y") + "'."
+                return (False)
+
+
+            #
+            #  Lateral load resisting system: type
+            #
+            for i in range(0, len(llrs_type[mat_id])):
+                llrs_id = llrs_type[mat_id][i].id
+
+                if llrs[0] == llrs_id:
+                    getattr(self, llrs_ddown[direct]).val(i)
+                    getattr(self, llrs_selec[direct])()
+                    break
+            else:
+                ret_s.s = "Not identified '" + llrs[0] + "' as LLRS of '" + mat_id + "' material for 'Direction " + ("X" if direct == 0 else "Y") + "'."
+                return (False)
+
+            for sub_i in range(1, len(llrs)):
+                llrs_atom = llrs[sub_i]
+
+                # Ductility
+                completed = False
+                for i in range(0, len(llrs_duct[llrs_id])):
+                    if llrs_atom == llrs_duct[llrs_id][i].id:
+                        getattr(self, llrs_duct_ddown[direct]).val(i)
+                        getattr(self, llrs_duct_selec[direct])()
+                        break
+                else:
+                    completed = True
+
+                if not completed:
+                    continue
+
+                ret_s.s = "Not identified '" + llrs_atom + "' as specification of '" + llrs[0] + "' LLRS of '" + mat_id + "' material for 'Direction " + ("X" if direct == 0 else"Y") + "'."
+                return (False)
+
+
+        dir_items = [ 'MaterialCB1', 'MaterialCB2', 'MaterialCB3', 'MaterialCB4',
+                      'SystemCB1', 'SystemCB2' ]
+
+        for i in range(0, len(dir_items)):
+            if getattr(self, dir_items[i]+'1').val() != getattr(self, dir_items[i]+'2').val():
+                break
+        else:
+            self.DirectionCB.checked(True)
+
+        #
+        #  Height
+        #
+        # var h, h_items, h_label, h_id, h_vals, h_grp
+        h_map = [ 'H99' , 'HBET' , 'HEX' , 'HAPP' ,
+                  'HB99', 'HBBET', 'HBEX', 'HBAPP',
+                  'HF99', 'HFBET', 'HFEX', 'HFAPP',
+                  'HD99',  None  , 'HD' ]
+
+        # assigned but never used
+        # h_pref = [ 'H', 'HB', 'HF', 'HD' ]
+        h_cbid = [  1 ,   2 ,   3,    4  ]
+        h_title = [ 'Number of storey above ground',
+                    'Number of storey below ground',
+                    'Height of ground floor level above grade',
+                    'Slope of the ground' ]
+
+        hsfx_99 = 0; hsfx_bet = 1
+        # assigned but never used
+        # ; hsfx_ex = 2; hsfx_app = 3
+
+        h_cbfun = [self.taxt_HeightCB1Select, self.taxt_HeightCB2Select, self.taxt_HeightCB3Select, self.taxt_HeightCB4Select]
+        h_typck = [is_not_negative_int, is_not_negative_int, is_not_negative_float, is_in_rect_angle_float]
+        h_typck_s = ["positive integer", "positive integer", "positive real", "positive real between 0 and 90"]
+        h_convf = [int, int, float, int]
+        h = sar[6].split('+')
+
+        for sub_i in range(0, len(h)):
+            h_items = h[sub_i].split(':')
+            h_label = h_items[0]
+
+            try:
+                h_id = h_map.index(h_label)
+            except ValueError:
+                h_id = -1
+
+            # console.log("H_ID: " + h_id)
+            if h_id == -1:
+                ret_s.s = "Height not defined properly."
+                return (False)
+
+            h_grp = int(math.floor(h_id / 4))
+            h_type = h_id % 4
+
+            if h_type == hsfx_99:
+                if len(h_items) != 1:
+                    ret_s.s = "Height: '" + h_label + "' type requires no values, " + is_or_are_given(len(h_items))
+                    return (False)
+
+
+            elif h_type == hsfx_bet:
+                if len(h_items) < 2:
+                    ret_s.s = "Height: '" + h_label + "' type requires exactly 2 values, no one is given."
+                    return (False)
+
+                else:
+                    h_vals = h_items[1].split(',')
+
+                    if len(h_vals) != 2:
+                        ret_s.s = "Height: '" + h_label + "' type requires exactly 2 values, " + is_or_are_given(len(h_vals))
+                        return (False)
+            else:
+                if len(h_items) < 2:
+                    ret_s.s = "Height: '" + h_label + "' type requires exactly 1 value, no one is given."
+                    return (False)
+
+                h_vals = h_items[1].split(',')
+                if len(h_vals) != 1:
+                    ret_s.s = "Height: '" + h_label + "' type requires exactly 1 value, " + is_or_are_given(h_vals.length)
+                    return (False)
+
+            if h_type != hsfx_99:
+                # is_not_negative_int or is_not_negative_float
+                if not h_typck[h_grp](h_vals[0]):
+                    if h_type == hsfx_bet:
+                        ret_s.s = h_title[h_grp] + ": lower limit not " + h_typck_s[h_grp] + ". "
+                    else:
+                        ret_s.s = h_title[h_grp] + ": not " + h_typck_s[h_grp] + ". "
+
+                    return (False)
+
+                if h_type == hsfx_bet:
+                    if not h_typck[h_grp](h_vals[1]):
+                        ret_s.s = h_title[h_grp] + ": higher limit not " + h_typck_s[h_grp] + ". "
+                        return (False)
+
+                    elif h_convf[h_grp](h_vals[0]) == h_convf[h_grp](h_vals[1]):
+                        ret_s.s = h_title[h_grp] + ": invalid range. "
+                        return (False)
+
+
+                    # swap items if wrong order
+                    if int(h_vals[0]) > int(h_vals[1]):
+                        swap = h_vals[1]
+                        h_vals[1] = h_vals[0]
+                        h_vals[0] = swap
+
+                    getattr(self, 'noStoreysE' + h_cbid[h_grp] + '2').val(h_vals[1])
+
+
+                # set value (in the case of 'HD' the real index must be (h_type - 1))
+                getattr(self, 'HeightCB' + h_cbid[h_grp]).val(h_type - 1 if h_map[h_id] == 'HD' else h_type)
+                getattr(self, 'noStoreysE' + h_cbid[h_grp] + '1').val(h_vals[0])
+
+                h_cbfun[h_grp](None)
+
+            else:
+                # missing case for H99 case
+                getattr(self, 'HeightCB' + h_cbid[h_grp]).val(h_type - 1 if h_map[h_id] == 'HD' else h_type)
+                h_cbfun[h_grp](None)
+
+
+
+        #
+        #  Date
+        #
+        # var date, date_index = -1, date_items, date_label, date_id, date_vals
+
+        date = sar[7].split('+')
+        date_items = date[0].split(':')
+        date_label = date_items[0]
+
+        if len(date) != 1:
+            ret_s.s = "Date not defined properly."
+            return (False)
+
+
+        for i in range(0, len(date_type)):
+            if date_label == date_type[i].id:
+                date_index = i
+                date_id = date_label
+                break
+        else:
+            ret_s.s = "Not identified '" + date_label + "' as specification of date."
+            return (False)
+
+        if date_id != "Y99":
+            if len(date_items) < 2:
+                ret_s.s = "Date: no values defined."
+                return (False)
+
+
+            date_vals = date_items[1].split(',')
+            if date_id == 'YBET':
+                if len(date_vals) != 2:
+                    ret_s.s = "Date: '" + date_id + "' type requires exactly 2 values, " + is_or_are_given(len(date_vals))
+                    return (False)
+
+
+            elif date_id == 'YEX' or date_id == 'YPRE' or date_id == 'YAPP':
+                if len(date_vals) != 1:
+                    ret_s.s = "Date: '" + date_id + "' type requires exactly 1 value, " + is_or_are_given(len(date_vals))
+                    return (False)
+
+
+
+            if not is_not_negative_int(date_vals[0]) or len(date_vals[0]) > 4:
+                if date_id == 'YBET':
+                    ret_s.s = "Date of construction or retrofit: lower limit is not a valid date."
+
+                else:
+                    ret_s.s = "Date of construction or retrofit: it is not a valid date."
+
+                return (False)
+
+
+            if date_id == 'YBET':
+                if not is_not_negative_int(date_vals[1]) or len(date_vals[1]) > 4:
+                    ret_s.s = "Date of construction or retrofit: higher limit is not a valid date."
+                    return (False)
+
+
+                if int(date_vals[0]) == int(date_vals[1]):
+                    ret_s.s = "Date of construction or retrofit: invalid range."
+                    return (False)
+
+
+                # swap items if wrong order
+                if int(date_vals[0]) > int(date_vals[1]):
+                    swap = date_vals[1]
+                    date_vals[1] = date_vals[0]
+                    date_vals[0] = swap
+
+                self.DateE2.val(date_vals[1])
+
+            self.DateCB1.val(date_index)
+            self.taxt_DateCB1Select(None)
+            self.DateE1.val(date_vals[0])
+
+            self.taxt_ValidateDate()
+
+        else:
+            self.DateCB1.val(0)
+            self.taxt_DateCB1Select(None)
+
+
+        #
+        #  Occupancy
+        #
+        # var occu, occu_items, occu_label, occu_id, occu_vals, occu_atom
+        occu = sar[8].split('+')
+        occu_label = occu[0]
+
+        if occu_label == 'OC99':
+            if len(occu) != 1:
+                ret_s.s = "Occupancy not defined properly (" + occu_label + ")."
+                return (False)
+
+
+
+        for i in range(0, len(occu_type)):
+            if occu_label == occu_type[i].id:
+                occu_id = occu_label
+                self.OccupancyCB1.val(i)
+                self.taxt_OccupancyCB1Select(None)
+                break
+        else:
+            ret_s.s = "Not identified '" + occu_label + "' as specification of occupancy."
+            return (False)
+
+
+        if occu_label != 'OC99':
+            if occu.length > 1:
+                # Occupancy specification
+                occu_atom = occu[1]
+
+            else:
+                # select the first item of proper sub-selection
+                occu_atom = occu_spec[occu_id][0].id
+
+
+            for i in range(0, len(occu_spec[occu_id])):
+                if occu_atom == occu_spec[occu_id][i].id:
+                    self.OccupancyCB2.val(i)
+                    self.taxt_OccupancyCB2Select(None)
+                    break
+            else:
+                ret_s.s = "Not identified '" + occu_atom + "' as specification of '" + occu_id + "' occupancy."
+                return (False)
+
+
+        #
+        #  Build position
+        #
+        # var bupo, bupo_items, bupo_label, bupo_id, bupo_vals, bupo_atom
+        bupo = sar[9].split('+')
+        bupo_label = bupo[0]
+
+        if len(bupo) != 1:
+            ret_s.s = "Building position within a block not defined properly."
+            return (False)
+
+
+        for i in range(0, len(bupo_type)):
+            if bupo_label == bupo_type[i].id:
+                # 'bupo_id' assigned but never used
+                # bupo_id = bupo_label
+                self.PositionCB.val(i)
+                self.taxt_PositionCBSelect(None)
+                break
+        else:
+            ret_s.s = "Not identified '" + bupo_label + "' as specification of building position within a block."
+            return (False)
+
+
+        #
+        #  Plan shape
+        #
+        # var plsh, plsh_items, plsh_label, plsh_id, plsh_vals, plsh_atom
+        plsh = sar[10].split('+')
+        plsh_label = plsh[0]
+
+        if len(plsh) != 1:
+            ret_s.s = "Shape of the building plan not defined properly."
+            return (False)
+
+
+        for i in range(0, len(plsh_type)):
+            if plsh_label == plsh_type[i].id:
+                # assigned but never used
+                # plsh_id = plsh_label
+                self.PlanShapeCB.val(i)
+                self.taxt_PlanShapeCBSelect(None)
+                break
+        else:
+            ret_s.s = "Not identified '" + plsh_label + "' as specification of shape of the building plan."
+            return (False)
+
+
+        #
+        # Structural irregularity
+        #
+        # var stir, stir_items, stir_label, stir_id, stir_vals, stir_atom
+        plir_id = ""; plse_id = ""; veir_id = ""; vese_id = ""
+        ir_values = [ -1, -1, -1, -1, -1 ]
+
+        stir = sar[11].split('+')
+        stir_label = stir[0]
+
+        for i in range(0, len(stir_type)):
+            if stir_label == stir_type[i].id:
+                stir_id = stir_label
+                ir_values[0] = i
+                break
+        else:
+            ret_s.s = "Not identified '" + stir_label + "' as specification of shape of the building plan."
+            return (False)
+
+        if (stir_id != "IRIR" and
+            len(stir) > 1):
+            ret_s.s = "Structural irregularity not defined properly."
+            return (False)
+
+
+        for sub_i in range(1, len(stir)):
+            stir_atom = stir[sub_i]
+            s_items = stir_atom.split(':')
+            if s_items.length != 2:
+                ret_s.s = "'" + stir[sub_i] + "' not define properly as specification of '" + stir_id + "' type of irregularity."
+                return (False)
+
+            s_label = s_items[0]
+
+            # Plan structural irregularity - primary
+            if s_label == "IRPP":
+                completed = False
+                for i in range(0, len(plan_irre)):
+                    if stir_atom == plan_irre[i].id:
+                        plir_id = stir_atom
+                        ir_values[1] = i
+                        break
+                else:
+                    completed = True
+
+                if not completed:
+                    continue
+
+
+            elif s_label == "IRPS":
+                completed = False
+                for i in range(0, len(plan_seco)):
+                    if stir_atom == plan_seco[i].id:
+                        plse_id = stir_atom
+                        ir_values[3] = i
+                        break
+                else:
+                    completed = True
+
+                if not completed:
+                    continue
+
+            elif s_label == "IRVP":
+                completed = False
+                for i in range(0, len(vert_irre)):
+                    if stir_atom == vert_irre[i].id:
+                        veir_id = stir_atom
+                        ir_values[2] = i
+                        break
+                else:
+                    completed = True
+
+                if not completed:
+                    continue
+
+
+            elif s_label == "IRVS":
+                completed = False
+                for i in range(0, len(vert_seco)):
+                    if stir_atom == vert_seco[i].id:
+                        vese_id = stir_atom
+                        ir_values[4] = i
+                        break
+                else:
+                    completed = True
+
+                if not completed:
+                    continue
+
+            ret_s.s = "Not identified '" + stir_atom + "' as specification of structural irregularity."
+            return (False)
+
+
+        if plir_id == "IRPP:IRN" and plse_id != "":
+            ret_s.s = "'" + plir_id + "' and '" + plse_id + "' are not a valid specification of structural irregularity."
+            return (False)
+
+        if veir_id == "IRVP:IRN" and vese_id != "":
+            ret_s.s = "'" + veir_id + "' and '" + vese_id + "' are not a valid specification of structural irregularity."
+            return (False)
+
+
+        # all data are retrieved before the population phase to avoid unrequired reset of values permformed
+        # by hierarchical ancestors
+        if ir_values[0] > -1:
+            self.RegularityCB1.val(ir_values[0])
+            self.taxt_RegularityCB1Select(None)
+
+        if ir_values[1] > -1:
+            self.RegularityCB2.val(ir_values[1])
+            self.taxt_RegularityCB2Select(None)
+
+        if ir_values[2] > -1:
+            self.RegularityCB3.val(ir_values[2])
+            self.taxt_RegularityCB3Select(None)
+
+        if ir_values[3] > -1:
+            self.RegularityCB4.val(ir_values[3])
+            self.taxt_RegularityCB4Select(None)
+
+        if ir_values[4] > -1:
+            self.RegularityCB5.val(ir_values[4])
+            self.taxt_RegularityCB5Select(None)
+
+
+        #
+        #  Exterior wall
+        #
+        # var wall, wall_items, wall_label, wall_id, wall_vals, wall_atom
+        wall = sar[12].split('+')
+        wall_label = wall[0]
+        if len(wall) != 1:
+            ret_s.s = "Exterior walls not defined properly."
+            return (False)
+
+
+        for i in range(0, len(wall_type)):
+            if wall_label == wall_type[i].id:
+                # 'wall_id' assigned but not used
+                # wall_id = wall_label
+                self.WallsCB.val(i)
+                self.taxt_WallsCBSelect(None)
+                break
+        else:
+            ret_s.s = "Not identified '" + wall_label + "' as specification of exterior walls."
+            return (False)
+
+
+        #
+        #  Roof
+        #
+        # roof shape
+        # var rosh, rosh_items, rosh_label, rosh_id, rosh_vals, rosh_atom
+        roof_system_set = False
+        # var roof_system_val
+
+        rosh = sar[13].split('+')
+        # rosh_label assigned but never used
+        # rosh_label = rosh[0]
+
+        for sub_i in range(0, len(rosh)):
+            rosh_atom = rosh[sub_i]
+
+            # roof shape
+            completed = False
+            for i in range(0, len(roof_shap)):
+                if rosh_atom == roof_shap[i].id:
+                    self.RoofCB1.val(i)
+                    self.taxt_RoofCB1Select(None)
+                    break
+            else:
+                completed = True
+
+            if not completed:
+                continue
+
+            # roof covering
+            completed = False
+            for i in range(0, len(roof_cove)):
+                if rosh_atom == roof_cove[i].id:
+                    self.RoofCB2.val(i)
+                    self.taxt_RoofCB2Select(None)
+                    break
+            else:
+                completed = True
+
+            if not completed:
+                continue
+
+            # roof system material
+            completed = False
+            for i in range(0, len(roof_mate)):
+                if rosh_atom == roof_mate[i].id:
+                    roof_system_set = True
+                    roof_system_val = rosh_atom
+
+                    self.RoofCB3.val(i)
+                    self.taxt_RoofCB3Select(None)
+                    break
+            else:
+                completed = True
+
+            if not completed:
+                continue
+
+            # roof connections
+            completed = False
+            for i in range(0, len(roof_conn)):
+                if rosh_atom == roof_conn[i].id:
+                    self.RoofCB5.val(i)
+                    self.taxt_RoofCB5Select(None)
+                    break
+            else:
+                completed = True
+
+            if not completed:
+                continue
+
+            if roof_system_set:
+                # roof connections
+                completed = False
+                for i in range(0, len(roof_sys[roof_system_val])):
+                    if rosh_atom == roof_sys[roof_system_val][i].id:
+                        self.RoofCB4.val(i)
+                        self.taxt_RoofCB4Select(None)
+                        break
+                else:
+                    completed = True
+
+                if not completed:
+                    continue
+
+            ret_s.s = "Not identified '" + rosh_atom + "' as specification of roof."
+            return (False)
+
+
+        #
+        #  Floor
+        #
+        # var flma, flma_items, flma_label, flma_vals, flma_atom
+        flma_id = -1
+
+        flma = sar[14].split('+')
+        # 'flma_label' assigned but never used
+        # flma_label = flma[0]
+
+        for sub_i in range(0, len(flma)):
+            flma_atom = flma[sub_i]
+
+            # floor system material
+            completed = False
+            for i in range(0, len(floo_syma)):
+
+                if flma_atom == floo_syma[i].id:
+                    flma_id = floo_syma[i].id
+                    self.FloorCB1.val(i)
+                    self.taxt_FloorCB1Select(None)
+                    break
+            else:
+                completed = True
+
+            if not completed:
+                continue
+
+            # floor system type
+            completed = False
+            for i in range(0, len(floo_syty)):
+                if flma_atom == floo_syty[i].id:
+                    self.FloorCB3.val(i)
+                    self.taxt_FloorCB3Select(None)
+                    break
+            else:
+                completed = True
+
+            if not completed:
+                continue
+
+            if flma_id != -1:
+                # floor connections
+                completed = False
+                for i in range(0, len(floo_conn[flma_id])):
+                    if flma_atom == floo_conn[flma_id][i].id:
+                        self.FloorCB2.val(i)
+                        self.taxt_FloorCB2Select(None)
+                        break
+
+                else:
+                    completed = True
+
+                if not completed:
+                    continue
+
+
+            ret_s.s = "Not identified '" + flma_atom + "' as specification of floor."
+            return (False)
+
+
+        #
+        #  Foundation
+        #
+        # var foun, foun_items, foun_label, foun_id, foun_vals, foun_atom
+        foun = sar[15].split('+')
+        foun_label = foun[0]
+
+        if len(foun) != 1:
+            ret_s.s = "Foundations not defined properly."
+            return (False)
+
+        for i in range(0, len(foun_type)):
+            if foun_label == foun_type[i].id:
+                # 'foun_id' assigned but never used
+                # foun_id = foun_label
+                self.FoundationsCB.val(i)
+                self.taxt_FoundationsCBSelect(None)
+                break
+        else:
+            ret_s.s = "Not identified '" + foun_label + "' as specification of foundation."
+            return (False)
+
+        return (True)
+
 if __name__ == '__main__':
     taxonomy = Taxonomy('taxonomy', True)
+
     print taxonomy

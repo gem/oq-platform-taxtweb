@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-from utils.taxtweb_maps import *
+from utils.taxtweb_maps import (mat_tech_grp, mat_tead_grp, mat_prop_grp,
+                                llrs_type_grp, llrs_duct_grp, occu_spec_grp,
+                                roof_sys_grp, floo_conn_grp)
+
 mat_tech =\
     { 'MAT99': [],
       'C99': mat_tech_grp[1],
@@ -146,10 +149,6 @@ floo_conn =\
       'FW':  floo_conn_grp[4],
       'FO':  []
     }
-
-gem_taxonomy_regularity_postinit = -1
-gem_taxonomy_form = ""
-gem_taxonomy_form_full = ""
 
 if __name__ == '__main__':
     print __name__
