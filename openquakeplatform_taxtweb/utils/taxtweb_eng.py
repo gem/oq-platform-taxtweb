@@ -1773,7 +1773,7 @@ class Taxonomy(object):
                 # self.noStoreysE12.addClass('gem_field_alert')
                 h12 = False
 
-            elif int(self.noStoreysE11.val()) == int(self.noStoreysE12.val()):
+            elif h11 is True and int(self.noStoreysE11.val()) == int(self.noStoreysE12.val()):
                 validate_msg += "Number of storey above ground: invalid range."
                 # self.noStoreysE12.addClass('gem_field_alert')
                 h12 = False
@@ -1812,7 +1812,7 @@ class Taxonomy(object):
                 # self.noStoreysE22.addClass('gem_field_alert')
                 h22 = False
 
-            elif int(self.noStoreysE21.val()) == int(self.noStoreysE22.val()):
+            elif h21 is True and int(self.noStoreysE21.val()) == int(self.noStoreysE22.val()):
                 validate_msg += "Number of storey above ground: invalid range."
                 # self.noStoreysE22.addClass('gem_field_alert')
                 h22 = False
@@ -1848,7 +1848,7 @@ class Taxonomy(object):
                 # self.noStoreysE32.addClass('gem_field_alert')
                 h32 = False
 
-            elif int(self.noStoreysE31.val()) == int(self.noStoreysE32.val()):
+            elif h31 is True and int(self.noStoreysE31.val()) == int(self.noStoreysE32.val()):
                 validate_msg += "Height of ground floor level: invalid range."
                 # self.noStoreysE32.addClass('gem_field_alert')
                 h32 = False
@@ -1895,7 +1895,7 @@ class Taxonomy(object):
                 # self.DateE2.addClass('gem_field_alert')
                 d2 = False
 
-            elif int(self.DateE1.val()) == int(self.DateE2.val()):
+            elif d1 is True and int(self.DateE1.val()) == int(self.DateE2.val()):
                 validate_msg += "Date of construction or retrofit: invalid range."
                 d2 = False
 

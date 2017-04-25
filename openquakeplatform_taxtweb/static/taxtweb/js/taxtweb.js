@@ -2652,7 +2652,7 @@ function taxt_BuildTaxonomy()
             gem$('#noStoreysE12').addClass('gem_field_alert');
             h12 = false;
         }
-        else if (parseInt(gem$('#noStoreysE11').val()) == parseInt(gem$('#noStoreysE12').val())) {
+        else if (h11 == true && parseInt(gem$('#noStoreysE11').val()) == parseInt(gem$('#noStoreysE12').val())) {
             validate_msg += "Number of storey above ground: invalid range.";
             gem$('#noStoreysE12').addClass('gem_field_alert');
             h12 = false;
@@ -2693,7 +2693,7 @@ function taxt_BuildTaxonomy()
             gem$('#noStoreysE22').addClass('gem_field_alert');
             h22 = false;
         }
-        else if (parseInt(gem$('#noStoreysE21').val()) == parseInt(gem$('#noStoreysE22').val())) {
+        else if (h21 == true && parseInt(gem$('#noStoreysE21').val()) == parseInt(gem$('#noStoreysE22').val())) {
             validate_msg += "Number of storey above ground: invalid range.";
             gem$('#noStoreysE22').addClass('gem_field_alert');
             h22 = false;
@@ -2733,7 +2733,7 @@ function taxt_BuildTaxonomy()
             gem$('#noStoreysE32').addClass('gem_field_alert');
             h32 = false;
         }
-        else if (parseInt(gem$('#noStoreysE31').val()) == parseInt(gem$('#noStoreysE32').val())) {
+        else if (h31 == true && parseInt(gem$('#noStoreysE31').val()) == parseInt(gem$('#noStoreysE32').val())) {
             validate_msg += "Height of ground floor level: invalid range.";
             gem$('#noStoreysE32').addClass('gem_field_alert');
             h32 = false;
@@ -2783,7 +2783,7 @@ function taxt_BuildTaxonomy()
             gem$('#DateE2').addClass('gem_field_alert');
             d2 = false;
         }
-        else if (parseInt(gem$('#DateE1').val()) == parseInt(gem$('#DateE2').val())) {
+        else if (d1 == true && parseInt(gem$('#DateE1').val()) == parseInt(gem$('#DateE2').val())) {
             validate_msg += "Date of construction or retrofit: invalid range.";
             d2 = false;
         }
