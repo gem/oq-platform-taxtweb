@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import math
+import sys, math
 
 from utils.taxtweb_maps import (
     material, date_type, occu_type, bupo_type, plsh_type, stir_type,
@@ -7,6 +7,7 @@ from utils.taxtweb_maps import (
     roof_cove, roof_mate, roof_conn, floo_syma, floo_syty, foun_type,)
 from utils.taxtweb_head import (mat_tech, mat_tead, mat_prop, llrs_type,
                                 llrs_duct, occu_spec, roof_sys, floo_conn)
+from utils.taxonomy import taxonomy_short2full, Ret
 
 taxonomy = None
 
@@ -64,13 +65,13 @@ class TaxtSel(object):
         self._val = -1
 
     def disabled(self, disabled=None):
-        if disabled == None:
+        if disabled is None:
             return self._disabled
         else:
             self._disabled = disabled
 
     def first_disabled(self, first_disabled=None):
-        if first_disabled != None:
+        if first_disabled is not None:
             self._first_disabled = first_disabled
 
         return self._first_disabled
@@ -90,8 +91,15 @@ class TaxtSel(object):
     def val(self, val=-1):
         # print "%s VAL HERE: %d" % (self._name, val)
         if val != -1:
+            if isinstance(val, str):
+                val = self.items.index(val)
+
             if val == 0 and self._first_disabled == True:
+                raise ValueError("first disabled and val == 0")
+
+            if val < -1 or val > len(self._items):
                 raise ValueError
+
             self._val = val
             if self._change_cb:
                 self._change_cb(self)
@@ -178,10 +186,11 @@ class TaxtRadio(object):
 
 
 class TaxtStr(object):
-    def __init__(self, val=None, change_cb=None, disabled=None):
+    def __init__(self, name, val="0", change_cb=None, disabled=None):
         self._val = val
         self._change_cb = change_cb
         self._disabled = disabled
+        self._name = name
 
     def val(self, val=None):
         if val == None:
@@ -198,7 +207,8 @@ class TaxtStr(object):
         else:
             self._disabled = disabled
 
-
+    def __str__(self):
+        return "%s" % self._val
 
 
 class Taxonomy(object):
@@ -208,6 +218,7 @@ class Taxonomy(object):
         self._gem_taxonomy_regularity_postinit = -1
         self._gem_taxonomy_form = ""
         self._gem_taxonomy_form_full = ""
+        self._virt_sfx = ""
 
         if full:
             self.OutTypeCB = TaxtSel('OutTypeCB', ['Full',
@@ -277,8 +288,8 @@ class Taxonomy(object):
                                   'Exact number of storeys',
                                   'Approximate number of storeys'],
                                  val=0, change_cb=self.taxt_HeightCB1Select)
-        self.noStoreysE11 = TaxtStr(change_cb=self.taxt_HeightCB1Select)
-        self.noStoreysE12 = TaxtStr(change_cb=self.taxt_HeightCB1Select)
+        self.noStoreysE11 = TaxtStr('noStoreysE11', change_cb=self.taxt_HeightCB1Select)
+        self.noStoreysE12 = TaxtStr('noStoreysE12', change_cb=self.taxt_HeightCB1Select)
 
 
 
@@ -287,21 +298,21 @@ class Taxonomy(object):
                                   'Exact number of storeys',
                                   'Approximate number of storeys'],
                                  val=0, change_cb=self.taxt_HeightCB2Select)
-        self.noStoreysE21 = TaxtStr(change_cb=self.taxt_HeightCB2Select)
-        self.noStoreysE22 = TaxtStr(change_cb=self.taxt_HeightCB2Select)
+        self.noStoreysE21 = TaxtStr('noStoreysE21', change_cb=self.taxt_HeightCB2Select)
+        self.noStoreysE22 = TaxtStr('noStoreysE22', change_cb=self.taxt_HeightCB2Select)
 
         self.HeightCB3 = TaxtSel('HeightCB3', ['Height above grade unknown',
                                   'Range of height above grade',
                                   'Exact height above grade',
                                   'Approximate height above grade'],
                                  val=0, change_cb=self.taxt_HeightCB3Select)
-        self.noStoreysE31 = TaxtStr(change_cb=self.taxt_HeightCB3Select)
-        self.noStoreysE32 = TaxtStr(change_cb=self.taxt_HeightCB3Select)
+        self.noStoreysE31 = TaxtStr('noStoreysE31', change_cb=self.taxt_HeightCB3Select)
+        self.noStoreysE32 = TaxtStr('noStoreysE32', change_cb=self.taxt_HeightCB3Select)
 
         self.HeightCB4 = TaxtSel('HeightCB4', ['Unknown slope',
                                   'Slope of the ground'],
                                   val=0, change_cb=self.taxt_HeightCB4Select)
-        self.noStoreysE41 = TaxtStr(change_cb=self.taxt_HeightCB4Select)
+        self.noStoreysE41 = TaxtStr('noStoreysE41', change_cb=self.taxt_HeightCB4Select)
 
         self.DateCB1 = TaxtSel('DateCB1', ['Year unknown',
                                 'Exact date of construction or retrofit',
@@ -309,8 +320,8 @@ class Taxonomy(object):
                                 'Latest possible date of construction or retrofit',
                                 'Approximate date of construction or retrofit'],
                                val=0, change_cb=self.taxt_DateCB1Select)
-        self.DateE1 = TaxtStr(change_cb=self.taxt_DateE1Change)
-        self.DateE2 = TaxtStr(change_cb=self.taxt_DateE2Change)
+        self.DateE1 = TaxtStr('DateE1', change_cb=self.taxt_DateE1Change)
+        self.DateE2 = TaxtStr('DateE2', change_cb=self.taxt_DateE2Change)
 
         self.OccupancyCB1 = TaxtSel('OccupancyCB1', ['Unknown occupancy type',
                                      'Residential',
@@ -447,7 +458,202 @@ class Taxonomy(object):
                                  'Floor-wall diaphragm connection present'],
                                 val=0, change_cb=self.taxt_FloorCB3Select)
 
-        self.resultE = TaxtStr()
+        self.resultE = TaxtStr('resultE')
+        self.resultE_virt = TaxtStr('resultE_virt')
+
+        self.taxt_ValidateMaterial1()
+        self.taxt_ValidateMaterial2()
+        self.taxt_ValidateRoof()
+        self.taxt_ValidateFloor()
+        self.taxt_ValidateHeight()
+        self.taxt_ValidateDate()
+        self.taxt_ValidateRegularity()
+        self.taxt_ValidateOccupancy()
+        self.taxt_BuildTaxonomy()
+
+    def taxt_Initiate(self, full):
+        if full:
+            self.OutTypeCB.items(['Full',
+                                  'Omit Unknown',
+                                  'Short'], val=2)
+
+        self.DirectionCB.checked(True)
+
+        self.MaterialCB11.items(['Unknown Material',
+                                 'Concrete, unknown reinforcement',
+                                 'Concrete, unreinforced',
+                                 'Concrete, reinforced',
+                                 'Concrete, composite with steel section',
+                                 'Steel',
+                                 'Metal (except steel)',
+                                 'Masonry, unknown reinforcement',
+                                 'Masonry, unreinforced',
+                                 'Masonry, confined',
+                                 'Masonry, reinforced',
+                                 'Earth, unknown reinforcement',
+                                 'Earth, unreinforced',
+                                 'Earth, reinforced',
+                                 'Wood',
+                                 'Other material'])
+
+        self.MaterialCB12.items(['Unknown Material',
+                                 'Concrete, unknown reinforcement',
+                                 'Concrete, unreinforced',
+                                 'Concrete, reinforced',
+                                 'Concrete, composite with steel section',
+                                 'Steel',
+                                 'Metal (except steel)',
+                                 'Masonry, unknown reinforcement',
+                                 'Masonry, unreinforced',
+                                 'Masonry, confined',
+                                 'Masonry, reinforced',
+                                 'Earth, unknown reinforcement',
+                                 'Earth, unreinforced',
+                                 'Earth, reinforced',
+                                 'Wood',
+                                 'Other material'])
+
+        self.HeightCB1.items(['Unknown number of storeys',
+                              'Range of the number of storeys',
+                              'Exact number of storeys',
+                              'Approximate number of storeys'])
+
+
+
+        self.HeightCB2.items(['Unknown number of storeys',
+                              'Range of the number of storeys',
+                              'Exact number of storeys',
+                              'Approximate number of storeys'])
+
+        self.HeightCB3.items(['Height above grade unknown',
+                              'Range of height above grade',
+                              'Exact height above grade',
+                              'Approximate height above grade'])
+
+        self.HeightCB4.items(['Unknown slope',
+                              'Slope of the ground'])
+
+        self.DateCB1.items(['Year unknown',
+                            'Exact date of construction or retrofit',
+                            'Bounds for the date of construction or retrofit',
+                            'Latest possible date of construction or retrofit',
+                            'Approximate date of construction or retrofit'])
+
+        self.OccupancyCB1.items(['Unknown occupancy type',
+                                 'Residential',
+                                 'Commercial and public',
+                                 'Mixed use',
+                                 'Industrial',
+                                 'Agriculture',
+                                 'Assembly',
+                                 'Government',
+                                 'Education',
+                                 'Other occupancy type'])
+
+        self.PositionCB.items(['Unknown building position',
+                               'Detached building',
+                               'Adjoining building(s) on one side',
+                               'Adjoining building(s) on two sides',
+                               'Adjoining building(s) on three sides'])
+
+        self.PlanShapeCB.items(['Unknown plan shape',
+                                'Square, solid',
+                                'Square, with an opening in plan',
+                                'Rectangular, solid',
+                                'Rectangular, with an opening in plan',
+                                'L-shape',
+                                'Curved, solid (e.g. circular, eliptical, ovoid)',
+                                'Curved, with an opening in plan',
+                                'Triangular, solid',
+                                'Triangular, with an opening in plan',
+                                'E-shape',
+                                'H-shape',
+                                'S-shape',
+                                'T-shape',
+                                'U- or C-shape',
+                                'X-shape',
+                                'Y-shape',
+                                'Polygonal, solid',
+                                'Polygonal, with an opening in plan',
+                                'Irregular plan shape'])
+
+        self.RegularityCB1.items(['Unknown structural irregularity',
+                                  'Regular structure',
+                                  'Irregular structure'])
+
+        self.WallsCB.items(['Unknown material of exterior walls',
+                            'Concrete exterior walls',
+                            'Glass exterior walls',
+                            'Earthen exterior walls',
+                            'Masonry exterior walls',
+                            'Metal exterior walls',
+                            'Vegetative exterior walls',
+                            'Wooden exterior walls',
+                            'Stucco finish on light framing for exterior walls',
+                            'Plastic/vinyl exterior walls, various',
+                            'Cement-based boards for exterior walls',
+                            'Material of exterior walls, other'])
+
+        self.RoofCB1.items(['Unknown roof shape',
+                            'Flat',
+                            'Pitched with gable ends',
+                            'Pitched and hipped',
+                            'Pitched with dormers',
+                            'Monopitch',
+                            'Sawtooth',
+                            'Curved',
+                            'Complex regular',
+                            'Complex irregular',
+                            'Roof shape, other'])
+        self.RoofCB2.items(['Unknown roof covering',
+                            'Concrete roof, no covering',
+                            'Clay or concrete tile roof covering',
+                            'Fibre cement or metal tile covering',
+                            'Membrane roof covering',
+                            'Slate roof covering',
+                            'Stone slab roof covering',
+                            'Metal or asbestos sheet covering',
+                            'Wooden or asphalt shingle covering',
+                            'Vegetative roof covering',
+                            'Earthen roof covering',
+                            'Solar panelled roofs',
+                            'Tensile membrane or fabric roof',
+                            'Roof covering, other'])
+
+        self.RoofCB3.items(['Roof material, unknown',
+                            'Masonry roof',
+                            'Earthen roof',
+                            'Concrete roof',
+                            'Metal roof',
+                            'Wooden roof',
+                            'Fabric roof',
+                            'Roof material,other'])
+
+        self.RoofCB5.items(['Roof-wall diaphragm connection unknown',
+                            'Roof-wall diaphragm connection not provided',
+                            'Roof-wall diaphragm connection present',
+                            'Roof tie-down unknown',
+                            'Roof tie-down not provided',
+                            'Roof tie-down present'])
+
+        self.FoundationsCB.items(['Unknown foundation system',
+                                  'Shallow foundation, with lateral capacity',
+                                  'Shallow foundation, with no lateral capacity',
+                                  'Deep foundation, with lateral capacity',
+                                  'Deep foundation, with no lateral capacity',
+                                  'Foundation, other'])
+
+        self.FloorCB1.items(['Floor material, unknown',
+                             'No elevated or suspended floor material (single-storey)',
+                             'Masonry floor',
+                             'Earthen floor',
+                             'Concrete floor',
+                             'Metal floor',
+                             'Wooden floor',
+                             'Floor material, other'])
+        self.FloorCB3.items(['Floor-wall diaphragm connection, unknown',
+                            'Floor-wall diaphragm connection not provided',
+                             'Floor-wall diaphragm connection present'])
 
         self.taxt_ValidateMaterial1()
         self.taxt_ValidateMaterial2()
@@ -537,7 +743,7 @@ class Taxonomy(object):
             self.SystemCB22.val(self.SystemCB21.val())
             self.taxt_SystemCB22Select()
 
-    def taxt_MaterialCB11Select(self, obj):
+    def taxt_MaterialCB11Select(self, obj=None):
         self.taxt_ValidateMaterial1()
         self.taxt_SetDirection2()
         if self.DirectionCB.checked():
@@ -1114,14 +1320,14 @@ class Taxonomy(object):
                 'Vaulted masonry roof',
                 'Shallow-arched masonry roof',
                 'Composite masonry and concrete roof system',
-            ], selected=0)
+            ], val=0)
             self.RoofCB4.disabled(False)
 
         elif self.RoofCB3.val() == 2:
             self.RoofCB4.items([
                 'Earthen roof, unknown',
                 'Vaulted earthen roofs',
-            ], selected=0)
+            ], val=0)
             self.RoofCB4.disabled(False)
 
         elif self.RoofCB3.val() == 3:
@@ -1131,7 +1337,7 @@ class Taxonomy(object):
                 'Cast-in-place beam-supported RC roof',
                 'Precast concrete roof with RC topping',
                 'Precast concrete roof without RC topping',
-            ], selected=0)
+            ], val=0)
             self.RoofCB4.disabled(False)
 
         elif self.RoofCB3.val() == 4:
@@ -1140,7 +1346,7 @@ class Taxonomy(object):
                 'Metal beams or trusses supporting light roofing',
                 'Metal roof beams supporting precast concrete slabs',
                 'Composite steel roof deck and concrete slab',
-            ], selected=0)
+            ], val=0)
             self.RoofCB4.disabled(False)
 
         elif self.RoofCB3.val() == 5:
@@ -1151,14 +1357,14 @@ class Taxonomy(object):
                 'Wood-based sheets on rafters or purlins',
                 'Plywood panels or other light-weigth panels for roof',
                 'Bamboo, straw or thatch roof',
-            ], selected=0)
+            ], val=0)
             self.RoofCB4.disabled(False)
 
         elif self.RoofCB3.val() == 6:
             self.RoofCB4.items([
                 'Inflatable or tensile membrane roof',
                 'Fabric roof, other',
-            ], selected=0)
+            ], val=0)
             self.RoofCB4.disabled(False)
 
 
@@ -1173,13 +1379,13 @@ class Taxonomy(object):
                 'Vaulted masonry floor',
                 'Shallow-arched masonry floor',
                 'Composite cast-in place RC and masonry floor',
-            ], selected=0)
+            ], val=0)
             self.FloorCB2.disabled(False)
 
         elif self.FloorCB1.val() == 3:
             self.FloorCB2.items([
                 'Earthen floor, unknown',
-            ], selected=0)
+            ], val=0)
             self.FloorCB2.disabled(False)
 
         elif self.FloorCB1.val() == 4:
@@ -1189,7 +1395,7 @@ class Taxonomy(object):
                 'Cast-in-place beam-supported RC floor',
                 'Precast concrete floor with RC topping',
                 'Precast concrete floor without RC topping',
-            ], selected=0)
+            ], val=0)
             self.FloorCB2.disabled(False)
 
         elif self.FloorCB1.val() == 5:
@@ -1198,7 +1404,7 @@ class Taxonomy(object):
                 'Metal beams, trusses or joists supporting light flooring',
                 'Metal floor beams supporting precast concrete slabs',
                 'Composite steel deck and concrete slab',
-            ], selected=0)
+            ], val=0)
             self.FloorCB2.disabled(False)
 
         elif self.FloorCB1.val() == 6:
@@ -1208,7 +1414,7 @@ class Taxonomy(object):
                 'Wood beams/trusses & joists supporting heavy flooring',
                 'Wood-based sheets on joists or beams',
                 'Plywood panels or other light-weigth panels for floor',
-            ], selected=0)
+            ], val=0)
             self.FloorCB2.disabled(False)
 
 
@@ -1333,8 +1539,8 @@ class Taxonomy(object):
             reg_cb2_items.append('Other plan irregularity')
 
             self.RegularityCB2.disabled(False)
-            self.RegularityCB2.items(reg_cb2_items, val=0)
-            self.RegularityCB2.val(default_cb2)
+            self.RegularityCB2.items(reg_cb2_items, val=default_cb2)
+            # self.RegularityCB2.val(default_cb2)
 
             # /* RegularityCB3 related part */
             reg_cb3_items = []
@@ -1354,8 +1560,8 @@ class Taxonomy(object):
             reg_cb3_items.append('Change in vertical structure')
             reg_cb3_items.append('Other vertical irregularity')
             self.RegularityCB3.disabled(False)
-            self.RegularityCB3.items(reg_cb3_items, val=0)
-            self.RegularityCB3.val(default_cb3)
+            self.RegularityCB3.items(reg_cb3_items, val=default_cb3)
+            # self.RegularityCB3.val(default_cb3)
 
         self.taxt_RegularityCB2Select(-1)
         self.taxt_RegularityCB3Select(-1)
@@ -1669,7 +1875,7 @@ class Taxonomy(object):
 
 
         if date1 > 0:
-            if not is_not_negative_int(self.DateE1.val()) or self.DateE1.val().length > 4:
+            if not is_not_negative_int(self.DateE1.val()) or len(self.DateE1.val()) > 4:
                 if date1 == 2:
                     validate_msg += "Date of construction or retrofit: lower limit is not a valid date. "
                 else:
@@ -1684,7 +1890,7 @@ class Taxonomy(object):
 
 
         if date1 == 2:
-            if not is_not_negative_int(self.DateE2.val()) or self.DateE2.val().length > 4:
+            if not is_not_negative_int(self.DateE2.val()) or len(self.DateE2.val()) > 4:
                 validate_msg += "Date of construction or retrofit: upper limit is not a valid date. "
                 # self.DateE2.addClass('gem_field_alert')
                 d2 = False
@@ -1716,18 +1922,18 @@ class Taxonomy(object):
             self._gem_taxonomy_form = ResTax
             self._gem_taxonomy_form_full = ResTaxFull
 
-            self.resultE.val(ResTax)
+            getattr(self, "resultE" + self._virt_sfx).val(ResTax)
             # self.permalink.attr("href", taxt_prefix + "/" +  ResTaxFull)
 
         else:
             self._gem_taxonomy_form = ""
             self._gem_taxonomy_form_full = ""
-            self.resultE.val(validate_msg)
+            getattr(self, "resultE" + self._virt_sfx).val(validate_msg)
             # self.permalink.attr("href", taxt_prefix)
 
 
     def BuildTaxonomyString(self, out_type):
-        taxonomy = [0] * 50
+        taxonomy = [""] * 50
 
         ResTax = None
         direction1 = None
@@ -2910,6 +3116,18 @@ class Taxonomy(object):
         # var i
         # var sar, subar, el
 
+        self.noStoreysE11.val('')
+        self.noStoreysE12.val('')
+        self.noStoreysE21.val('')
+        self.noStoreysE22.val('')
+        self.noStoreysE31.val('')
+        self.noStoreysE32.val('')
+        self.noStoreysE41.val('')
+        self.DateE1.val('')
+        self.DateE2.val('')
+        self.resultE.val('')
+        self.resultE_virt.val('')
+
         sar = s.split('/')
         self.DirectionCB.checked(False)
 
@@ -2963,7 +3181,7 @@ class Taxonomy(object):
 
 
             for i in range(0, len(material)):
-                if mat[0] == material[i].id:
+                if mat[0] == material[i]['id']:
                     mat_id = mat[0]
                     getattr(self, mat_ddown[direct]).val(i)
                     getattr(self, mat_selec[direct])()
@@ -2978,7 +3196,7 @@ class Taxonomy(object):
                 # Material technology
                 completed = False
                 for i in range( 0, len(mat_tech[mat_id])):
-                    if mat_atom == mat_tech[mat_id][i].id:
+                    if mat_atom == mat_tech[mat_id][i]['id']:
                         getattr(self, mat_tecn_ddown[direct]).val(i)
                         getattr(self, mat_tecn_selec[direct])()
                         break
@@ -2991,7 +3209,7 @@ class Taxonomy(object):
                 # Material technology added
                 completed = False
                 for i in range(0, len(mat_tead[mat_id])):
-                    if mat_atom == mat_tead[mat_id][i].id:
+                    if mat_atom == mat_tead[mat_id][i]['id']:
                         getattr(self, mat_tead_ddown[direct]).val(i)
                         getattr(self, mat_tead_selec[direct])()
                         break
@@ -3004,7 +3222,7 @@ class Taxonomy(object):
                 # Material properties
                 completed = False
                 for i in range(0, len(mat_prop[mat_id])):
-                    if mat_atom == mat_prop[mat_id][i].id:
+                    if mat_atom == mat_prop[mat_id][i]['id']:
                         getattr(self, mat_prop_ddown[direct]).val(i)
                         getattr(self, mat_prop_selec[direct])()
                         break
@@ -3022,7 +3240,7 @@ class Taxonomy(object):
             #  Lateral load resisting system: type
             #
             for i in range(0, len(llrs_type[mat_id])):
-                llrs_id = llrs_type[mat_id][i].id
+                llrs_id = llrs_type[mat_id][i]['id']
 
                 if llrs[0] == llrs_id:
                     getattr(self, llrs_ddown[direct]).val(i)
@@ -3038,7 +3256,7 @@ class Taxonomy(object):
                 # Ductility
                 completed = False
                 for i in range(0, len(llrs_duct[llrs_id])):
-                    if llrs_atom == llrs_duct[llrs_id][i].id:
+                    if llrs_atom == llrs_duct[llrs_id][i]['id']:
                         getattr(self, llrs_duct_ddown[direct]).val(i)
                         getattr(self, llrs_duct_selec[direct])()
                         break
@@ -3071,8 +3289,8 @@ class Taxonomy(object):
                   'HD99',  None  , 'HD' ]
 
         # assigned but never used
-        # h_pref = [ 'H', 'HB', 'HF', 'HD' ]
-        h_cbid = [  1 ,   2 ,   3,    4  ]
+        # h_pref = ['H', 'HB', 'HF', 'HD']
+        h_cbid =   ['1',  '2',  '3',  '4']
         h_title = [ 'Number of storey above ground',
                     'Number of storey below ground',
                     'Height of ground floor level above grade',
@@ -3129,7 +3347,7 @@ class Taxonomy(object):
 
                 h_vals = h_items[1].split(',')
                 if len(h_vals) != 1:
-                    ret_s.s = "Height: '" + h_label + "' type requires exactly 1 value, " + is_or_are_given(h_vals.length)
+                    ret_s.s = "Height: '" + h_label + "' type requires exactly 1 value, " + is_or_are_given(len(h_vals))
                     return (False)
 
             if h_type != hsfx_99:
@@ -3169,7 +3387,8 @@ class Taxonomy(object):
 
             else:
                 # missing case for H99 case
-                getattr(self, 'HeightCB' + h_cbid[h_grp]).val(h_type - 1 if h_map[h_id] == 'HD' else h_type)
+                the_value = h_type - 1 if h_map[h_id] == 'HD' else h_type
+                getattr(self, 'HeightCB' + h_cbid[h_grp]).val(the_value)
                 h_cbfun[h_grp](None)
 
 
@@ -3189,7 +3408,7 @@ class Taxonomy(object):
 
 
         for i in range(0, len(date_type)):
-            if date_label == date_type[i].id:
+            if date_label == date_type[i]['id']:
                 date_index = i
                 date_id = date_label
                 break
@@ -3272,7 +3491,7 @@ class Taxonomy(object):
 
 
         for i in range(0, len(occu_type)):
-            if occu_label == occu_type[i].id:
+            if occu_label == occu_type[i]['id']:
                 occu_id = occu_label
                 self.OccupancyCB1.val(i)
                 self.taxt_OccupancyCB1Select(None)
@@ -3283,17 +3502,17 @@ class Taxonomy(object):
 
 
         if occu_label != 'OC99':
-            if occu.length > 1:
+            if len(occu) > 1:
                 # Occupancy specification
                 occu_atom = occu[1]
 
             else:
                 # select the first item of proper sub-selection
-                occu_atom = occu_spec[occu_id][0].id
+                occu_atom = occu_spec[occu_id][0]['id']
 
 
             for i in range(0, len(occu_spec[occu_id])):
-                if occu_atom == occu_spec[occu_id][i].id:
+                if occu_atom == occu_spec[occu_id][i]['id']:
                     self.OccupancyCB2.val(i)
                     self.taxt_OccupancyCB2Select(None)
                     break
@@ -3315,7 +3534,7 @@ class Taxonomy(object):
 
 
         for i in range(0, len(bupo_type)):
-            if bupo_label == bupo_type[i].id:
+            if bupo_label == bupo_type[i]['id']:
                 # 'bupo_id' assigned but never used
                 # bupo_id = bupo_label
                 self.PositionCB.val(i)
@@ -3339,7 +3558,7 @@ class Taxonomy(object):
 
 
         for i in range(0, len(plsh_type)):
-            if plsh_label == plsh_type[i].id:
+            if plsh_label == plsh_type[i]['id']:
                 # assigned but never used
                 # plsh_id = plsh_label
                 self.PlanShapeCB.val(i)
@@ -3361,7 +3580,7 @@ class Taxonomy(object):
         stir_label = stir[0]
 
         for i in range(0, len(stir_type)):
-            if stir_label == stir_type[i].id:
+            if stir_label == stir_type[i]['id']:
                 stir_id = stir_label
                 ir_values[0] = i
                 break
@@ -3378,7 +3597,7 @@ class Taxonomy(object):
         for sub_i in range(1, len(stir)):
             stir_atom = stir[sub_i]
             s_items = stir_atom.split(':')
-            if s_items.length != 2:
+            if len(s_items) != 2:
                 ret_s.s = "'" + stir[sub_i] + "' not define properly as specification of '" + stir_id + "' type of irregularity."
                 return (False)
 
@@ -3388,7 +3607,7 @@ class Taxonomy(object):
             if s_label == "IRPP":
                 completed = False
                 for i in range(0, len(plan_irre)):
-                    if stir_atom == plan_irre[i].id:
+                    if stir_atom == plan_irre[i]['id']:
                         plir_id = stir_atom
                         ir_values[1] = i
                         break
@@ -3402,7 +3621,7 @@ class Taxonomy(object):
             elif s_label == "IRPS":
                 completed = False
                 for i in range(0, len(plan_seco)):
-                    if stir_atom == plan_seco[i].id:
+                    if stir_atom == plan_seco[i]['id']:
                         plse_id = stir_atom
                         ir_values[3] = i
                         break
@@ -3415,7 +3634,7 @@ class Taxonomy(object):
             elif s_label == "IRVP":
                 completed = False
                 for i in range(0, len(vert_irre)):
-                    if stir_atom == vert_irre[i].id:
+                    if stir_atom == vert_irre[i]['id']:
                         veir_id = stir_atom
                         ir_values[2] = i
                         break
@@ -3429,7 +3648,7 @@ class Taxonomy(object):
             elif s_label == "IRVS":
                 completed = False
                 for i in range(0, len(vert_seco)):
-                    if stir_atom == vert_seco[i].id:
+                    if stir_atom == vert_seco[i]['id']:
                         vese_id = stir_atom
                         ir_values[4] = i
                         break
@@ -3487,7 +3706,7 @@ class Taxonomy(object):
 
 
         for i in range(0, len(wall_type)):
-            if wall_label == wall_type[i].id:
+            if wall_label == wall_type[i]['id']:
                 # 'wall_id' assigned but not used
                 # wall_id = wall_label
                 self.WallsCB.val(i)
@@ -3516,7 +3735,7 @@ class Taxonomy(object):
             # roof shape
             completed = False
             for i in range(0, len(roof_shap)):
-                if rosh_atom == roof_shap[i].id:
+                if rosh_atom == roof_shap[i]['id']:
                     self.RoofCB1.val(i)
                     self.taxt_RoofCB1Select(None)
                     break
@@ -3529,7 +3748,7 @@ class Taxonomy(object):
             # roof covering
             completed = False
             for i in range(0, len(roof_cove)):
-                if rosh_atom == roof_cove[i].id:
+                if rosh_atom == roof_cove[i]['id']:
                     self.RoofCB2.val(i)
                     self.taxt_RoofCB2Select(None)
                     break
@@ -3542,7 +3761,7 @@ class Taxonomy(object):
             # roof system material
             completed = False
             for i in range(0, len(roof_mate)):
-                if rosh_atom == roof_mate[i].id:
+                if rosh_atom == roof_mate[i]['id']:
                     roof_system_set = True
                     roof_system_val = rosh_atom
 
@@ -3558,7 +3777,7 @@ class Taxonomy(object):
             # roof connections
             completed = False
             for i in range(0, len(roof_conn)):
-                if rosh_atom == roof_conn[i].id:
+                if rosh_atom == roof_conn[i]['id']:
                     self.RoofCB5.val(i)
                     self.taxt_RoofCB5Select(None)
                     break
@@ -3572,7 +3791,7 @@ class Taxonomy(object):
                 # roof connections
                 completed = False
                 for i in range(0, len(roof_sys[roof_system_val])):
-                    if rosh_atom == roof_sys[roof_system_val][i].id:
+                    if rosh_atom == roof_sys[roof_system_val][i]['id']:
                         self.RoofCB4.val(i)
                         self.taxt_RoofCB4Select(None)
                         break
@@ -3603,8 +3822,8 @@ class Taxonomy(object):
             completed = False
             for i in range(0, len(floo_syma)):
 
-                if flma_atom == floo_syma[i].id:
-                    flma_id = floo_syma[i].id
+                if flma_atom == floo_syma[i]['id']:
+                    flma_id = floo_syma[i]['id']
                     self.FloorCB1.val(i)
                     self.taxt_FloorCB1Select(None)
                     break
@@ -3617,7 +3836,7 @@ class Taxonomy(object):
             # floor system type
             completed = False
             for i in range(0, len(floo_syty)):
-                if flma_atom == floo_syty[i].id:
+                if flma_atom == floo_syty[i]['id']:
                     self.FloorCB3.val(i)
                     self.taxt_FloorCB3Select(None)
                     break
@@ -3631,7 +3850,7 @@ class Taxonomy(object):
                 # floor connections
                 completed = False
                 for i in range(0, len(floo_conn[flma_id])):
-                    if flma_atom == floo_conn[flma_id][i].id:
+                    if flma_atom == floo_conn[flma_id][i]['id']:
                         self.FloorCB2.val(i)
                         self.taxt_FloorCB2Select(None)
                         break
@@ -3659,7 +3878,7 @@ class Taxonomy(object):
             return (False)
 
         for i in range(0, len(foun_type)):
-            if foun_label == foun_type[i].id:
+            if foun_label == foun_type[i]['id']:
                 # 'foun_id' assigned but never used
                 # foun_id = foun_label
                 self.FoundationsCB.val(i)
@@ -3671,7 +3890,102 @@ class Taxonomy(object):
 
         return (True)
 
+    def resultE_mgmt(self, taxonomy):
+
+        col_orange = '#ffdfbf'
+        col_red = '#ffbfbf'
+        col_green = '#bfffbf'
+        color = None
+        col_transparent = ''
+        error = ""
+        # $(item).css('background-color', col_orange)
+
+        #if event.type == 'input':
+        #    $(item).off('keyup', resultE_mgmt)
+
+        # ev_type = (event.type == 'blur' ? "OUT" : "IN")
+
+        #if ev_type == 'IN' and virt_sfx == '':
+        self._virt_sfx = '_virt'
+
+
+        for i in range(0, 1):
+            ret = taxonomy_short2full(taxonomy)
+
+            if ret:
+                if ret.s:
+                    error = ret.s
+                    taxonomy = ''
+                    break
+
+                else:
+#                    print "DEBUG short2full:\n  in[%s]\n out[%s]\n" % (taxonomy, ret.result)
+                    taxonomy = ret.result
+
+            else:
+                # alert("No response from server.")
+                taxonomy = ''
+                break
+
+
+            ret_s = Ret(s="")
+            # NOTE: all console.log calls will be removed
+            # after a short quarantine period
+            # console.log("PRE POP: " + taxonomy)
+            self.taxt_Initiate(False)
+
+            if self.populate(taxonomy, ret_s) == False:
+                error = ret_s.s
+                break
+
+            color = col_green
+
+        self._virt_sfx = ''
+        if error != "":
+            return (None, error)
+        else:
+            self.resultE = self.resultE_virt
+            return (self.resultE.__str__(), '')
+
+
 if __name__ == '__main__':
     taxonomy = Taxonomy('taxonomy', True)
+    if len(sys.argv) > 1:
+        line = sys.argv[1]
+        taxonomy.OutTypeCB.val(0)
+        ret = taxonomy.resultE_mgmt(line)
+        print ret
 
-    print taxonomy
+        taxonomy.OutTypeCB.val(1)
+        ret = taxonomy.resultE_mgmt(ret[0])
+        print ret
+
+        taxonomy.OutTypeCB.val(2)
+        ret = taxonomy.resultE_mgmt(ret[0])
+        print ret
+
+        if ret[0] != line:
+            print "DIFFER:\n ->[%s]\n <-[%s]\n" % (line, ret[0])
+    else:
+        with open('test/data/taxonomies.txt') as f:
+#        with open('test/data/mini.txt') as f:
+            for line in f:
+                line = line[0:-1]
+                print "============ %s =============" % line
+
+                for i in range(0, 10):
+                    if line[-1] == '/':
+                        line = line[0:-1]
+                    else:
+                        break
+
+                # print "LINE [%s]" % line
+                taxonomy.OutTypeCB.val(0)
+                ret1 = taxonomy.resultE_mgmt(line)
+                taxonomy.OutTypeCB.val(1)
+                ret2 = taxonomy.resultE_mgmt(ret1[0])
+                taxonomy.OutTypeCB.val(2)
+                ret3 = taxonomy.resultE_mgmt(ret2[0])
+
+                if ret3[0] != line:
+                    print "DIFFER:\n ->[%s]\n   [%s]\n   [%s]\n <-[%s]\n" % (line, ret1[0], ret2[0], ret3[0])
