@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-import sys, math
+import sys, math, re, io
 
-from utils.taxtweb_maps import (
+from openquakeplatform_taxtweb.utils.taxtweb_maps import (
     material, date_type, occu_type, bupo_type, plsh_type, stir_type,
     plan_irre, plan_seco, vert_irre, vert_seco, wall_type, roof_shap,
     roof_cove, roof_mate, roof_conn, floo_syma, floo_syty, foun_type,)
-from utils.taxtweb_head import (mat_tech, mat_tead, mat_prop, llrs_type,
+from openquakeplatform_taxtweb.utils.taxtweb_head import (mat_tech, mat_tead, mat_prop, llrs_type,
                                 llrs_duct, occu_spec, roof_sys, floo_conn)
-from utils.taxonomy import taxonomy_short2full, Ret
+from openquakeplatform_taxtweb.utils.taxonomy import taxonomy_short2full, Ret
 
 taxonomy = None
 
@@ -89,13 +89,9 @@ class TaxtSel(object):
         self.val(val)
 
     def val(self, val=-1):
-        # print "%s VAL HERE: %d" % (self._name, val)
         if val != -1:
             if isinstance(val, str):
                 val = self.items.index(val)
-
-            if val == 0 and self._first_disabled == True:
-                raise ValueError("first disabled and val == 0")
 
             if val < -1 or val > len(self._items):
                 raise ValueError
@@ -112,8 +108,6 @@ class TaxtSel(object):
             for k, v in enumerate(self._items):
                 if k == self._val:
                     ret += "    %02d) * [%s]\n" % (k, v)
-        #        else:
-        #           ret += "    %02d)   [%s]\n" % (k, v)
         else:
             ret += "    - no elements -\n"
 
@@ -775,8 +769,8 @@ class Taxonomy(object):
         self.taxt_BuildTaxonomy()
 
     def taxt_BreakDirection2(self, obj=None):
-        # /* the check is performed just when called with parameter (triggered indirectly
-        #   from an event or if forced by another function */
+        # the check is performed just when called with parameter (triggered indirectly)
+        # from an event or if forced by another function
         if obj is None:
             return
 
@@ -1539,8 +1533,8 @@ class Taxonomy(object):
             reg_cb2_items.append('Other plan irregularity')
 
             self.RegularityCB2.disabled(False)
-            self.RegularityCB2.items(reg_cb2_items, val=default_cb2)
-            # self.RegularityCB2.val(default_cb2)
+            self.RegularityCB2.items(reg_cb2_items)
+            self.RegularityCB2.val(default_cb2)
 
             # /* RegularityCB3 related part */
             reg_cb3_items = []
@@ -1560,8 +1554,8 @@ class Taxonomy(object):
             reg_cb3_items.append('Change in vertical structure')
             reg_cb3_items.append('Other vertical irregularity')
             self.RegularityCB3.disabled(False)
-            self.RegularityCB3.items(reg_cb3_items, val=default_cb3)
-            # self.RegularityCB3.val(default_cb3)
+            self.RegularityCB3.items(reg_cb3_items)
+            self.RegularityCB3.val(default_cb3)
 
         self.taxt_RegularityCB2Select(-1)
         self.taxt_RegularityCB3Select(-1)
@@ -3315,7 +3309,6 @@ class Taxonomy(object):
             except ValueError:
                 h_id = -1
 
-            # console.log("H_ID: " + h_id)
             if h_id == -1:
                 ret_s.s = "Height not defined properly."
                 return (False)
@@ -3375,7 +3368,6 @@ class Taxonomy(object):
                         swap = h_vals[1]
                         h_vals[1] = h_vals[0]
                         h_vals[0] = swap
-
                     getattr(self, 'noStoreysE' + h_cbid[h_grp] + '2').val(h_vals[1])
 
 
@@ -3892,11 +3884,11 @@ class Taxonomy(object):
 
     def resultE_mgmt(self, taxonomy):
 
-        col_orange = '#ffdfbf'
-        col_red = '#ffbfbf'
-        col_green = '#bfffbf'
-        color = None
-        col_transparent = ''
+        # color = None
+        # col_orange = '#ffdfbf'
+        # col_red = '#ffbfbf'
+        # col_green = '#bfffbf'
+        # col_transparent = ''
         error = ""
         # $(item).css('background-color', col_orange)
 
@@ -3908,84 +3900,138 @@ class Taxonomy(object):
         #if ev_type == 'IN' and virt_sfx == '':
         self._virt_sfx = '_virt'
 
+        try:
+            for i in range(0, 1):
+                ret = taxonomy_short2full(taxonomy)
 
-        for i in range(0, 1):
-            ret = taxonomy_short2full(taxonomy)
+                if ret:
+                    if ret.s:
+                        error = ret.s
+                        taxonomy = ''
+                        break
 
-            if ret:
-                if ret.s:
-                    error = ret.s
+                    else:
+                        taxonomy = ret.result
+
+                else:
                     taxonomy = ''
                     break
 
-                else:
-#                    print "DEBUG short2full:\n  in[%s]\n out[%s]\n" % (taxonomy, ret.result)
-                    taxonomy = ret.result
 
+                ret_s = Ret(s="")
+                # NOTE: all console.log calls will be removed
+                # after a short quarantine period
+                # console.log("PRE POP: " + taxonomy)
+                self.taxt_Initiate(False)
+
+                if self.populate(taxonomy, ret_s) == False:
+                    error = ret_s.s
+                    break
+
+                # color = col_green
+
+            self._virt_sfx = ''
+            if error != "":
+                return (None, error)
             else:
-                # alert("No response from server.")
-                taxonomy = ''
-                break
+                self.resultE = self.resultE_virt
+                return (str(self.resultE), None)
+        except Exception as ex:
+            self._virt_sfx = ''
+            return (None, "EXCEPTION: " + str(ex))
+
+    def process(self, taxt_in, type_out):
+        """
+convert an input taxonomy to a normalized form if correct else an error is returned.
+    taxt_in:   taxonomy input string
+    type_out:  type of taxonomy output
+               0, "full", 1: "without unknown", 2: "short"
+RETURN:
+(taxonomy_out, error_str)
+    taxonomy_out: a taxonomy if success else None
+    error_str: None if success else a string with the error description
+"""
+        self.OutTypeCB.val(type_out)
+        return self.resultE_mgmt(taxt_in)
 
 
-            ret_s = Ret(s="")
-            # NOTE: all console.log calls will be removed
-            # after a short quarantine period
-            # console.log("PRE POP: " + taxonomy)
-            self.taxt_Initiate(False)
-
-            if self.populate(taxonomy, ret_s) == False:
-                error = ret_s.s
-                break
-
-            color = col_green
-
-        self._virt_sfx = ''
-        if error != "":
-            return (None, error)
-        else:
-            self.resultE = self.resultE_virt
-            return (self.resultE.__str__(), '')
+def taxonomy_process(taxt_in, type_out):
+    """
+convert an input taxonomy to a normalized form if correct else an error is returned.
+    taxt_in:   taxonomy input string
+    type_out:  type of taxonomy output
+               0, "full", 1: "without unknown", 2: "short"
+RETURN:
+(taxonomy_out, error_str)
+    taxonomy_out: a taxonomy if success else None
+    error_str: None if success else a string with the error description
+"""
+    taxonomy = Taxonomy('taxonomy', True)
+    return taxonomy.process(taxt_in, type_out)
 
 
 if __name__ == '__main__':
     taxonomy = Taxonomy('taxonomy', True)
     if len(sys.argv) > 1:
-        line = sys.argv[1]
-        taxonomy.OutTypeCB.val(0)
-        ret = taxonomy.resultE_mgmt(line)
-        print ret
-
-        taxonomy.OutTypeCB.val(1)
-        ret = taxonomy.resultE_mgmt(ret[0])
-        print ret
-
-        taxonomy.OutTypeCB.val(2)
-        ret = taxonomy.resultE_mgmt(ret[0])
-        print ret
-
-        if ret[0] != line:
-            print "DIFFER:\n ->[%s]\n <-[%s]\n" % (line, ret[0])
+        f = io.StringIO((sys.argv[1] + '\n').decode(encoding='UTF-8'))
     else:
-        with open('test/data/taxonomies.txt') as f:
-#        with open('test/data/mini.txt') as f:
-            for line in f:
+        f = open('test/data/distinct-gem-taxonomy_mod.csv')
+
+    for line in f:
+        line = line[0:-1]
+        # all this normalization stuff is to try to find a simple modified version of GED4GEM original taxonomies
+        # that fit with a modified version of "hidden unknown" taxonomy output
+        line_norm = line[:]
+        for d in ['MAT99', 'CT99', 'S99', 'ME99', 'SC99', 'MUN99', 'MR99', 'MO99', 'ET99', 'W99', 'L99', 'DU99',
+                  'MAT99', 'CT99', 'S99', 'ME99', 'SC99', 'MUN99', 'MR99', 'MO99', 'ET99', 'W99', 'L99', 'DU99',
+                  'Y99', 'H99', 'HB99', 'HF99', 'HD99', 'OC99', 'RES99', 'COM99', 'MIX99', 'IND99', 'AGR99',
+                  'ASS99', 'GOV99', 'EDU99', 'BP99', 'PLF99', 'IR99', 'IRPP:IRN', 'IRVP:IRN', 'EW99', 'RSH99',
+                  'RMT99', 'R99', 'RM99', 'RE99', 'RC99', 'RME99', 'RWO99', 'RWC99', 'F99', 'FM99', 'FE99',
+                  'FC99', 'FME99', 'FW99', 'FWC99', 'FOS99', 'D99']:
+            line_norm = re.sub('\\b%s\\b' % d, '', line_norm)
+        line_norm = re.sub('\+*/\+*', '/', line_norm)
+        line_norm = re.sub('[/\+]+$', '', line_norm)
+        line_norm = re.sub('/+', '/', line_norm)
+        print "==== %s ==== (%s) =========" % (line, line_norm)
+
+        for i in range(0, 10):
+            if line[-1] == '/':
                 line = line[0:-1]
-                print "============ %s =============" % line
+            else:
+                break
 
-                for i in range(0, 10):
-                    if line[-1] == '/':
-                        line = line[0:-1]
-                    else:
-                        break
+        ret1 = taxonomy.process(line, 0)
+        if ret1[1]:
+            print "ERROR1: [%s] [%s]\n" % (line, ret1[1])
+            continue
+        ret2 = taxonomy.process(ret1[0], 1)
+        if ret2[1]:
+            print "ERROR2: [%s] [%s]\n" % (line, ret2[1])
+            continue
+        ret2_norm = re.sub('/+', '/', ret2[0])
+        ret2_norm = re.sub('/+$', '', ret2_norm)
 
-                # print "LINE [%s]" % line
-                taxonomy.OutTypeCB.val(0)
-                ret1 = taxonomy.resultE_mgmt(line)
-                taxonomy.OutTypeCB.val(1)
-                ret2 = taxonomy.resultE_mgmt(ret1[0])
-                taxonomy.OutTypeCB.val(2)
-                ret3 = taxonomy.resultE_mgmt(ret2[0])
+        ret3 = taxonomy.process(ret2[0], 2)
+        if ret3[1]:
+            print "ERROR3: [%s] [%s]\n" % (line, ret3[1])
+            continue
 
-                if ret3[0] != line:
-                    print "DIFFER:\n ->[%s]\n   [%s]\n   [%s]\n <-[%s]\n" % (line, ret1[0], ret2[0], ret3[0])
+        if line == ret1[0] or line == ret2[0] or line == ret3[0]:
+            print "SUCCESS:\n ->[%s]\n   [%s]\n   [%s]\n <-[%s]\n" % (line, ret1[0], ret2[0], ret3[0])
+        elif line_norm == ret1[0] or line_norm == ret2[0] or line_norm == ret2_norm or line_norm == ret3[0]:
+            print "RENORM: \n ->[%s]\n   [%s]\n   [%s]\n n>[%s]\n n<[%s]\n <-[%s]\n" % (line_norm, ret1[0], ret2[0], line_norm, ret2_norm, ret3[0])
+        else:
+            a = line_norm[:]
+            b = ret2_norm[:]
+
+            if len(a) > len(b):
+                b += " " * (len(a) - len(b))
+            else:
+                a += " " * (len(b) - len(a))
+            r = ""
+            for c,_ in enumerate(a):
+                if a[c] == b[c]:
+                    r += " "
+                else:
+                    r += a[c] if a[c] != " " else b[c]
+            print "DIFFER: \n ->[%s]\n   [%s]\n   [%s]\n <-[%s]\n n>[%s]\n n<[%s]\n n![%s]\n" % (line, ret1[0], ret2[0], ret3[0], line_norm, ret2_norm, r)
