@@ -19,9 +19,7 @@ def make_function(func_name, taxonomy, run_slow):
         
         for i in range(0, 3):
             result_taxt[i], result_err[i] = taxonomy_process(result_taxt[(i - 1) % 3], i)
-
-            if result_err[i] is not None:
-                self.assertFalse(True, result_err[i])
+            self.assertIsNone(result_err[i], result_err[i])
 
         for i in range(0, 3):
             if result_taxt[i] == taxonomy_loc:
