@@ -20,7 +20,8 @@ from django.shortcuts import render
 try:
     from openquakeplatform.settings import STANDALONE
 except ImportError:
-    STANDALONE=False
+    STANDALONE = False
+
 
 def index(request, **kwargs):
     try:
@@ -36,7 +37,6 @@ def index(request, **kwargs):
             subtab_id = int(request.GET.get("subtab_id", 1))
             if subtab_id < 1 or subtab_id > 2:
                 subtab_id = 1
-                print "MOP: qui %d" % subtab_id
         except ValueError:
             subtab_id = 1
 
@@ -58,8 +58,8 @@ def index(request, **kwargs):
     tab_content = ""
     for i in range(0, len(desc)):
         tab_content = (tab_content +
-                        '<li id="tab_id-%d" class="tab%s%s" onclick="tab_set(this);"><span>%s</span></li>' %
-                        (i+1, ("_selected" if i + 1 == tab_id else ""),
+                       '<li id="tab_id-%d" class="tab%s%s" onclick="tab_set(this);"><span>%s</span></li>' %
+                       (i+1, ("_selected" if i + 1 == tab_id else ""),
                         (" tab_first" if i == 0 else ""), desc[i]))
 
     sub1desc = ['Direction X', 'Direction Y']
@@ -70,10 +70,10 @@ def index(request, **kwargs):
     sub1tab_content = ""
     for i in range(0, len(sub1desc)):
         sub1tab_content = (sub1tab_content +
-                            '<li id="sub1tab_id-%d" class="subtab%s%s" onclick="sub1tab_set(this);" data-gem-help="%s"><span>%s</span></li>' %
-                            (i+1, ("_selected" if i + 1 == subtab_id else ""),
-                             (" subtab_first" if i == 0 else ""),
-                             sub1help[i], sub1desc[i]))
+                           '<li id="sub1tab_id-%d" class="subtab%s%s" onclick="sub1tab_set(this);" data-gem-help="%s"><span>%s</span></li>' %
+                           (i+1, ("_selected" if i + 1 == subtab_id else ""),
+                            (" subtab_first" if i == 0 else ""),
+                            sub1help[i], sub1desc[i]))
 
     is_popup = (False if request.GET.get("is_popup", False) == False else True)
 
