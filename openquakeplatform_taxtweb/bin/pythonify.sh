@@ -1,6 +1,42 @@
 #!/bin/bash
 # set -x
 
+# this script split original javascript code and create a separate file for
+# each javascript function end convert static javascript datasets (dictionaries
+# and lists) to python equivalents
+#
+# Example:
+#
+# from:
+#
+#   var mat_tech =
+#       { 'MAT99': [],
+#         'C99': mat_tech_grp[1],
+#
+#         'CU':  mat_tech_grp[0],
+#
+#         'CR':  mat_tech_grp[1],
+#         'SRC': mat_tech_grp[1],
+#
+#         'S':   mat_tech_grp[2],
+#         ....
+#
+#   to:
+#
+#   #!/usr/bin/env python
+#   from utils.taxtweb_maps import *
+#   mat_tech = \
+#       { 'MAT99': [],
+#         'C99': mat_tech_grp[1],
+#
+#         'CU':  mat_tech_grp[0],
+#
+#         'CR':  mat_tech_grp[1],
+#         'SRC': mat_tech_grp[1],
+#
+#         'S':   mat_tech_grp[2],
+#         ....
+
 vars_to_py () {
     local MAPS_FILE="$1"
     local TARGET_FILE="$2"
