@@ -52,8 +52,8 @@ def taxonomy_short2full(t_short):
 
 
         if t_el == '':
-            if i <= (t_paridx + 2):
-                id = (i - t_paridx if t_parent == "DX" else i - t_paridx + 3)
+            if i <= t_paridx + 2:
+                id = i - t_paridx if t_parent == "DX" else i - t_paridx + 3
                 t_el = tfull_arr_orig[id]
                 if max_pos < id:
                     max_pos = id
@@ -127,5 +127,3 @@ def taxonomy_short2full(t_short):
 
 
     return (Ret(result='/'.join(tfull_arr), s=None))
-
-

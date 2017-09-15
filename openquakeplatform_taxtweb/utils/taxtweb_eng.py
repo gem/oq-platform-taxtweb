@@ -12,6 +12,8 @@ from openquakeplatform_taxtweb.utils.taxonomy import taxonomy_short2full, Ret
 taxonomy = None
 
 def is_not_negative_int(s):
+    """return true if the string is convertible
+    to integer and its value is not negative"""
     try:
         if int(s) < 0 or int(s) != float(s):
             return False
@@ -21,6 +23,8 @@ def is_not_negative_int(s):
         return False
 
 def is_not_negative_float(s):
+    """return true if the string is convertible
+    to float and its value is not negative"""
     try:
         if float(s) < 0.0:
             return False
@@ -30,6 +34,9 @@ def is_not_negative_float(s):
         return False
 
 def is_in_rect_angle_float(s):
+    """return true if the string is convertible
+    to float and its value is between 0.0 and 90.0"""
+
     if not is_not_negative_float(s):
         return False
 
@@ -40,7 +47,11 @@ def is_in_rect_angle_float(s):
 def is_or_are_given(n):
     return n + (" is" if n <= 1 else " are") + " given."
 
+
 class TaxtSel(object):
+    """this class modelize the behavior of the javascript rapresentation
+of a 'select' html tag with the same methods"""
+    """
     def __init__(self, name, items=[], val=-1, disabled=False, change_cb=None):
         '''
         items => list of 1 element dicts
@@ -81,7 +92,7 @@ class TaxtSel(object):
         items => list of 1 element dicts
         val => int identifing current val item
         '''
-        if items == None:
+        if items is None:
             return self._items
         else:
             self._items = items[:]
@@ -121,7 +132,7 @@ class TaxtBool(object):
         self._change_cb = change_cb
 
     def val(self, val=None):
-        if val == None:
+        if val is None:
             return self._val
         else:
             self._val = val
@@ -144,13 +155,13 @@ class TaxtRadioItem(object):
         self._radio = radio
 
     def radio(self, radio=None):
-        if (radio == None):
+        if (radio is None):
             return self._radio
         else:
             self._radio = radio
 
     def val(self, val=None):
-        if val != None:
+        if val is not None:
             self._val = val
             if self._change_cb:
                 self._change_cb(self)
@@ -159,8 +170,8 @@ class TaxtRadioItem(object):
 
     def checked(self, is_checked=None):
         if is_checked is not None:
-            if is_checked == True:
-                if self._radio != None:
+            if is_checked is True:
+                if self._radio is not None:
                     for item in self._radio._items:
                         item.checked(False)
             self._checked = is_checked
@@ -187,7 +198,7 @@ class TaxtStr(object):
         self._name = name
 
     def val(self, val=None):
-        if val == None:
+        if val is None:
             return self._val
         else:
             self._val = val
@@ -196,7 +207,7 @@ class TaxtStr(object):
             return self._val
 
     def disabled(self, disabled=None):
-        if disabled == None:
+        if disabled is None:
             return self._disabled
         else:
             self._disabled = disabled
@@ -1588,7 +1599,7 @@ class Taxonomy(object):
         self.RegularityCB5.empty()
 
         if (self.RegularityCB1.val() < 2 or self.RegularityCB3.val() == 0
-            or self.RegularityCB3.val() == None):
+            or self.RegularityCB3.val() is None):
             self.RegularityCB5.disabled(True)
 
         else:
@@ -3924,7 +3935,7 @@ class Taxonomy(object):
                 # console.log("PRE POP: " + taxonomy)
                 self.taxt_Initiate(False)
 
-                if self.populate(taxonomy, ret_s) == False:
+                if self.populate(taxonomy, ret_s) is False:
                     error = ret_s.s
                     break
 
