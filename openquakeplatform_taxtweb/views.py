@@ -36,7 +36,7 @@ def index(request, **kwargs):
             subtab_id = int(request.GET.get("subtab_id", 1))
             if subtab_id < 1 or subtab_id > 2:
                 subtab_id = 1
-                print "MOP: qui %d" % subtab_id
+                print("MOP: qui %d" % subtab_id)
         except ValueError:
             subtab_id = 1
 
