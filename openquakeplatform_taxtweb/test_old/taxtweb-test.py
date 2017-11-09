@@ -14,8 +14,8 @@ import csv
 from config import basepath
 
 if basepath == "":
-    print "configuration 'basepath' variable is empty."
-    print "Please edit config.py file following the included instructions."
+    print("configuration 'basepath' variable is empty.")
+    print("Please edit config.py file following the included instructions.")
     sys.exit(1)
 
 newarr = []
@@ -54,7 +54,7 @@ with open('taxonomies.csv', 'rb') as csvfile:
         
         line = line.replace("MUR/ST99", "MUR+ST99")
 
-        print "LINE: " + line
+        print("LINE: " + line)
         driver.get(basepath + line)
 
         alert = True
@@ -65,7 +65,7 @@ with open('taxonomies.csv', 'rb') as csvfile:
             try:
                 alert = driver.switch_to_alert()
                 alert_str = alert_str + alert.text.replace("\n", " ")
-                print "ERROR: [%s]" % alert.text
+                print("ERROR: [%s]" % alert.text)
                 alert.accept()
                 alert_count += 1
             except NoAlertPresentException:
@@ -107,5 +107,5 @@ with open('out.csv', 'wb') as csvfile:
 #finally:
 driver.quit()
 
-print "WIN"
+print("WIN")
 

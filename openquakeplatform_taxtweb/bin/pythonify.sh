@@ -53,7 +53,7 @@ vars_to_py () {
             sed "s/\b\([a-z]\+\):/'\1':/g" | \
             sed 's/\(.* = *\)$/\1 \\/g'
         echo "if __name__ == '__main__':"
-        echo "    print __name__"
+        echo "    print(__name__)"
     ) > ${TMPD}/tmp.$$
 
     IFS='
