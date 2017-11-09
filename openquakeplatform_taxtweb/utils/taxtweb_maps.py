@@ -499,4 +499,4 @@ foun_type = [
                  { 'id': 'FOSO', 'desc': 'Foundation, other' }
                ]
 if __name__ == '__main__':
-    print __name__
+    print(__name__)

@@ -4003,7 +4003,7 @@ if __name__ == '__main__':
         line_norm = re.sub('\+*/\+*', '/', line_norm)
         line_norm = re.sub('[/\+]+$', '', line_norm)
         line_norm = re.sub('/+', '/', line_norm)
-        print "==== %s ==== (%s) =========" % (line, line_norm)
+        print( "==== %s ==== (%s) =========" % (line, line_norm))
 
         for i in range(0, 10):
             if line[-1] == '/':
@@ -4013,24 +4013,24 @@ if __name__ == '__main__':
 
         ret1 = taxonomy.process(line, 0)
         if ret1[1]:
-            print "ERROR1: [%s] [%s]\n" % (line, ret1[1])
+            print("ERROR1: [%s] [%s]\n" % (line, ret1[1]))
             continue
         ret2 = taxonomy.process(ret1[0], 1)
         if ret2[1]:
-            print "ERROR2: [%s] [%s]\n" % (line, ret2[1])
+            print("ERROR2: [%s] [%s]\n" % (line, ret2[1]))
             continue
         ret2_norm = re.sub('/+', '/', ret2[0])
         ret2_norm = re.sub('/+$', '', ret2_norm)
 
         ret3 = taxonomy.process(ret2[0], 2)
         if ret3[1]:
-            print "ERROR3: [%s] [%s]\n" % (line, ret3[1])
+            print("ERROR3: [%s] [%s]\n" % (line, ret3[1]))
             continue
 
         if line == ret1[0] or line == ret2[0] or line == ret3[0]:
-            print "SUCCESS:\n ->[%s]\n   [%s]\n   [%s]\n <-[%s]\n" % (line, ret1[0], ret2[0], ret3[0])
+            print("SUCCESS:\n ->[%s]\n   [%s]\n   [%s]\n <-[%s]\n" % (line, ret1[0], ret2[0], ret3[0]))
         elif line_norm == ret1[0] or line_norm == ret2[0] or line_norm == ret2_norm or line_norm == ret3[0]:
-            print "RENORM: \n ->[%s]\n   [%s]\n   [%s]\n n>[%s]\n n<[%s]\n <-[%s]\n" % (line_norm, ret1[0], ret2[0], line_norm, ret2_norm, ret3[0])
+            print("RENORM: \n ->[%s]\n   [%s]\n   [%s]\n n>[%s]\n n<[%s]\n <-[%s]\n" % (line_norm, ret1[0], ret2[0], line_norm, ret2_norm, ret3[0]))
         else:
             a = line_norm[:]
             b = ret2_norm[:]
@@ -4045,4 +4045,4 @@ if __name__ == '__main__':
                     r += " "
                 else:
                     r += a[c] if a[c] != " " else b[c]
-            print "DIFFER: \n ->[%s]\n   [%s]\n   [%s]\n <-[%s]\n n>[%s]\n n<[%s]\n n![%s]\n" % (line, ret1[0], ret2[0], ret3[0], line_norm, ret2_norm, r)
+            print("DIFFER: \n ->[%s]\n   [%s]\n   [%s]\n <-[%s]\n n>[%s]\n n<[%s]\n n![%s]\n" % (line, ret1[0], ret2[0], ret3[0], line_norm, ret2_norm, r))
