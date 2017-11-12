@@ -1,4 +1,4 @@
-from taxonomy_map import taxonomy_map
+from openquakeplatform_taxtweb.utils.taxonomy_map import taxonomy_map
 
 class Ret(object):
     def __init__(self, result=None, s=None):
