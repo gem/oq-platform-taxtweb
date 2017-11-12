@@ -51,7 +51,6 @@ def is_or_are_given(n):
 class TaxtSel(object):
     """this class modelize the behavior of the javascript rapresentation
 of a 'select' html tag with the same methods"""
-    """
     def __init__(self, name, items=[], val=-1, disabled=False, change_cb=None):
         '''
         items => list of 1 element dicts
