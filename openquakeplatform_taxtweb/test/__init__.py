@@ -1,2 +1,2 @@
-from openquakeplatform_taxtweb.test.vuln_taxonomies_test import VulnTaxonomiesTest
-from openquakeplatform_taxtweb.test.taxtweb_eng_test import TaxtwebEngTest
+from .vuln_taxonomies_test import VulnTaxonomiesTest
+from .taxtweb_eng_test import TaxtwebEngTest
