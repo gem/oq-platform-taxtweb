@@ -4,11 +4,12 @@ import os, sys, time
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 
-from openquakeplatform.test import pla
+from openquake.moon import platform_get
 
 class VulnTaxonomiesTest(unittest.TestCase):
     @staticmethod
     def setup_class():
+        pla = platform_get()
         pla.get('/taxtweb')
         try:
             dontshow_tag = pla.xpath_finduniq(
@@ -23,6 +24,7 @@ class VulnTaxonomiesTest(unittest.TestCase):
             pass
 
 def tag_and_val_get(xpath, times):
+    pla = platform_get()
     resulte_tag = pla.xpath_finduniq(xpath, times=times)
     resulte_val = resulte_tag.get_attribute("value")
     return (resulte_tag, resulte_val)
@@ -30,6 +32,7 @@ def tag_and_val_get(xpath, times):
 
 def make_function(func_name, taxonomy, run_slow):
     def generated(self):
+        pla = platform_get()
         col_red = "rgba(255, 223, 191, 1)"
         col_green = "rgba(191, 255, 191, 1)"
 
