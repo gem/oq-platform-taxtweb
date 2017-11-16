@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 
 from openquake.moon import platform_get
 
+
 class VulnTaxonomiesTest(unittest.TestCase):
     @staticmethod
     def setup_class():
@@ -22,6 +23,7 @@ class VulnTaxonomiesTest(unittest.TestCase):
             close_tag.click()
         except:
             pass
+
 
 def tag_and_val_get(xpath, times):
     pla = platform_get()
@@ -42,37 +44,43 @@ def make_function(func_name, taxonomy, run_slow):
 
         pla.get('/taxtweb/%s' % taxonomy_loc)
 
-        typeoftax_tag, typeoftax_val = tag_and_val_get("//select[@id='OutTypeCB']", 20)
         pla.waituntil_js(10, ("try { return (window.gem_pageloaded"
                               " == true); } catch (exc) { return false; }"))
 
+        typeoftax_tag, typeoftax_val = tag_and_val_get(
+            "//select[@id='OutTypeCB']", 20)
         typeoftax_sel = Select(typeoftax_tag)
-        for i in range(0,3):
+        for i in range(0, 3):
             typeoftax_sel.select_by_index(i)
-            resulte_tag, resulte_val = tag_and_val_get("//input[@id='resultE']", 20)
+            resulte_tag, resulte_val = tag_and_val_get(
+                "//input[@id='resultE']", 20)
             if resulte_val == taxonomy_loc:
                 break
         else:
-             self.assertEqual(resulte_val, taxonomy_loc)
+            self.assertEqual(resulte_val, taxonomy_loc)
 
         if run_slow:
             time.sleep(1)
-            resulte_tag.click()   # Positions the cursor at the end of the string
+            resulte_tag.click()  # Positions the cursor at the end of string
             if len(resulte_val) > 0 and resulte_val[-1] == '/':
                 resulte_tag.send_keys(Keys.BACK_SPACE)
-                resulte_tag, resulte_val = tag_and_val_get("//input[@id='resultE']", 20)
+                resulte_tag, resulte_val = tag_and_val_get(
+                    "//input[@id='resultE']", 20)
 
             cur = resulte_val
             while len(cur) > 0:
                 last = cur[-1]
                 resulte_tag.send_keys(Keys.BACK_SPACE)
-                resulte_tag, resulte_val = tag_and_val_get("//input[@id='resultE']", 20)
-                resulte_bgcol = resulte_tag.value_of_css_property('background-color')
+                resulte_tag, resulte_val = tag_and_val_get(
+                    "//input[@id='resultE']", 20)
+                resulte_bgcol = resulte_tag.value_of_css_property(
+                    'background-color')
                 self.assertNotEqual(resulte_bgcol, col_red)
 
                 if last is "/":
                     # check integrity
-                    virtual_tag, virtual_val = tag_and_val_get("//input[@id='resultE_virt']", 20)
+                    virtual_tag, virtual_val = tag_and_val_get(
+                        "//input[@id='resultE_virt']", 20)
 
                     self.assertEqual(resulte_bgcol, col_green)
                     self.assertEqual(resulte_val, virtual_val)
@@ -101,7 +109,8 @@ def generator():
             if ct >= 60:
                 break
             taxonomy = taxonomy.strip()
-            func_name = "r%04d_%s_%s_test" % (r, taxonomy.replace('.', '~'), "slow" if run_slow else "fast")
+            func_name = "r%04d_%s_%s_test" % (r, taxonomy.replace('.', '~'),
+                                              "slow" if run_slow else "fast")
             test_func = make_function(func_name, taxonomy, run_slow)
             setattr(VulnTaxonomiesTest, func_name, test_func)
             ct += 1
