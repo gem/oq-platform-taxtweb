@@ -41,9 +41,11 @@ def make_function(func_name, taxonomy, run_slow):
             taxonomy_loc = taxonomy_loc[0:-1]
 
         pla.get('/taxtweb/%s' % taxonomy_loc)
-        pla.waituntil_js(3, "window.gem_pageloaded == true;")
 
         typeoftax_tag, typeoftax_val = tag_and_val_get("//select[@id='OutTypeCB']", 20)
+        pla.waituntil_js(10, ("try { return (window.gem_pageloaded"
+                              " == true); } catch (exc) { return false; }"))
+
         typeoftax_sel = Select(typeoftax_tag)
         for i in range(0,3):
             typeoftax_sel.select_by_index(i)
