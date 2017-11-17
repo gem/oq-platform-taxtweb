@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import unittest
-import os, sys
+import os
+import sys
 from openquakeplatform_taxtweb.utils.taxtweb_eng import taxonomy_process
 
 
