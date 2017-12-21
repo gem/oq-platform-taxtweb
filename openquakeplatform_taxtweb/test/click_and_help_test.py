@@ -65,13 +65,3 @@ class VulnTaxonomiesTest(unittest.TestCase):
                                   timeout=5.0, is_regex=True)
         pla.window_close()
         pla.select_main_window()
-
-
-        # click_and_help_tag = pla.xpath_finduniq(
-        #     "//li[@id='id_help_form']")
-        # click_and_help_tag.click()
-
-        # simple_help = pla.xpath_finduniq(
-        #     "//li[span[normalize-space(text()) = 'Direction X']]")
-        # simple_help.click()
-
