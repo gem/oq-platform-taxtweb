@@ -32,9 +32,9 @@ def main():
                csv_wri.writerow(i)
                old = i[3]
                if i[4] == "WARNING":
-                    print "------"
-                    print "%s" % i[3]
-                    print "%s" % i[6]
+                    print("------")
+                    print("%s" % i[3])
+                    print("%s" % i[6])
 
      fo.close()
 
