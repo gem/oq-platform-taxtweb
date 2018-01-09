@@ -182,7 +182,12 @@ function gem_help_select_remove()
 
 function gem_help_show(target)
 {
-    window.open(target, '_blank');
+    if ('gem_api' in window) {
+        gem_api.point_to_taxonomy(target);
+    }
+    else {
+        window.open(target, '_blank');
+    }
     gem_help_select_remove();
 }
 
