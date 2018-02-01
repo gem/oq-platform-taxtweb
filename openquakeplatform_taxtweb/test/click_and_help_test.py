@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import unittest
 from openquake.moon import platform_get
+from selenium.webdriver.common.keys import Keys
 
 
 class VulnTaxonomiesTest(unittest.TestCase):
