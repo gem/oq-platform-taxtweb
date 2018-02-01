@@ -53,7 +53,8 @@ class VulnTaxonomiesTest(unittest.TestCase):
 
         select_tag = pla.xpath_finduniq(
             "//select[@id='PositionCB']")
-        select_tag.click()
+        # select_tag.click()
+        select_tag.send_keys(Keys.ENTER)
 
         item_tag = pla.xpath_finduniq(
             "//div[@id='gem_help_select']/span[normalize-space(text()) = "
