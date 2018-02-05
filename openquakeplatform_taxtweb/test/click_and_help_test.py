@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import unittest
 from openquake.moon import platform_get
+from selenium.webdriver.common.action_chains import ActionChains
 
 
 class VulnTaxonomiesTest(unittest.TestCase):
@@ -33,7 +34,15 @@ class VulnTaxonomiesTest(unittest.TestCase):
 
         simple_help = pla.xpath_finduniq(
             "//li[span[normalize-space(text()) = 'Direction X']]")
-        simple_help.click()
+
+        # check width / 2, height / 2 of simple_help
+        simpl_help_width = simple_help.size['width'] / 2
+        simpl_help_height = simple_help.size['height'] / 2
+
+        # click with offset
+        action_simple_help = ActionChains(pla.driver)
+        action_simple_help.move_to_element_with_offset(
+            simple_help, simpl_help_width, simpl_help_height).click().perform()
 
         pla.select_window_by_name(".*Direction X.*", timeout=5.0,
                                   is_regex=True)
@@ -53,13 +62,26 @@ class VulnTaxonomiesTest(unittest.TestCase):
 
         select_tag = pla.xpath_finduniq(
             "//select[@id='PositionCB']")
-        select_tag.click()
+
+        # check width / 2, height / 2 of select_tag
+        select_tag_width = select_tag.size['width'] / 2
+        select_tag_height = select_tag.size['height'] / 2
+
+        # click with offset
+        action_select_tag = ActionChains(pla.driver)
+        action_select_tag.move_to_element_with_offset(
+            select_tag, select_tag_width, select_tag_height).click().perform()
 
         item_tag = pla.xpath_finduniq(
             "//div[@id='gem_help_select']/span[normalize-space(text()) = "
             "'Adjoining building(s) on two sides']")
 
-        item_tag.click()
+        item_tag_width = item_tag.size['width'] / 2
+        item_tag_height = item_tag.size['height'] / 2
+
+        action_item_tag = ActionChains(pla.driver)
+        action_item_tag.move_to_element_with_offset(
+            item_tag, item_tag_width, item_tag_height).click().perform()
 
         pla.select_window_by_name(".*Adjoining buildings on two sides.*",
                                   timeout=5.0, is_regex=True)
