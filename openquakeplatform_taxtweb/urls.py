@@ -23,6 +23,7 @@ from openquakeplatform_taxtweb import views
 # from django.contrib import admin
 # admin.autodiscover()
 
+app_name = 'taxtweb'
 urlpatterns = [
     url(r'^checker(?P<taxonomy>[^?]*)', views.checker, name='checker'),
     url(r'^(?P<taxonomy>[^?]*)', views.index, name='index'),
