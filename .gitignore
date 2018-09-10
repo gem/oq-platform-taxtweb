@@ -1,5 +1,6 @@
 *.pyc
 *.egg-info
 # Setuptool stuff
+/openquakeplatform_taxtweb/static/taxtweb/js/hybridge_key.js
 /build
 /dist  
