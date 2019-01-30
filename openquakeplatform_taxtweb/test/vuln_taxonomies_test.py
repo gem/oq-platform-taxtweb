@@ -12,6 +12,13 @@ class VulnTaxonomiesTest(unittest.TestCase):
     def setup_class():
         pla = platform_get()
         pla.get('/taxtweb')
+
+        footer = pla.xpath_finduniq("//footer")
+
+        # hide
+        pla.driver.execute_script(
+            "$(arguments[0]).attr('style','display:none;')", footer)
+
         try:
             dontshow_tag = pla.xpath_finduniq(
                 "//div[@id='taxtweb_splash']//input[@name='dontshowmeagain']",

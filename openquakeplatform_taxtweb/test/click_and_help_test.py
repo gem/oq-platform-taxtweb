@@ -9,6 +9,13 @@ class VulnTaxonomiesTest(unittest.TestCase):
     def setup_class():
         pla = platform_get()
         pla.get('/taxtweb')
+
+        footer = pla.xpath_finduniq("//footer")
+
+        # hide
+        pla.driver.execute_script(
+            "$(arguments[0]).attr('style','display:none;')", footer)
+
         try:
             dontshow_tag = pla.xpath_finduniq(
                 "//div[@id='taxtweb_splash']//input[@name='dontshowmeagain']",
@@ -51,6 +58,10 @@ class VulnTaxonomiesTest(unittest.TestCase):
 
     def click_and_help_complex_test(self):
         pla = platform_get()
+
+        # hide
+        pla.driver.execute_script(
+            "$(arguments[0]).attr('style','display:none;')", footer)
 
         third_tab_tag = pla.xpath_finduniq(
             "//li[span[normalize-space(text()) = 'Exterior Attributes']]")
