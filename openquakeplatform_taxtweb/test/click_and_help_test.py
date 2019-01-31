@@ -65,6 +65,8 @@ class VulnTaxonomiesTest(unittest.TestCase):
     def click_and_help_complex_test(self):
         pla = platform_get()
 
+        footer = pla.xpath_finduniq("//footer")
+
         # hide
         pla.driver.execute_script(
             "$(arguments[0]).attr('style','display:none;')", footer)
