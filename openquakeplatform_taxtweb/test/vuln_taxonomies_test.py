@@ -34,6 +34,12 @@ class VulnTaxonomiesTest(unittest.TestCase):
 
 def tag_and_val_get(xpath, times):
     pla = platform_get()
+    footer = pla.xpath_finduniq("//footer")
+
+    # hide
+    pla.driver.execute_script(
+        "$(arguments[0]).attr('style','display:none;')", footer)
+
     resulte_tag = pla.xpath_finduniq(xpath, times=times)
     resulte_val = resulte_tag.get_attribute("value")
     return (resulte_tag, resulte_val)
@@ -42,6 +48,12 @@ def tag_and_val_get(xpath, times):
 def make_function(func_name, taxonomy, run_slow):
     def generated(self):
         pla = platform_get()
+        footer = pla.xpath_finduniq("//footer")
+
+        # hide
+        pla.driver.execute_script(
+            "$(arguments[0]).attr('style','display:none;')", footer)
+
         col_red = "rgba(255, 223, 191, 1)"
         col_green = "rgba(191, 255, 191, 1)"
 

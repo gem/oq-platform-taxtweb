@@ -31,6 +31,12 @@ class VulnTaxonomiesTest(unittest.TestCase):
     def click_and_help_simple_test(self):
         pla = platform_get()
 
+        footer = pla.xpath_finduniq("//footer")
+
+        # hide
+        pla.driver.execute_script(
+            "$(arguments[0]).attr('style','display:none;')", footer)
+
         first_tab_tag = pla.xpath_finduniq(
             "//li[span[normalize-space(text()) = 'Structural System']]")
         first_tab_tag.click()
