@@ -7,6 +7,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 
 from openquake.moon import platform_get
+from openquake.moon import TimeoutError
 
 
 def hide_footer():
@@ -37,7 +38,7 @@ class VulnTaxonomiesTest(unittest.TestCase):
             close_tag = pla.xpath_finduniq(
                 "//div[@id='taxtweb_splash']//button[@name='close_btn']")
             close_tag.click()
-        except:
+        except TimeoutError:
             pass
 
 
@@ -99,7 +100,7 @@ def make_function(func_name, taxonomy, run_slow):
                     'background-color')
                 self.assertNotEqual(resulte_bgcol, col_red)
 
-                if last is "/":
+                if last == "/":
                     # check integrity
                     virtual_tag, virtual_val = tag_and_val_get(
                         "//input[@id='resultE_virt']", 20)
@@ -112,6 +113,7 @@ def make_function(func_name, taxonomy, run_slow):
 
     generated.__name__ = func_name
     return generated
+
 
 def generator():
     data_path = os.path.join(os.path.dirname(
@@ -137,5 +139,6 @@ def generator():
             setattr(VulnTaxonomiesTest, func_name, test_func)
             ct += 1
             r += 1
+
 
 generator()
