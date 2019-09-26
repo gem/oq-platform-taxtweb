@@ -2,6 +2,18 @@
 import unittest
 from openquake.moon import platform_get
 from selenium.webdriver.common.action_chains import ActionChains
+from .utils import TimeoutError
+
+
+def hide_footer():
+
+    pla = platform_get()
+
+    footer = pla.xpath_finduniq("//footer")
+
+    # hide
+    pla.driver.execute_script(
+        "$(arguments[0]).attr('style','display:none;')", footer)
 
 
 class VulnTaxonomiesTest(unittest.TestCase):
@@ -10,11 +22,7 @@ class VulnTaxonomiesTest(unittest.TestCase):
         pla = platform_get()
         pla.get('/taxtweb')
 
-        footer = pla.xpath_finduniq("//footer")
-
-        # hide
-        pla.driver.execute_script(
-            "$(arguments[0]).attr('style','display:none;')", footer)
+        hide_footer
 
         try:
             dontshow_tag = pla.xpath_finduniq(
@@ -25,17 +33,13 @@ class VulnTaxonomiesTest(unittest.TestCase):
             close_tag = pla.xpath_finduniq(
                 "//div[@id='taxtweb_splash']//button[@name='close_btn']")
             close_tag.click()
-        except:
+        except TimeoutError:
             pass
 
     def click_and_help_simple_test(self):
         pla = platform_get()
 
-        footer = pla.xpath_finduniq("//footer")
-
-        # hide
-        pla.driver.execute_script(
-            "$(arguments[0]).attr('style','display:none;')", footer)
+        hide_footer
 
         first_tab_tag = pla.xpath_finduniq(
             "//li[span[normalize-space(text()) = 'Structural System']]")
@@ -65,11 +69,7 @@ class VulnTaxonomiesTest(unittest.TestCase):
     def click_and_help_complex_test(self):
         pla = platform_get()
 
-        footer = pla.xpath_finduniq("//footer")
-
-        # hide
-        pla.driver.execute_script(
-            "$(arguments[0]).attr('style','display:none;')", footer)
+        hide_footer
 
         third_tab_tag = pla.xpath_finduniq(
             "//li[span[normalize-space(text()) = 'Exterior Attributes']]")
