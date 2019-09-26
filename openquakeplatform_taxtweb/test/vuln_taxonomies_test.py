@@ -1,10 +1,23 @@
 #!/usr/bin/env python
 import unittest
-import os, sys, time
+import os
+import sys
+import time
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 
 from openquake.moon import platform_get
+
+
+def hide_footer():
+
+    pla = platform_get()
+
+    footer = pla.xpath_finduniq("//footer")
+
+    # hide
+    pla.driver.execute_script(
+        "$(arguments[0]).attr('style','display:none;')", footer)
 
 
 class VulnTaxonomiesTest(unittest.TestCase):
@@ -13,11 +26,7 @@ class VulnTaxonomiesTest(unittest.TestCase):
         pla = platform_get()
         pla.get('/taxtweb')
 
-        footer = pla.xpath_finduniq("//footer")
-
-        # hide
-        pla.driver.execute_script(
-            "$(arguments[0]).attr('style','display:none;')", footer)
+        hide_footer
 
         try:
             dontshow_tag = pla.xpath_finduniq(
@@ -34,11 +43,8 @@ class VulnTaxonomiesTest(unittest.TestCase):
 
 def tag_and_val_get(xpath, times):
     pla = platform_get()
-    footer = pla.xpath_finduniq("//footer")
 
-    # hide
-    pla.driver.execute_script(
-        "$(arguments[0]).attr('style','display:none;')", footer)
+    hide_footer
 
     resulte_tag = pla.xpath_finduniq(xpath, times=times)
     resulte_val = resulte_tag.get_attribute("value")
@@ -48,11 +54,8 @@ def tag_and_val_get(xpath, times):
 def make_function(func_name, taxonomy, run_slow):
     def generated(self):
         pla = platform_get()
-        footer = pla.xpath_finduniq("//footer")
 
-        # hide
-        pla.driver.execute_script(
-            "$(arguments[0]).attr('style','display:none;')", footer)
+        hide_footer
 
         col_red = "rgba(255, 223, 191, 1)"
         col_green = "rgba(191, 255, 191, 1)"
