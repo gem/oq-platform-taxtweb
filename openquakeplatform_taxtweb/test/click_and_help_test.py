@@ -2,7 +2,7 @@
 import unittest
 from openquake.moon import platform_get
 from selenium.webdriver.common.action_chains import ActionChains
-from .utils import TimeoutError
+from openquake.moon import TimeoutError
 
 
 def hide_footer():
