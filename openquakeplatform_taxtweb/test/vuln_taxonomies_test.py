@@ -27,7 +27,7 @@ class VulnTaxonomiesTest(unittest.TestCase):
         pla = platform_get()
         pla.get('/taxtweb')
 
-        hide_footer
+        hide_footer()
 
         try:
             dontshow_tag = pla.xpath_finduniq(
@@ -45,7 +45,7 @@ class VulnTaxonomiesTest(unittest.TestCase):
 def tag_and_val_get(xpath, times):
     pla = platform_get()
 
-    hide_footer
+    hide_footer()
 
     resulte_tag = pla.xpath_finduniq(xpath, times=times)
     resulte_val = resulte_tag.get_attribute("value")
@@ -56,7 +56,7 @@ def make_function(func_name, taxonomy, run_slow):
     def generated(self):
         pla = platform_get()
 
-        hide_footer
+        hide_footer()
 
         col_red = "rgba(255, 223, 191, 1)"
         col_green = "rgba(191, 255, 191, 1)"

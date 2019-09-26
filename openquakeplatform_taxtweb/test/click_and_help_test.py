@@ -22,7 +22,7 @@ class VulnTaxonomiesTest(unittest.TestCase):
         pla = platform_get()
         pla.get('/taxtweb')
 
-        hide_footer
+        hide_footer()
 
         try:
             dontshow_tag = pla.xpath_finduniq(
@@ -39,7 +39,7 @@ class VulnTaxonomiesTest(unittest.TestCase):
     def click_and_help_simple_test(self):
         pla = platform_get()
 
-        hide_footer
+        hide_footer()
 
         first_tab_tag = pla.xpath_finduniq(
             "//li[span[normalize-space(text()) = 'Structural System']]")
@@ -69,7 +69,7 @@ class VulnTaxonomiesTest(unittest.TestCase):
     def click_and_help_complex_test(self):
         pla = platform_get()
 
-        hide_footer
+        hide_footer()
 
         third_tab_tag = pla.xpath_finduniq(
             "//li[span[normalize-space(text()) = 'Exterior Attributes']]")
