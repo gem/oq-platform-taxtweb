@@ -1,10 +1,24 @@
 #!/usr/bin/env python
 import unittest
-import os, sys, time
+import os
+import sys
+import time
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 
 from openquake.moon import platform_get
+from openquake.moon import TimeoutError
+
+
+def hide_footer():
+
+    pla = platform_get()
+
+    footer = pla.xpath_finduniq("//footer")
+
+    # hide
+    pla.driver.execute_script(
+        "$(arguments[0]).attr('style','display:none;')", footer)
 
 
 class VulnTaxonomiesTest(unittest.TestCase):
@@ -12,6 +26,9 @@ class VulnTaxonomiesTest(unittest.TestCase):
     def setup_class():
         pla = platform_get()
         pla.get('/taxtweb')
+
+        hide_footer()
+
         try:
             dontshow_tag = pla.xpath_finduniq(
                 "//div[@id='taxtweb_splash']//input[@name='dontshowmeagain']",
@@ -21,12 +38,15 @@ class VulnTaxonomiesTest(unittest.TestCase):
             close_tag = pla.xpath_finduniq(
                 "//div[@id='taxtweb_splash']//button[@name='close_btn']")
             close_tag.click()
-        except:
+        except TimeoutError:
             pass
 
 
 def tag_and_val_get(xpath, times):
     pla = platform_get()
+
+    hide_footer()
+
     resulte_tag = pla.xpath_finduniq(xpath, times=times)
     resulte_val = resulte_tag.get_attribute("value")
     return (resulte_tag, resulte_val)
@@ -35,6 +55,9 @@ def tag_and_val_get(xpath, times):
 def make_function(func_name, taxonomy, run_slow):
     def generated(self):
         pla = platform_get()
+
+        hide_footer()
+
         col_red = "rgba(255, 223, 191, 1)"
         col_green = "rgba(191, 255, 191, 1)"
 
@@ -77,7 +100,7 @@ def make_function(func_name, taxonomy, run_slow):
                     'background-color')
                 self.assertNotEqual(resulte_bgcol, col_red)
 
-                if last is "/":
+                if last == "/":
                     # check integrity
                     virtual_tag, virtual_val = tag_and_val_get(
                         "//input[@id='resultE_virt']", 20)
@@ -90,6 +113,7 @@ def make_function(func_name, taxonomy, run_slow):
 
     generated.__name__ = func_name
     return generated
+
 
 def generator():
     data_path = os.path.join(os.path.dirname(
@@ -115,5 +139,6 @@ def generator():
             setattr(VulnTaxonomiesTest, func_name, test_func)
             ct += 1
             r += 1
+
 
 generator()
