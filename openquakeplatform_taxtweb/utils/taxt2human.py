@@ -143,6 +143,44 @@ def height2human(blk, no_unknown=False):
     return (blk_out, blk_err)
 
 
+def date2human(blk, no_unknown=False):
+    blk_out = ""
+    blk_err = ""
+    subblks = blk.split('+')
+
+    dt_type = arrdicts_flatten([date_type])
+
+    for subblk in subblks:
+        sub2blks = subblk.split(':')
+        atom = sub2blks[0]
+        if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
+            continue
+
+        if atom in dt_type:
+            pfx = 'Date'
+            desc = dt_type[atom]['desc']
+            sfx = ''
+        else:
+            if blk_err:
+                blk_err += '; '
+            blk_err += 'atom ' + atom + ' unknown'
+            continue
+
+        if blk_out:
+            blk_out += '; '
+        if atom in Taxonomy.ATOM_TYPE_RANGE:
+            pars = sub2blks[1].split(',')
+            blk_out += (pfx + ' - ' + desc + ': between ' +
+                        pars[0] + ' and ' + pars[1] + sfx)
+        elif atom in Taxonomy.ATOM_TYPE_VALUE:
+            blk_out += (pfx + ' - ' + desc + ': ' +
+                        sub2blks[1] + sfx)
+        else:
+            blk_out += (pfx + ' - ' + desc + sfx)
+
+    return (blk_out, blk_err)
+
+
 def full_text2human(full_text, no_unknown=False):
     atoms = full_text.split('/')
 
@@ -226,6 +264,15 @@ def full_text2human(full_text, no_unknown=False):
         if s_out:
             s_out += next_sep
         s_out += hei_out
+        next_sep = '; '
+
+    # date
+    dt_out, dt_err = date2human(atoms[Taxonomy.POS_DATE],
+                                no_unknown=no_unknown)
+    if dt_out:
+        if s_out:
+            s_out += next_sep
+        s_out += dt_out
         next_sep = '; '
 
     if s_out:
