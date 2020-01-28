@@ -216,6 +216,25 @@ class TaxtStr(object):
 
 
 class Taxonomy(object):
+    POS_DX = 0
+    POS_DX_LMAT = 1
+    POS_DX_LLRS = 2
+    POS_DY = 3
+    POS_DY_LMAT = 4
+    POS_DY_LLRS = 5
+    POS_HEIGHT = 6
+
+    UNKNOWN_ATOMS = [
+        'MAT99', 'CT99', 'S99', 'ME99', 'SC99', 'MUN99', 'MR99', 'MO99',
+        'ET99', 'W99', 'L99', 'DU99', 'Y99', 'H99', 'HB99', 'HF99', 'HD99',
+        'OC99', 'RES99', 'COM99', 'MIX99', 'IND99', 'AGR99', 'ASS99', 'GOV99',
+        'EDU99', 'BP99', 'PLF99', 'IR99', 'IRPP:IRN', 'IRVP:IRN', 'EW99',
+        'RSH99', 'RMT99', 'R99', 'RM99', 'RE99', 'RC99', 'RME99', 'RWO99',
+        'RWC99', 'F99', 'FM99', 'FE99', 'FC99', 'FME99', 'FW99', 'FWC99',
+        'FOS99', 'D99']
+    ATOM_TYPE_VALUE = ['HEX', 'HAPP', 'HBEX', 'HBAPP', 'HFEX', 'HFAPP', 'HD']
+    ATOM_TYPE_RANGE = ['HBET', 'HBBET', 'HFBET']
+
     def __init__(self, name, full):
         self._name = name
 
@@ -3982,7 +4001,12 @@ RETURN:
 
 if __name__ == '__main__':
     taxonomy = Taxonomy('taxonomy', True)
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 2:
+        if sys.argv[1] == '-f' or sys.argv[1] == '--file':
+            f = open(sys.argv[2])
+        else:
+            sys.exit(1)
+    elif len(sys.argv) > 1:
         f = io.StringIO((sys.argv[1] + '\n').decode(encoding='UTF-8'))
     else:
         f = open('test/data/distinct-gem-taxonomy_mod.csv')
