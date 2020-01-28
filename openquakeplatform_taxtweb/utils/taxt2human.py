@@ -4,16 +4,13 @@ from openquakeplatform_taxtweb.utils.taxtweb_eng import Taxonomy
 from openquakeplatform_taxtweb.utils.taxtweb_maps import (
     material, mat_tech_grp, mat_prop_grp, mat_tead_grp,
     llrs_type_grp, llrs_duct_grp,
-    h_aboveground, h_belowground, h_abovegrade, h_slope)
-
-# import re
-
-SEPARATORS = '/'
+    h_aboveground, h_belowground, h_abovegrade, h_slope,
+    date_type)
 
 
-def dx2human(s, no_unknown=False):
-    subat = s.split('+')
-    if len(subat) == 2 and subat[1] == 'PF':
+def dx2human(blk, no_unknown=False):
+    atoms = blk.split('+')
+    if len(atoms) == 2 and atoms[1] == 'PF':
         return 'X direction parallel to the street'
     elif no_unknown is False:
         return 'X direction unspecified to the street'
@@ -29,68 +26,68 @@ def arrdicts_flatten(arrs):
     return d
 
 
-def llrs2human(s, no_unknown=False):
-    s_out = ""
-    s_err = ""
-    subats = s.split('+')
+def llrs2human(blk, no_unknown=False):
+    blk_out = ""
+    blk_err = ""
+    atoms = blk.split('+')
 
     llrs_types = arrdicts_flatten(llrs_type_grp)
     llrs_ducts = arrdicts_flatten(llrs_duct_grp)
 
-    for subat in subats:
-        if subat in Taxonomy.UNKNOWN_ATOMS and no_unknown:
+    for atom in atoms:
+        if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
             continue
 
-        if subat in llrs_types:
-            if s_out:
-                s_out += '; '
-            s_out += ('Type lateral load-resisting system: ' +
-                      llrs_types[subat]['desc'])
-        elif subat in llrs_ducts:
-            if s_out:
-                s_out += '; '
-            s_out += 'System ductility: ' + llrs_ducts[subat]['desc']
+        if atom in llrs_types:
+            if blk_out:
+                blk_out += '; '
+            blk_out += ('Type lateral load-resisting system: ' +
+                        llrs_types[atom]['desc'])
+        elif atom in llrs_ducts:
+            if blk_out:
+                blk_out += '; '
+            blk_out += 'System ductility: ' + llrs_ducts[atom]['desc']
         else:
-            s_err += ' ' + subat + ' not found'
+            blk_err += ' ' + atom + ' not found'
 
-    return (s_out, s_err)
+    return (blk_out, blk_err)
 
 
-def lmat2human(s, no_unknown=False):
-    s_out = ""
-    s_err = ""
-    subats = s.split('+')
+def lmat2human(blk, no_unknown=False):
+    blk_out = ""
+    blk_err = ""
+    atoms = blk.split('+')
 
     mat_erials = arrdicts_flatten([material])
     mat_techs = arrdicts_flatten(mat_tech_grp)
     mat_props = arrdicts_flatten(mat_prop_grp)
     mat_teads = arrdicts_flatten(mat_tead_grp)
 
-    for subat in subats:
-        if subat in Taxonomy.UNKNOWN_ATOMS and no_unknown:
+    for atom in atoms:
+        if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
             continue
 
-        if subat in mat_erials:
-            if s_out:
-                s_out += '; '
-            s_out += 'Material type: ' + mat_erials[subat]['desc']
-        elif subat in mat_techs:
-            if s_out:
-                s_out += '; '
-            s_out += 'Material technology: ' + mat_techs[subat]['desc']
-        elif subat in mat_props:
-            if s_out:
-                s_out += '; '
-            s_out += 'Material properties: ' + mat_props[subat]['desc']
-        elif subat in mat_teads:
-            if s_out:
-                s_out += '; '
-            s_out += ('Material technology (additional): ' +
-                      mat_teads[subat]['desc'])
+        if atom in mat_erials:
+            if blk_out:
+                blk_out += '; '
+            blk_out += 'Material type: ' + mat_erials[atom]['desc']
+        elif atom in mat_techs:
+            if blk_out:
+                blk_out += '; '
+            blk_out += 'Material technology: ' + mat_techs[atom]['desc']
+        elif atom in mat_props:
+            if blk_out:
+                blk_out += '; '
+            blk_out += 'Material properties: ' + mat_props[atom]['desc']
+        elif atom in mat_teads:
+            if blk_out:
+                blk_out += '; '
+            blk_out += ('Material technology (additional): ' +
+                      mat_teads[atom]['desc'])
         else:
-            s_err += ' ' + subat + ' not found'
+            blk_err += ' ' + atom + ' subblock not found'
 
-    return (s_out, s_err)
+    return (blk_out, blk_err)
 
 
 def height2human(blk, no_unknown=False):
