@@ -5,7 +5,9 @@ from openquakeplatform_taxtweb.utils.taxtweb_maps import (
     material, mat_tech_grp, mat_prop_grp, mat_tead_grp,
     llrs_type_grp, llrs_duct_grp,
     h_aboveground, h_belowground, h_abovegrade, h_slope,
-    date_type)
+    date_type,
+    occu_type, occu_spec_grp
+)
 
 
 def dx2human(blk, no_unknown=False):
@@ -157,7 +159,7 @@ def date2human(blk, no_unknown=False):
             continue
 
         if atom in dt_type:
-            pfx = 'Date'
+            pfx = 'Date of construction or retrofit (4 digits)'
             desc = dt_type[atom]['desc']
             sfx = ''
         else:
@@ -177,6 +179,34 @@ def date2human(blk, no_unknown=False):
                         sub2blks[1] + sfx)
         else:
             blk_out += (pfx + ' - ' + desc + sfx)
+
+    return (blk_out, blk_err)
+
+
+def occupancy2human(blk, no_unknown=False):
+    blk_out = ""
+    blk_err = ""
+    atoms = blk.split('+')
+
+    occ_types = arrdicts_flatten([occu_type])
+    occ_specs = arrdicts_flatten(occu_spec_grp)
+
+    for atom in atoms:
+        if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
+            continue
+
+        if atom in occ_types:
+            if blk_out:
+                blk_out += '; '
+            blk_out += ('Building occupancy type (general): ' +
+                        occ_types[atom]['desc'])
+        elif atom in occ_specs:
+            if blk_out:
+                blk_out += '; '
+            blk_out += ('Building occupancy type (details): ' +
+                        occ_specs[atom]['desc'])
+        else:
+            blk_err += ' ' + atom + ' subblock not found'
 
     return (blk_out, blk_err)
 
@@ -275,6 +305,14 @@ def full_text2human(full_text, no_unknown=False):
         s_out += dt_out
         next_sep = '; '
 
+    # occupancy
+    dt_out, dt_err = occupancy2human(atoms[Taxonomy.POS_OCCUPANCY],
+                                     no_unknown=no_unknown)
+    if dt_out:
+        if s_out:
+            s_out += next_sep
+        s_out += dt_out
+        next_sep = '; '
     if s_out:
         s_out += '.'
 
@@ -294,6 +332,7 @@ def taxt2human(s, no_unknown=True):
         s_out = "Fallback not yet implemented"
 
     return s_out
+
 
 if __name__ == '__main__':
     print(taxt2human(sys.argv[1], no_unknown=True))

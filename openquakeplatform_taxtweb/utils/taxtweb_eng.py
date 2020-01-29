@@ -224,6 +224,7 @@ class Taxonomy(object):
     POS_DY_LLRS = 5
     POS_HEIGHT = 6
     POS_DATE = 7
+    POS_OCCUPANCY = 8
 
     UNKNOWN_ATOMS = [
         'MAT99', 'CT99', 'S99', 'ME99', 'SC99', 'MUN99', 'MR99', 'MO99',
