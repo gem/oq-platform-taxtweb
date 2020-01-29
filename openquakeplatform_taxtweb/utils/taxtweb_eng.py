@@ -3044,9 +3044,10 @@ class Taxonomy(object):
         #       16 - Occupancy description
 
         #       17 - Position
-        #       18 - Plan
 
-        #    10)19 - Type of irregularity
+        #   10) 18 - Plan
+
+        #       19 - Type of irregularity
         #       20 - Plan irregularity(primary)
         #       22 - Vertical irregularity(primary)
         #       21 - Plan irregularity(secondary)
@@ -3064,7 +3065,7 @@ class Taxonomy(object):
         #       31 - Floor system type
         #       32 - Floor connections
 
-        #       33 - Foundation
+        #   15) 33 - Foundation
         #       */
 
         # /* roof special case */
