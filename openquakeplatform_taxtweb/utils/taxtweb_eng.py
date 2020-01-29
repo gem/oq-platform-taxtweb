@@ -225,6 +225,13 @@ class Taxonomy(object):
     POS_HEIGHT = 6
     POS_DATE = 7
     POS_OCCUPANCY = 8
+    POS_POSITION = 9
+    POS_PLAN = 10
+    POS_IRREG = 11
+    POS_EXTWALL = 12
+    POS_ROOF = 13
+    POS_FLOOR = 14
+    POS_FOUNDATION = 15
 
     UNKNOWN_ATOMS = [
         'MAT99', 'CT99', 'S99', 'ME99', 'SC99', 'MUN99', 'MR99', 'MO99',
