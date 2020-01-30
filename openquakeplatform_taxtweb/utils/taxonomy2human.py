@@ -324,8 +324,6 @@ def taxonomy2human(s, no_unknown=True):
 
     full_text, full_res = t.process(s, 0)
 
-    print("Full taxonomy: %s" % full_text)
-
     if full_res is None:
         s_out = full_text2human(full_text, no_unknown=no_unknown)
     else:
