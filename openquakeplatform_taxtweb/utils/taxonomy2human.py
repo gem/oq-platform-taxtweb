@@ -329,7 +329,7 @@ def taxonomy2human(s, no_unknown=True):
     if full_res is None:
         s_out = full_text2human(full_text, no_unknown=no_unknown)
     else:
-        s_out = "Fallback not yet implemented"
+        s_out = "Invalid GEM Taxonomy v2.0 string: %s" % s
 
     return s_out
 
