@@ -216,6 +216,35 @@ class TaxtStr(object):
 
 
 class Taxonomy(object):
+    POS_DX = 0
+    POS_DX_LMAT = 1
+    POS_DX_LLRS = 2
+    POS_DY = 3
+    POS_DY_LMAT = 4
+    POS_DY_LLRS = 5
+    POS_HEIGHT = 6
+    POS_DATE = 7
+    POS_OCCUPANCY = 8
+    POS_POSITION = 9
+    POS_PLAN = 10
+    POS_IRREG = 11
+    POS_EXTWALL = 12
+    POS_ROOF = 13
+    POS_FLOOR = 14
+    POS_FOUNDATION = 15
+
+    UNKNOWN_ATOMS = [
+        'MAT99', 'CT99', 'S99', 'ME99', 'SC99', 'MUN99', 'MR99', 'MO99',
+        'ET99', 'W99', 'L99', 'DU99', 'Y99', 'H99', 'HB99', 'HF99', 'HD99',
+        'OC99', 'RES99', 'COM99', 'MIX99', 'IND99', 'AGR99', 'ASS99', 'GOV99',
+        'EDU99', 'BP99', 'PLF99', 'IR99', 'IRPP:IRN', 'IRVP:IRN', 'EW99',
+        'RSH99', 'RMT99', 'R99', 'RM99', 'RE99', 'RC99', 'RME99', 'RWO99',
+        'RWC99', 'F99', 'FM99', 'FE99', 'FC99', 'FME99', 'FW99', 'FWC99',
+        'FOS99', 'D99']
+    ATOM_TYPE_VALUE = ['HEX', 'HAPP', 'HBEX', 'HBAPP', 'HFEX', 'HFAPP', 'HD',
+                       'YEX', 'YPRE', 'YAPP']
+    ATOM_TYPE_RANGE = ['HBET', 'HBBET', 'HFBET', 'YBET']
+
     def __init__(self, name, full):
         self._name = name
 
@@ -3023,9 +3052,10 @@ class Taxonomy(object):
         #       16 - Occupancy description
 
         #       17 - Position
-        #       18 - Plan
 
-        #    10)19 - Type of irregularity
+        #   10) 18 - Plan
+
+        #       19 - Type of irregularity
         #       20 - Plan irregularity(primary)
         #       22 - Vertical irregularity(primary)
         #       21 - Plan irregularity(secondary)
@@ -3043,7 +3073,7 @@ class Taxonomy(object):
         #       31 - Floor system type
         #       32 - Floor connections
 
-        #       33 - Foundation
+        #   15) 33 - Foundation
         #       */
 
         # /* roof special case */
@@ -3502,26 +3532,29 @@ class Taxonomy(object):
             ret_s.s = "Not identified '" + occu_label + "' as specification of occupancy."
             return (False)
 
-
         if occu_label != 'OC99':
             if len(occu) > 1:
                 # Occupancy specification
                 occu_atom = occu[1]
-
-            else:
-                # select the first item of proper sub-selection
+            elif len(occu_spec[occu_id]) > 0:
                 occu_atom = occu_spec[occu_id][0]['id']
-
-
-            for i in range(0, len(occu_spec[occu_id])):
-                if occu_atom == occu_spec[occu_id][i]['id']:
-                    self.OccupancyCB2.val(i)
-                    self.taxt_OccupancyCB2Select(None)
-                    break
             else:
-                ret_s.s = "Not identified '" + occu_atom + "' as specification of '" + occu_id + "' occupancy."
-                return (False)
+                occu_atom = 'is_disabled'
 
+            if occu_atom == 'is_disabled':
+                self.OccupancyCB2.disabled(True)
+            else:
+                self.OccupancyCB2.disabled(False)
+                for i in range(0, len(occu_spec[occu_id])):
+                    if occu_atom == occu_spec[occu_id][i]['id']:
+                        self.OccupancyCB2.val(i)
+                        self.taxt_OccupancyCB2Select(None)
+                        break
+                else:
+                    ret_s.s = ("Not identified '" + occu_atom +
+                               "' as specification of '" + occu_id +
+                               "' occupancy.")
+                    return (False)
 
         #
         #  Build position
@@ -3982,7 +4015,12 @@ RETURN:
 
 if __name__ == '__main__':
     taxonomy = Taxonomy('taxonomy', True)
-    if len(sys.argv) > 1:
+    if len(sys.argv) > 2:
+        if sys.argv[1] == '-f' or sys.argv[1] == '--file':
+            f = open(sys.argv[2])
+        else:
+            sys.exit(1)
+    elif len(sys.argv) > 1:
         f = io.StringIO((sys.argv[1] + '\n').decode(encoding='UTF-8'))
     else:
         f = open('test/data/distinct-gem-taxonomy_mod.csv')
