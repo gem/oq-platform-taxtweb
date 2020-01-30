@@ -3532,26 +3532,29 @@ class Taxonomy(object):
             ret_s.s = "Not identified '" + occu_label + "' as specification of occupancy."
             return (False)
 
-
         if occu_label != 'OC99':
             if len(occu) > 1:
                 # Occupancy specification
                 occu_atom = occu[1]
-
-            else:
-                # select the first item of proper sub-selection
+            elif len(occu_spec[occu_id]) > 0:
                 occu_atom = occu_spec[occu_id][0]['id']
-
-
-            for i in range(0, len(occu_spec[occu_id])):
-                if occu_atom == occu_spec[occu_id][i]['id']:
-                    self.OccupancyCB2.val(i)
-                    self.taxt_OccupancyCB2Select(None)
-                    break
             else:
-                ret_s.s = "Not identified '" + occu_atom + "' as specification of '" + occu_id + "' occupancy."
-                return (False)
+                occu_atom = 'is_disabled'
 
+            if occu_atom == 'is_disabled':
+                self.OccupancyCB2.disabled(True)
+            else:
+                self.OccupancyCB2.disabled(False)
+                for i in range(0, len(occu_spec[occu_id])):
+                    if occu_atom == occu_spec[occu_id][i]['id']:
+                        self.OccupancyCB2.val(i)
+                        self.taxt_OccupancyCB2Select(None)
+                        break
+                else:
+                    ret_s.s = ("Not identified '" + occu_atom +
+                               "' as specification of '" + occu_id +
+                               "' occupancy.")
+                    return (False)
 
         #
         #  Build position

@@ -4354,21 +4354,30 @@ function populate(s, ret_s) {
             // Occupancy specification
             occu_atom = occu[1];
         }
-        else {
+        else if (occu_spec[occu_id].length > 0) {
             // select the first item of proper sub-selection
             occu_atom = occu_spec[occu_id][0].id;
         }
-
-        for (i = 0 ; i < occu_spec[occu_id].length ;  i++) {
-            if (occu_atom == occu_spec[occu_id][i].id) {
-                gem$('#OccupancyCB2').val(i);
-                taxt_OccupancyCB2Select(null);
-                break;
-            }
+        else {
+            occu_atom = 'is_disabled';
         }
-        if (i == occu_spec[occu_id].length) {
-            ret_s.s = "Not identified '" + occu_atom + "' as specification of '" + occu_id + "' occupancy.";
-            return (false);
+
+        if (occu_atom == 'is_disabled') {
+            gem$('#OccupancyCB2').prop("disabled", true);
+        }
+        else {
+            gem$('#OccupancyCB2').prop("disabled", false);
+            for (i = 0 ; i < occu_spec[occu_id].length ;  i++) {
+                if (occu_atom == occu_spec[occu_id][i].id) {
+                    gem$('#OccupancyCB2').val(i);
+                    taxt_OccupancyCB2Select(null);
+                    break;
+                }
+            }
+            if (i == occu_spec[occu_id].length) {
+                ret_s.s = "Not identified '" + occu_atom + "' as specification of '" + occu_id + "' occupancy.";
+                return (false);
+            }
         }
     }
     //
