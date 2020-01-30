@@ -117,7 +117,7 @@ def height2human(blk, no_unknown=False):
             desc = hei_belowground[atom]['desc']
             sfx = ''
         elif atom in hei_abovegrade:
-            pfx = 'Number of storeys above grade'
+            pfx = 'Height of ground floor level above grade'
             desc = hei_abovegrade[atom]['desc']
             sfx = ' meters'
         elif atom in hei_slope:
