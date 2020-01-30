@@ -203,7 +203,7 @@ def occupancy2human(blk, no_unknown=False):
         elif atom in occ_specs:
             if blk_out:
                 blk_out += '; '
-            blk_out += ('Building occupancy type (details): ' +
+            blk_out += ('Details: ' +
                         occ_specs[atom]['desc'])
         else:
             blk_err += ' ' + atom + ' subblock not found'
