@@ -5,7 +5,7 @@
 
 CREATE OR REPLACE FUNCTION taxonomy2human (taxonomy text) RETURNS text AS 
     $$
-        from openquakeplatform_taxtweb.utils.taxt2human import taxt2human
+        from openquakeplatform_taxtweb.utils.taxonomy2human import taxonomy2human as taxonomy2human_py
 
-        return taxt2human(taxonomy)
+        return taxonomy2human_py(taxonomy)
     $$ LANGUAGE plpython3u;

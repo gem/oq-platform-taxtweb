@@ -319,7 +319,7 @@ def full_text2human(full_text, no_unknown=False):
     return s_out
 
 
-def taxt2human(s, no_unknown=True):
+def taxonomy2human(s, no_unknown=True):
     t = Taxonomy('Taxonomy', True)
 
     full_text, full_res = t.process(s, 0)
@@ -335,4 +335,4 @@ def taxt2human(s, no_unknown=True):
 
 
 if __name__ == '__main__':
-    print(taxt2human(sys.argv[1], no_unknown=True))
+    print(taxonomy2human(sys.argv[1], no_unknown=True))
