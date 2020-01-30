@@ -159,7 +159,7 @@ def date2human(blk, no_unknown=False):
             continue
 
         if atom in dt_type:
-            pfx = 'Date of construction or retrofit (4 digits)'
+            pfx = 'Date of construction or retrofit'
             desc = dt_type[atom]['desc']
             sfx = ''
         else:
