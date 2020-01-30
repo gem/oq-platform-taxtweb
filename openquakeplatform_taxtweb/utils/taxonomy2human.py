@@ -198,7 +198,7 @@ def occupancy2human(blk, no_unknown=False):
         if atom in occ_types:
             if blk_out:
                 blk_out += '; '
-            blk_out += ('Building occupancy type (general): ' +
+            blk_out += ('Building occupancy type: ' +
                         occ_types[atom]['desc'])
         elif atom in occ_specs:
             if blk_out:
