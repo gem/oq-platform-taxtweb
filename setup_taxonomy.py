@@ -119,5 +119,5 @@ setup(
     },
     #test_loader='openquake.baselib.runtests:TestLoader',
     #test_suite='openquake.risklib,openquake.commonlib,openquake.calculators',
-    #zip_safe=False,
+    zip_safe=True,
     )
