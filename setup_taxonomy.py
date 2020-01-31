@@ -104,13 +104,13 @@ setup(
         'Environment :: Console',
         'Environment :: Web Environment',
     ],
-    # packages=['openquake.taxonomy'],
-    packages=find_packages(exclude=['openquakeplatform_taxtweb',
-                                    'openquakeplatform_taxtweb.*']),
-    include_package_data=True,
-    package_data={"openquake.taxonomy": [
-        "README.md", "LICENSE"]},
-    namespace_packages=['openquake'],
+    packages=['openquake', 'openquake.taxonomy'],
+    #packages=find_packages(exclude=['openquakeplatform_taxtweb',
+    #                                'openquakeplatform_taxtweb.*']),
+    # include_package_data=True,
+    #package_data={"openquake.taxonomy": [
+    #     "README.md", "LICENSE"]},
+    # namespace_packages=['openquake'],
     install_requires=install_requires,
     extras_require=extras_require,
     entry_points={
@@ -119,5 +119,5 @@ setup(
     },
     #test_loader='openquake.baselib.runtests:TestLoader',
     #test_suite='openquake.risklib,openquake.commonlib,openquake.calculators',
-    zip_safe=False,
+    #zip_safe=False,
     )
