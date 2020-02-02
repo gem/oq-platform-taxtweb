@@ -19,7 +19,7 @@
 import os
 import re
 import sys
-from setuptools import setup, find_packages
+from setuptools import setup
 from setuptools.command import egg_info
 
 with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
@@ -59,6 +59,8 @@ if pybuild_name == 'oq-platform-taxtweb':
         ],
     )
 elif pybuild_name == 'oq-taxonomy':
+    egg_info.manifest_maker.template = 'MANIFEST_taxonomy.in'
+
     def get_version():
         version_re = r"^__version__\s+=\s+['\"]([^'\"]*)['\"]"
         version = None
@@ -100,7 +102,7 @@ elif pybuild_name == 'oq-taxonomy':
         keywords="earthquake seismic risk taxonomy",
         url=url,
         long_description=readme,
-        long_description_content_type='text/markdown',
+#        long_description_content_type='text/markdown',
         classifiers=[
             'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Education',
@@ -115,21 +117,19 @@ elif pybuild_name == 'oq-taxonomy':
             'Environment :: Web Environment',
         ],
         packages=['openquake', 'openquake.taxonomy'],
-        #packages=find_packages(exclude=['openquakeplatform_taxtweb',
-        #                                'openquakeplatform_taxtweb.*']),
-        # include_package_data=True,
-        #package_data={"openquake.taxonomy": [
-        #     "README.md", "LICENSE"]},
-        # namespace_packages=['openquake'],
+        include_package_data=True,
+        package_data={"openquake.taxonomy": [
+            "README.md", "LICENSE"]},
+        namespace_packages=['openquake'],
         install_requires=install_requires,
         extras_require=extras_require,
         entry_points={
             'console_scripts': [
-                'taxonomy2human = openquake.taxonomy.taxonomy2human'],
+                'taxonomy2human = openquake.taxonomy.'
+                'taxonomy2human:taxonomy2human_cmd'],
         },
         #test_loader='openquake.baselib.runtests:TestLoader',
         #test_suite='openquake.risklib,openquake.commonlib,openquake.calculators',
         zip_safe=True,
         )
-
 

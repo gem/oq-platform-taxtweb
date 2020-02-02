@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import sys
 from openquakeplatform_taxtweb.utils.taxtweb_eng import Taxonomy
 from openquakeplatform_taxtweb.utils.taxtweb_maps import (
@@ -332,5 +332,9 @@ def taxonomy2human(s, no_unknown=True):
     return s_out
 
 
-if __name__ == '__main__':
+def taxonomy2human_cmd():
     print(taxonomy2human(sys.argv[1], no_unknown=True))
+
+
+if __name__ == '__main__':
+    taxonomy2human_cmd()
