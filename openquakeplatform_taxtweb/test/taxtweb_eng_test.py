@@ -63,4 +63,6 @@ def generator():
             ct += 1
             r += 1
 
-generator()
+# this tests are temporarily disabled
+if 1 == 0:
+    generator()
