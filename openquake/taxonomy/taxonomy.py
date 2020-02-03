@@ -1,9 +1,11 @@
 from .taxonomy_map import taxonomy_map
 
+
 class Ret(object):
     def __init__(self, result=None, s=None):
         self.result = result
         self.s = s
+
 
 def taxonomy_short2full(t_short):
 
@@ -13,11 +15,12 @@ def taxonomy_short2full(t_short):
     t_paridx = 0
     t_parnum = 0
 
-
     # console.log('T_SHORT: ' + t_short)
 
-    tfull_arr = ['DX+D99', 'MAT99', 'L99', 'DY+D99', 'MAT99', 'L99', 'H99', 'Y99', 'OC99', 'BP99',
-                 'PLF99', 'IR99', 'EW99', 'RSH99+RMT99+R99+RWC99', 'F99+FWC99', 'FOS99']
+    tfull_arr = [
+        'DX+D99', 'MAT99', 'L99', 'DY+D99', 'MAT99', 'L99', 'H99', 'Y99',
+        'OC99', 'BP99', 'PLF99', 'IR99', 'EW99', 'RSH99+RMT99+R99+RWC99',
+        'F99+FWC99', 'FOS99']
 
     tfull_arr_orig = tfull_arr[:]
 
@@ -40,7 +43,6 @@ def taxonomy_short2full(t_short):
         elif t_el == 'PO':
             t_el = 'DY+PO'
 
-
         if t_el.startswith('DX'):
             t_parent = "DX"
             t_paridx = i
@@ -49,7 +51,6 @@ def taxonomy_short2full(t_short):
             t_parent = "DY"
             t_paridx = i
             t_parnum += 1
-
 
         if t_el == '':
             if i <= t_paridx + 2:
@@ -60,8 +61,6 @@ def taxonomy_short2full(t_short):
             else:
                 t_el = tfull_arr_orig[max_pos]
                 max_pos += 1
-
-
 
         # find the prefix (all what is before '+' or ':' or ',' character
         prefix = t_el.replace('+', ',').replace(':', ',').split(',')[0]
@@ -80,7 +79,6 @@ def taxonomy_short2full(t_short):
                     tfull_arr[0] = t_el
                     tfull_arr[3] = 'DY+OF'
 
-
             elif cur_pos == 3:
                 # manage special case for coupled DX,DY cell
                 if t_el == 'DY+D99':
@@ -90,7 +88,6 @@ def taxonomy_short2full(t_short):
                 elif t_el == 'DY+OF':
                     tfull_arr[0] = 'DX+PF'
                     tfull_arr[3] = t_el
-
 
             else:
                 # if no parent set (t_parnum == 0)
@@ -124,6 +121,5 @@ def taxonomy_short2full(t_short):
 
         else:
             return (Ret(result=None, s="Unknown item '" + t_el + "'"))
-
 
     return (Ret(result='/'.join(tfull_arr), s=None))

@@ -1,6 +1,6 @@
-taxonomy_map = { # Direction spec
+taxonomy_map = {  # Direction spec
     "DX": 0,
-    
+
     # Material of lateral load-resisting system
     # could be also id 4 if max_id > 1
     "MAT99": 1,
@@ -19,7 +19,7 @@ taxonomy_map = { # Direction spec
     "ER": 1,
     "W": 1,
     "MATO": 1,
-    
+
     # Lateral load-resisting system
     # could be also id 5 if max_id > 2
     "L99": 2,
@@ -34,23 +34,23 @@ taxonomy_map = { # Direction spec
     "LO": 2,
     "LPB": 2,
     "LWAL": 2,
-    
+
     # Direction spec
     "DY": 3,
-    
+
     # Height
     "H99": 6,
     "HBET": 6,
     "HEX": 6,
     "HAPP": 6,
-    
+
     # Date
     "Y99": 7,
     "YEX": 7,
     "YBET": 7,
     "YPRE": 7,
     "YAPP": 7,
-    
+
     # Occupancy
     "OC99": 8,
     "RES": 8,
@@ -62,14 +62,14 @@ taxonomy_map = { # Direction spec
     "GOV": 8,
     "EDU": 8,
     "OCO": 8,
-    
+
     # Building position within a block
     "BP99": 9,
     "BPD": 9,
     "BP1": 9,
     "BP2": 9,
     "BP3": 9,
-    
+
     # Shape of the building plan
     "PLF99": 10,
     "PLFSQ": 10,
@@ -91,12 +91,12 @@ taxonomy_map = { # Direction spec
     "PLFP": 10,
     "PLFPO": 10,
     "PLFI": 10,
-    
+
     # Structural irregularity
     "IR99": 11,
     "IRRE": 11,
     "IRIR": 11,
-    
+
     # Exterior walls
     "EW99": 12,
     "EWC": 12,
@@ -110,7 +110,7 @@ taxonomy_map = { # Direction spec
     "EWPL": 12,
     "EWCB": 12,
     "EWO": 12,
-    
+
     # Roof
     "RSH99": 13,
     "RSH1": 13,
@@ -123,7 +123,7 @@ taxonomy_map = { # Direction spec
     "RSH8": 13,
     "RSH9": 13,
     "RSHO": 13,
-    
+
     "RMT99": 13,
     "RMN": 13,
     "RMT1": 13,
@@ -138,7 +138,7 @@ taxonomy_map = { # Direction spec
     "RMT10": 13,
     "RMT11": 13,
     "RMTO": 13,
-    
+
     "R99": 13,
     "RM": 13,
     "RE": 13,
@@ -147,14 +147,14 @@ taxonomy_map = { # Direction spec
     "RWO": 13,
     "RFA": 13,
     "RO": 13,
-    
+
     "RWC99": 13,
     "RWCN": 13,
     "RWCP": 13,
     "RTD99": 13,
     "RTDN": 13,
     "RTDP": 13,
-    
+
     # Floor
     "F99": 14,
     "FN": 14,
@@ -164,11 +164,11 @@ taxonomy_map = { # Direction spec
     "FME": 14,
     "FW": 14,
     "FO": 14,
-    
+
     "FWC99": 14,
     "FWCN": 14,
     "FWCP": 14,
-    
+
     # Foundation
     "FOS99": 15,
     "FOSSL": 15,

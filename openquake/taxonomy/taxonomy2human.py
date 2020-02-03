@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import sys
-from openquakeplatform_taxtweb.utils.taxtweb_eng import Taxonomy
-from openquakeplatform_taxtweb.utils.taxtweb_maps import (
+from openquake.taxonomy.taxtweb_eng import Taxonomy
+from openquake.taxonomy.taxtweb_maps import (
     material, mat_tech_grp, mat_prop_grp, mat_tead_grp,
     llrs_type_grp, llrs_duct_grp,
     h_aboveground, h_belowground, h_abovegrade, h_slope,

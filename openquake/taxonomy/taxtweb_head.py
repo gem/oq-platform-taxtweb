@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from openquakeplatform_taxtweb.utils.taxtweb_maps import (
+from openquake.taxonomy.taxtweb_maps import (
     mat_tech_grp, mat_tead_grp, mat_prop_grp,
     llrs_type_grp, llrs_duct_grp, occu_spec_grp,
     roof_sys_grp, floo_conn_grp)
