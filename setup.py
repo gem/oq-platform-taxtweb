@@ -87,7 +87,6 @@ elif pybuild_name == 'oq-taxonomy':
     url = "https://github.com/gem/oq-platform-taxtweb"
 
     install_requires = []
-
     extras_require = {}
 
     setup(

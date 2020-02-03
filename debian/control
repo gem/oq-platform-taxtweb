@@ -9,5 +9,5 @@ X-Python3-Version: >= 3.6
 Package: python3-oq-taxonomy
 Architecture: all
 Description: GEM Taxonomy manipulation tools.
-Depends: ${python3:Depends},python3-requests
+Depends: ${python3:Depends}
 
