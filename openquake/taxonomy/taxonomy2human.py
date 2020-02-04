@@ -7,6 +7,7 @@ from openquake.taxonomy.taxtweb_maps import (
     h_aboveground, h_belowground, h_abovegrade, h_slope,
     date_type,
     occu_type, occu_spec_grp,
+    bupo_type, plsh_type,
 )
 
 
@@ -226,6 +227,48 @@ def occupancy2human(blk, no_unknown=False):
     return (blk_out, blk_err)
 
 
+def position2human(blk, no_unknown=False):
+    blk_out = ""
+    blk_err = ""
+
+    bupo_types = arrdicts_flatten([bupo_type])
+
+    for atom in [blk]:
+        if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
+            continue
+
+        if atom in bupo_types:
+            if blk_out:
+                blk_out += '; '
+            blk_out += ('Building position within a block: ' +
+                        bupo_types[atom]['desc'])
+        else:
+            blk_err += ' ' + atom + ' atom not found'
+
+    return (blk_out, blk_err)
+
+
+def plan2human(blk, no_unknown=False):
+    blk_out = ""
+    blk_err = ""
+
+    plsh_types = arrdicts_flatten([plsh_type])
+
+    for atom in [blk]:
+        if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
+            continue
+
+        if atom in plsh_types:
+            if blk_out:
+                blk_out += '; '
+            blk_out += ('Shape of the building plan: ' +
+                        plsh_types[atom]['desc'])
+        else:
+            blk_err += ' ' + atom + ' atom not found'
+
+    return (blk_out, blk_err)
+
+
 def full_text2human(full_text, no_unknown=False):
     atoms = full_text.split('/')
 
@@ -316,6 +359,16 @@ def full_text2human(full_text, no_unknown=False):
     occ_out, occ_err = occupancy2human(atoms[Taxonomy.POS_OCCUPANCY],
                                        no_unknown=no_unknown)
     s_out, next_sep = smart_concat(s_out, occ_out, next_sep, '; ')
+
+    # building position
+    pos_out, pos_err = position2human(atoms[Taxonomy.POS_POSITION],
+                                      no_unknown=no_unknown)
+    s_out, next_sep = smart_concat(s_out, pos_out, next_sep, '; ')
+
+    # shape of building plan
+    pla_out, pla_err = plan2human(atoms[Taxonomy.POS_PLAN],
+                                  no_unknown=no_unknown)
+    s_out, next_sep = smart_concat(s_out, pla_out, next_sep, '; ')
 
     if s_out:
         s_out += '.'
