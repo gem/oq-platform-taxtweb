@@ -6,8 +6,23 @@ from openquake.taxonomy.taxtweb_maps import (
     llrs_type_grp, llrs_duct_grp,
     h_aboveground, h_belowground, h_abovegrade, h_slope,
     date_type,
-    occu_type, occu_spec_grp
+    occu_type, occu_spec_grp,
 )
+
+
+def smart_concat(s_out, new_out, cur_sep, next_sep):
+    '''
+    return s_out, next_sep
+    '''
+
+    if new_out:
+        if s_out:
+            s_out += cur_sep
+        s_out += new_out
+        next_sep = next_sep
+    else:
+        next_sep = cur_sep
+    return (s_out, next_sep)
 
 
 def dx2human(blk, no_unknown=False):
@@ -290,29 +305,18 @@ def full_text2human(full_text, no_unknown=False):
     # height
     hei_out, hei_err = height2human(atoms[Taxonomy.POS_HEIGHT],
                                     no_unknown=no_unknown)
-    if hei_out:
-        if s_out:
-            s_out += next_sep
-        s_out += hei_out
-        next_sep = '; '
+    s_out, next_sep = smart_concat(s_out, hei_out, next_sep, '; ')
 
     # date
     dt_out, dt_err = date2human(atoms[Taxonomy.POS_DATE],
                                 no_unknown=no_unknown)
-    if dt_out:
-        if s_out:
-            s_out += next_sep
-        s_out += dt_out
-        next_sep = '; '
+    s_out, next_sep = smart_concat(s_out, dt_out, next_sep, '; ')
 
     # occupancy
-    dt_out, dt_err = occupancy2human(atoms[Taxonomy.POS_OCCUPANCY],
-                                     no_unknown=no_unknown)
-    if dt_out:
-        if s_out:
-            s_out += next_sep
-        s_out += dt_out
-        next_sep = '; '
+    occ_out, occ_err = occupancy2human(atoms[Taxonomy.POS_OCCUPANCY],
+                                       no_unknown=no_unknown)
+    s_out, next_sep = smart_concat(s_out, occ_out, next_sep, '; ')
+
     if s_out:
         s_out += '.'
 
