@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 import sys, math, re, io
 
-from openquakeplatform_taxtweb.utils.taxtweb_maps import (
+from openquake.taxonomy.taxtweb_maps import (
     material, date_type, occu_type, bupo_type, plsh_type, stir_type,
     plan_irre, plan_seco, vert_irre, vert_seco, wall_type, roof_shap,
     roof_cove, roof_mate, roof_conn, floo_syma, floo_syty, foun_type,)
-from openquakeplatform_taxtweb.utils.taxtweb_head import (mat_tech, mat_tead, mat_prop, llrs_type,
-                                llrs_duct, occu_spec, roof_sys, floo_conn)
-from openquakeplatform_taxtweb.utils.taxonomy import taxonomy_short2full, Ret
+from openquake.taxonomy.taxtweb_head import (
+    mat_tech, mat_tead, mat_prop, llrs_type, llrs_duct, occu_spec,
+    roof_sys, floo_conn)
+from openquake.taxonomy.taxonomy import taxonomy_short2full, Ret
 
 taxonomy = None
+
 
 def is_not_negative_int(s):
     """return true if the string is convertible
