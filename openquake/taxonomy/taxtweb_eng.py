@@ -405,8 +405,8 @@ class Taxonomy(object):
                                       'Irregular structure'],
                                      val=0, change_cb=self.taxt_RegularityCB1Select)
         self.RegularityCB2 = TaxtSel('RegularityCB2', change_cb=self.taxt_RegularityCB2Select)
-        self.RegularityCB4 = TaxtSel('RegularityCB4', change_cb=self.taxt_RegularityCB3Select)
-        self.RegularityCB3 = TaxtSel('RegularityCB3', change_cb=self.taxt_RegularityCB4Select)
+        self.RegularityCB3 = TaxtSel('RegularityCB3', change_cb=self.taxt_RegularityCB3Select)
+        self.RegularityCB4 = TaxtSel('RegularityCB4', change_cb=self.taxt_RegularityCB4Select)
         self.RegularityCB5 = TaxtSel('RegularityCB5', change_cb=self.taxt_RegularityCB5Select)
 
         self.WallsCB = TaxtSel('WallsCB', ['Unknown material of exterior walls',
@@ -3697,7 +3697,6 @@ class Taxonomy(object):
 
             ret_s.s = "Not identified '" + stir_atom + "' as specification of structural irregularity."
             return (False)
-
 
         if plir_id == "IRPP:IRN" and plse_id != "":
             ret_s.s = "'" + plir_id + "' and '" + plse_id + "' are not a valid specification of structural irregularity."
