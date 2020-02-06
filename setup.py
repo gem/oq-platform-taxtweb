@@ -22,7 +22,7 @@ import sys
 from setuptools import setup
 from setuptools.command import egg_info
 
-with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as readme:
+with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
     README = readme.read()
 
 # allow setup.py to be run from any path
@@ -76,13 +76,7 @@ elif pybuild_name == 'oq-taxonomy':
 
         return version
 
-    def get_readme():
-        with open(os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                               'README.md'), encoding='utf-8') as readme:
-            return readme.read()
-
     version = get_version()
-    readme = get_readme()
 
     url = "https://github.com/gem/oq-platform-taxtweb"
 
@@ -100,8 +94,7 @@ elif pybuild_name == 'oq-taxonomy':
         license="AGPL3",
         keywords="earthquake seismic risk taxonomy",
         url=url,
-        long_description=readme,
-#        long_description_content_type='text/markdown',
+        long_description=README,
         classifiers=[
             'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Education',
