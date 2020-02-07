@@ -1,2 +1,6 @@
 Package to manage taxonomies version 2 and show a description in human understandable form.
-python3 ./setup_taxonomy.py bdist -b build_taxonomy -d dist_taxonomy
+### To build the 'ghost' package use:
+rm -rf build dist
+export PYBUILD_NAME = oq-taxonomy
+./setup.py bdist
+

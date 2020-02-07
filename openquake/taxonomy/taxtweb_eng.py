@@ -239,10 +239,10 @@ class Taxonomy(object):
         'MAT99', 'CT99', 'S99', 'ME99', 'SC99', 'MUN99', 'MR99', 'MO99',
         'ET99', 'W99', 'L99', 'DU99', 'Y99', 'H99', 'HB99', 'HF99', 'HD99',
         'OC99', 'RES99', 'COM99', 'MIX99', 'IND99', 'AGR99', 'ASS99', 'GOV99',
-        'EDU99', 'BP99', 'PLF99', 'IR99', 'IRPP:IRN', 'IRVP:IRN', 'EW99',
-        'RSH99', 'RMT99', 'R99', 'RM99', 'RE99', 'RC99', 'RME99', 'RWO99',
-        'RWC99', 'F99', 'FM99', 'FE99', 'FC99', 'FME99', 'FW99', 'FWC99',
-        'FOS99', 'D99']
+        'EDU99', 'BP99', 'PLF99', 'IR99', 'IRPP:IRN', 'IRVP:IRN', 'IRVS:IRN',
+        'EW99', 'RSH99', 'RMT99', 'R99', 'RM99', 'RE99', 'RC99', 'RME99',
+        'RWO99', 'RWC99', 'F99', 'FM99', 'FE99', 'FC99', 'FME99', 'FW99',
+        'FWC99', 'FOS99', 'D99']
     ATOM_TYPE_VALUE = ['HEX', 'HAPP', 'HBEX', 'HBAPP', 'HFEX', 'HFAPP', 'HD',
                        'YEX', 'YPRE', 'YAPP']
     ATOM_TYPE_RANGE = ['HBET', 'HBBET', 'HFBET', 'YBET']
@@ -405,8 +405,8 @@ class Taxonomy(object):
                                       'Irregular structure'],
                                      val=0, change_cb=self.taxt_RegularityCB1Select)
         self.RegularityCB2 = TaxtSel('RegularityCB2', change_cb=self.taxt_RegularityCB2Select)
-        self.RegularityCB4 = TaxtSel('RegularityCB4', change_cb=self.taxt_RegularityCB3Select)
-        self.RegularityCB3 = TaxtSel('RegularityCB3', change_cb=self.taxt_RegularityCB4Select)
+        self.RegularityCB3 = TaxtSel('RegularityCB3', change_cb=self.taxt_RegularityCB3Select)
+        self.RegularityCB4 = TaxtSel('RegularityCB4', change_cb=self.taxt_RegularityCB4Select)
         self.RegularityCB5 = TaxtSel('RegularityCB5', change_cb=self.taxt_RegularityCB5Select)
 
         self.WallsCB = TaxtSel('WallsCB', ['Unknown material of exterior walls',
@@ -3697,7 +3697,6 @@ class Taxonomy(object):
 
             ret_s.s = "Not identified '" + stir_atom + "' as specification of structural irregularity."
             return (False)
-
 
         if plir_id == "IRPP:IRN" and plse_id != "":
             ret_s.s = "'" + plir_id + "' and '" + plse_id + "' are not a valid specification of structural irregularity."

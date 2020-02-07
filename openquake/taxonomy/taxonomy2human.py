@@ -6,8 +6,31 @@ from openquake.taxonomy.taxtweb_maps import (
     llrs_type_grp, llrs_duct_grp,
     h_aboveground, h_belowground, h_abovegrade, h_slope,
     date_type,
-    occu_type, occu_spec_grp
+    occu_type, occu_spec_grp,
+    bupo_type, plsh_type,
+    stir_type, plan_irre, plan_seco, vert_irre, vert_seco,
+    wall_type,
+
+    roof_shap, roof_cove, roof_mate, roof_sys_grp, roof_conn,
+    floo_syma, floo_conn_grp, floo_syty,
+
+    foun_type
 )
+
+
+def smart_concat(s_out, new_out, cur_sep, next_sep):
+    '''
+    return s_out, next_sep
+    '''
+
+    if new_out:
+        if s_out:
+            s_out += cur_sep
+        s_out += new_out
+        next_sep = next_sep
+    else:
+        next_sep = cur_sep
+    return (s_out, next_sep)
 
 
 def dx2human(blk, no_unknown=False):
@@ -87,7 +110,7 @@ def lmat2human(blk, no_unknown=False):
             blk_out += ('Material technology (additional): ' +
                       mat_teads[atom]['desc'])
         else:
-            blk_err += ' ' + atom + ' subblock not found'
+            blk_err += ' ' + atom + ' atom not found'
 
     return (blk_out, blk_err)
 
@@ -103,8 +126,8 @@ def height2human(blk, no_unknown=False):
     hei_slope = arrdicts_flatten([h_slope])
 
     for subblk in subblks:
-        sub2blks = subblk.split(':')
-        atom = sub2blks[0]
+        atoms = subblk.split(':')
+        atom = atoms[0]
         if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
             continue
 
@@ -133,12 +156,12 @@ def height2human(blk, no_unknown=False):
         if blk_out:
             blk_out += '; '
         if atom in Taxonomy.ATOM_TYPE_RANGE:
-            pars = sub2blks[1].split(',')
+            pars = atoms[1].split(',')
             blk_out += (pfx + ' - ' + desc + ': between ' +
                         pars[0] + ' and ' + pars[1] + sfx)
         elif atom in Taxonomy.ATOM_TYPE_VALUE:
             blk_out += (pfx + ' - ' + desc + ': ' +
-                        sub2blks[1] + sfx)
+                        atoms[1] + sfx)
         else:
             blk_out += (pfx + ' - ' + desc + sfx)
 
@@ -153,8 +176,8 @@ def date2human(blk, no_unknown=False):
     dt_type = arrdicts_flatten([date_type])
 
     for subblk in subblks:
-        sub2blks = subblk.split(':')
-        atom = sub2blks[0]
+        atoms = subblk.split(':')
+        atom = atoms[0]
         if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
             continue
 
@@ -171,12 +194,12 @@ def date2human(blk, no_unknown=False):
         if blk_out:
             blk_out += '; '
         if atom in Taxonomy.ATOM_TYPE_RANGE:
-            pars = sub2blks[1].split(',')
+            pars = atoms[1].split(',')
             blk_out += (pfx + ' - ' + desc + ': between ' +
                         pars[0] + ' and ' + pars[1] + sfx)
         elif atom in Taxonomy.ATOM_TYPE_VALUE:
             blk_out += (pfx + ' - ' + desc + ': ' +
-                        sub2blks[1] + sfx)
+                        atoms[1] + sfx)
         else:
             blk_out += (pfx + ' - ' + desc + sfx)
 
@@ -207,6 +230,211 @@ def occupancy2human(blk, no_unknown=False):
                         occ_specs[atom]['desc'])
         else:
             blk_err += ' ' + atom + ' subblock not found'
+
+    return (blk_out, blk_err)
+
+
+def position2human(blk, no_unknown=False):
+    blk_out = ""
+    blk_err = ""
+
+    bupo_types = arrdicts_flatten([bupo_type])
+
+    for atom in [blk]:
+        if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
+            continue
+
+        if atom in bupo_types:
+            if blk_out:
+                blk_out += '; '
+            blk_out += ('Building position within a block: ' +
+                        bupo_types[atom]['desc'])
+        else:
+            blk_err += ' ' + atom + ' atom not found'
+
+    return (blk_out, blk_err)
+
+
+def plan2human(blk, no_unknown=False):
+    blk_out = ""
+    blk_err = ""
+
+    plsh_types = arrdicts_flatten([plsh_type])
+
+    for atom in [blk]:
+        if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
+            continue
+
+        if atom in plsh_types:
+            if blk_out:
+                blk_out += '; '
+            blk_out += ('Shape of the building plan: ' +
+                        plsh_types[atom]['desc'])
+        else:
+            blk_err += ' ' + atom + ' atom not found'
+
+    return (blk_out, blk_err)
+
+
+def irreg2human(blk, no_unknown=False):
+    blk_out = ""
+    blk_err = ""
+    next_sep = '; '
+
+    plan_out = ""
+    vert_out = ""
+
+    stir_types = arrdicts_flatten([stir_type])
+    plan_irres = arrdicts_flatten([plan_irre])
+    plan_secos = arrdicts_flatten([plan_seco])
+    vert_irres = arrdicts_flatten([vert_irre])
+    vert_secos = arrdicts_flatten([vert_seco])
+
+    atoms = blk.split('+')
+
+    for atom in atoms:
+        if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
+            continue
+
+        if atom in stir_types:
+            blk_out += ('Type of irregularity: ' +
+                        stir_types[atom]['desc'])
+            next_sep = ' - '
+        elif atom in plan_irres:
+            plan_out += ('Plan structural irregularity: ' +
+                         plan_irres[atom]['desc'])
+        elif atom in plan_secos:
+            plan_out += (' (primary), ' + plan_secos[atom]['desc'] +
+                         ' (secondary)')
+        elif atom in vert_irres:
+            vert_out += ('Vertical structural irregularity: ' +
+                         vert_irres[atom]['desc'])
+        elif atom in vert_secos:
+            vert_out += (' (primary), ' + vert_secos[atom]['desc'] +
+                         ' (secondary)')
+        else:
+            blk_err += ' ' + atom + ' atom not found'
+
+    if plan_out:
+        blk_out += next_sep + plan_out
+        next_sep = '; '
+
+    if vert_out:
+        blk_out += next_sep + vert_out
+
+    return (blk_out, blk_err)
+
+
+def extwall2human(blk, no_unknown=False):
+    blk_out = ""
+    blk_err = ""
+
+    wall_types = arrdicts_flatten([wall_type])
+
+    for atom in [blk]:
+        if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
+            continue
+
+        if atom in wall_types:
+            if blk_out:
+                blk_out += '; '
+            blk_out += ('Material of exterior walls: ' +
+                        wall_types[atom]['desc'])
+        else:
+            blk_err += ' ' + atom + ' atom not found'
+
+    return (blk_out, blk_err)
+
+
+def roof2human(blk, no_unknown=False):
+    blk_out = ""
+    blk_err = ""
+    atoms = blk.split('+')
+
+    roof_shaps = arrdicts_flatten([roof_shap])
+    roof_coves = arrdicts_flatten([roof_cove])
+    roof_mates = arrdicts_flatten([roof_mate])
+    roof_syses = arrdicts_flatten(roof_sys_grp)
+    roof_conns = arrdicts_flatten([roof_conn])
+
+    for atom in atoms:
+        if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
+            continue
+
+        if atom in roof_shaps:
+            if blk_out:
+                blk_out += '; '
+            blk_out += 'Roof shape: ' + roof_shaps[atom]['desc']
+        elif atom in roof_coves:
+            if blk_out:
+                blk_out += '; '
+            blk_out += 'Roof covering: ' + roof_coves[atom]['desc']
+        elif atom in roof_mates:
+            if blk_out:
+                blk_out += '; '
+            blk_out += 'Roof system material: ' + roof_mates[atom]['desc']
+        elif atom in roof_syses:
+            if blk_out:
+                blk_out += '; '
+            blk_out += 'Roof system type: ' + roof_syses[atom]['desc']
+        elif atom in roof_conns:
+            if blk_out:
+                blk_out += '; '
+            blk_out += 'Roof connections: ' + roof_conns[atom]['desc']
+        else:
+            blk_err += ' ' + atom + ' atom not found'
+
+    return (blk_out, blk_err)
+
+
+def floor2human(blk, no_unknown=False):
+    blk_out = ""
+    blk_err = ""
+    atoms = blk.split('+')
+
+    floo_symas = arrdicts_flatten([floo_syma])
+    floo_sytys = arrdicts_flatten([floo_syty])
+    floo_conns = arrdicts_flatten(floo_conn_grp)
+
+    for atom in atoms:
+        if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
+            continue
+
+        if atom in floo_symas:
+            if blk_out:
+                blk_out += '; '
+            blk_out += 'Floor system material: ' + floo_symas[atom]['desc']
+        elif atom in floo_sytys:
+            if blk_out:
+                blk_out += '; '
+            blk_out += 'Floor system type: ' + floo_sytys[atom]['desc']
+        elif atom in floo_conns:
+            if blk_out:
+                blk_out += '; '
+            blk_out += 'Floor connections: ' + floo_conns[atom]['desc']
+        else:
+            blk_err += ' ' + atom + ' atom not found'
+
+    return (blk_out, blk_err)
+
+
+def foundation2human(blk, no_unknown=False):
+    blk_out = ""
+    blk_err = ""
+
+    foun_types = arrdicts_flatten([foun_type])
+
+    for atom in [blk]:
+        if atom in Taxonomy.UNKNOWN_ATOMS and no_unknown:
+            continue
+
+        if atom in foun_types:
+            if blk_out:
+                blk_out += '; '
+            blk_out += ('Foundation system: ' +
+                        foun_types[atom]['desc'])
+        else:
+            blk_err += ' ' + atom + ' atom not found'
 
     return (blk_out, blk_err)
 
@@ -290,29 +518,53 @@ def full_text2human(full_text, no_unknown=False):
     # height
     hei_out, hei_err = height2human(atoms[Taxonomy.POS_HEIGHT],
                                     no_unknown=no_unknown)
-    if hei_out:
-        if s_out:
-            s_out += next_sep
-        s_out += hei_out
-        next_sep = '; '
+    s_out, next_sep = smart_concat(s_out, hei_out, next_sep, '; ')
 
     # date
     dt_out, dt_err = date2human(atoms[Taxonomy.POS_DATE],
                                 no_unknown=no_unknown)
-    if dt_out:
-        if s_out:
-            s_out += next_sep
-        s_out += dt_out
-        next_sep = '; '
+    s_out, next_sep = smart_concat(s_out, dt_out, next_sep, '; ')
 
     # occupancy
-    dt_out, dt_err = occupancy2human(atoms[Taxonomy.POS_OCCUPANCY],
-                                     no_unknown=no_unknown)
-    if dt_out:
-        if s_out:
-            s_out += next_sep
-        s_out += dt_out
-        next_sep = '; '
+    occ_out, occ_err = occupancy2human(atoms[Taxonomy.POS_OCCUPANCY],
+                                       no_unknown=no_unknown)
+    s_out, next_sep = smart_concat(s_out, occ_out, next_sep, '; ')
+
+    # building position
+    pos_out, pos_err = position2human(atoms[Taxonomy.POS_POSITION],
+                                      no_unknown=no_unknown)
+    s_out, next_sep = smart_concat(s_out, pos_out, next_sep, '; ')
+
+    # shape of building plan
+    pla_out, pla_err = plan2human(atoms[Taxonomy.POS_PLAN],
+                                  no_unknown=no_unknown)
+    s_out, next_sep = smart_concat(s_out, pla_out, next_sep, '; ')
+
+    # structural irregularity
+    irr_out, irr_err = irreg2human(atoms[Taxonomy.POS_IRREG],
+                                   no_unknown=no_unknown)
+    s_out, next_sep = smart_concat(s_out, irr_out, next_sep, '; ')
+
+    # exterior wall
+    extwall_out, extwall_err = extwall2human(atoms[Taxonomy.POS_EXTWALL],
+                                             no_unknown=no_unknown)
+    s_out, next_sep = smart_concat(s_out, extwall_out, next_sep, '; ')
+
+    # roof
+    roof_out, roof_err = roof2human(atoms[Taxonomy.POS_ROOF],
+                                    no_unknown=no_unknown)
+    s_out, next_sep = smart_concat(s_out, roof_out, next_sep, '; ')
+
+    # floor
+    floor_out, floor_err = floor2human(atoms[Taxonomy.POS_FLOOR],
+                                       no_unknown=no_unknown)
+    s_out, next_sep = smart_concat(s_out, floor_out, next_sep, '; ')
+
+    # foundation
+    foun_out, foun_err = foundation2human(atoms[Taxonomy.POS_FOUNDATION],
+                                          no_unknown=no_unknown)
+    s_out, next_sep = smart_concat(s_out, foun_out, next_sep, '; ')
+
     if s_out:
         s_out += '.'
 
