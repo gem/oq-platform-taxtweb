@@ -31,9 +31,26 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 pybuild_name = os.environ.get('PYBUILD_NAME', 'oq-platform-taxtweb')
 
 if pybuild_name == 'oq-platform-taxtweb':
+    def get_version():
+        version_re = r"^__version__\s+=\s+['\"]([^'\"]*)['\"]"
+        version = None
+
+        package_init = 'openquakeplatform_taxtweb/__init__.py'
+        for line in open(package_init, 'r'):
+            version_match = re.search(version_re, line, re.M)
+            if version_match:
+                version = version_match.group(1)
+                break
+        else:
+            sys.exit('__version__ variable not found in %s' % package_init)
+
+        return version
+
+    version = get_version()
+
     setup(
         name='oq-platform-taxtweb',
-        version='1.2.0',
+        version=version,
         packages=["openquakeplatform_taxtweb"],
         include_package_data=True,
         license="AGPL3",
