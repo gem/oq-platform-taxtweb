@@ -16,7 +16,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with OpenQuake. If not, see <http://www.gnu.org/licenses/>.
 
+from django.http import HttpResponse
 from django.shortcuts import render
+import json
+from openquake.taxonomy.taxtweb_eng import Taxonomy
+from openquake.taxonomy.taxonomy2human import full_text2human
+
 try:
     from openquakeplatform.settings import STANDALONE
 except ImportError:
@@ -124,3 +129,25 @@ def checker(request, **kwargs):
                        taxt_prefix=taxt_prefix,
                        jquery="sim_dollar",
                        ))
+
+
+def explanation(request, **kwargs):
+    taxonomy = kwargs['taxonomy'][1:] if 'taxonomy' in kwargs else ""
+
+    print(taxonomy)
+    t = Taxonomy('Taxonomy', True)
+
+    full_text, full_res = t.process(taxonomy, 0)
+
+    if full_res is None:
+        err = 0
+        msg = full_text2human(full_text, no_unknown=True)
+    else:
+        err = 1
+        msg = full_res
+
+    res = {
+        'error': err,
+        'message': msg
+    }
+    return HttpResponse(json.dumps(res), content_type="application/json")

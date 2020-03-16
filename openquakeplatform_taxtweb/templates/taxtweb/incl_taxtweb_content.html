@@ -256,7 +256,9 @@
             <p>Taxonomy string for this building typology: </p>
             <p><input id="resultE" type="text" size="80" maxlength="600"></input><input id="resultE_virt" type="hidden"></input></p>
             <p>Type of taxonomy:&nbsp;&nbsp;&nbsp;&nbsp;<select id="OutTypeCB"></select>
-            &nbsp;&nbsp;&nbsp;&nbsp;<a id="permalink" target="_blank" href="">Permalink</a></p>
+              &nbsp;&nbsp;&nbsp;&nbsp;<a id="permalink" target="_blank" href="">Permalink</a>
+                &nbsp;&nbsp;&nbsp;&nbsp;<a id="do_explanation" href="#" data_gem_taxonomy="" onclick="show_explanation(this); return false;">Explanation</a>
+            </p>
         </div>
     </div>
 </div>
@@ -271,3 +273,4 @@ Compose a taxonomy string by selecting items from the menus or typing directly i
     <button name="close_btn" style="position: absolute; bottom: 16px; right: 16px;">Close</button>
     </div>
 </div>
+<div id="explanation"></div>

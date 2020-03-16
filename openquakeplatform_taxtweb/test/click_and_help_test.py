@@ -3,7 +3,7 @@ import unittest
 from openquake.moon import platform_get
 from selenium.webdriver.common.action_chains import ActionChains
 from openquake.moon import TimeoutError
-
+import time
 
 def hide_footer():
 
@@ -106,3 +106,22 @@ class VulnTaxonomiesTest(unittest.TestCase):
                                   timeout=5.0, is_regex=True)
         pla.window_close()
         pla.select_main_window()
+
+    def explanation_test(self):
+        pla = platform_get()
+        pla.get('/taxtweb/CU+CIP/HBET:1,12')
+
+        hide_footer()
+
+        exp_btn = pla.xpath_finduniq(
+            "//a[@id='do_explanation']")
+        exp_btn.click()
+
+        time.sleep(2)
+
+        res = pla.xpath_finduniq("//div[@id='explanation']")
+        self.assertEqual(res.text,
+                         ('Material type: Concrete, unreinforced\n'
+                          'Material technology: Cast-in-place concrete\n'
+                          'Number of storeys above ground - Range of'
+                          ' the number of storeys: between 1 and 12.'))

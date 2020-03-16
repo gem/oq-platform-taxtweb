@@ -2816,12 +2816,14 @@ function taxt_BuildTaxonomy()
 
         gem$('#resultE' + virt_sfx).val(ResTax);
         gem$('#permalink').attr("href", taxt_prefix + "/" +  ResTaxFull);
+        gem$('#do_explanation').attr("data_gem_taxonomy", ResTax);
     }
     else {
         gem_taxonomy_form = "";
         gem_taxonomy_form_full = "";
         gem$('#resultE' + virt_sfx).val(validate_msg);
         gem$('#permalink').attr("href", taxt_prefix);
+        gem$('#do_explanation').attr("data_gem_taxonomy", ResTax);
     }
 }
 
@@ -4728,4 +4730,32 @@ function populate(s, ret_s) {
         return (false);
     }
     return (true);
+}
+
+function show_explanation(obj)
+{
+    var tax = gem$(obj).attr('data_gem_taxonomy');
+
+    $.ajax({
+        url: '/taxtweb/explanation/' + tax,
+        type: 'GET',
+        cache: false,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+            // CU+CIP/HBET:1,12
+            $('#explanation').html(data.message.replace(/;/g, '<br>'));
+            $('#explanation').dialog({
+                title: tax,
+                dialogClass: 'gem-jqueryui-dialog',
+                modal: true,
+                width: '600px',
+                buttons: {
+                    Ok: function() {
+                        $(this).dialog( "close" );
+                    }
+                }
+            });
+        }
+    });
 }

@@ -25,6 +25,8 @@ from openquakeplatform_taxtweb import views
 
 app_name = 'taxtweb'
 urlpatterns = [
+    url(r'^explanation(?P<taxonomy>[^?]*)',
+        views.explanation, name='explanation'),
     url(r'^checker(?P<taxonomy>[^?]*)', views.checker, name='checker'),
     url(r'^(?P<taxonomy>[^?]*)', views.index, name='index'),
     url('', views.index, name='home'),
