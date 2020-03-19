@@ -134,8 +134,14 @@ def checker(request, **kwargs):
 def explanation(request, **kwargs):
     taxonomy = kwargs['taxonomy'][1:] if 'taxonomy' in kwargs else ""
 
-    print(taxonomy)
     t = Taxonomy('Taxonomy', True)
+
+    if taxonomy == "":
+        res = {
+            'error': 2,
+            'message': "Empty taxonomy."
+        }
+        return HttpResponse(json.dumps(res), content_type="application/json")
 
     full_text, full_res = t.process(taxonomy, 0)
 
