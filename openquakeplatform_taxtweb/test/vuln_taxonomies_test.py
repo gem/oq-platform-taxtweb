@@ -85,7 +85,7 @@ def make_function(func_name, taxonomy, run_slow):
         if run_slow:
             time.sleep(3)
             resulte_tag.click()
-            resulte_tag.send_keys(Keys.End)  # Positions the cursor at the end of string
+            resulte_tag.send_keys(Keys.END)  # Positions the cursor at the end of string
             if len(resulte_val) > 0 and resulte_val[-1] == '/':
                 resulte_tag.send_keys(Keys.BACK_SPACE)
                 resulte_tag, resulte_val = tag_and_val_get(
