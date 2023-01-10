@@ -2832,7 +2832,7 @@ function taxt_BuildTaxonomy()
    output */
 function resultE_mgmt(event)
 {
-    var col_orange = '#ffdfbf', col_red = '#ffbfbf', col_green = '#bfffbf', col_transparent = '';
+    var col_orange = '#ffdfbfff', col_red = '#ffbfbfff', col_green = '#bfffbfff', col_transparent = '';
     var item = event.target;
     var taxonomy = $(item).val();
     var error = "";
