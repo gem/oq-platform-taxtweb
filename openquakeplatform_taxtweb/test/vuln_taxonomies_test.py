@@ -59,7 +59,8 @@ def make_function(func_name, taxonomy, run_slow):
         hide_footer()
 
         col_red = "rgba(255, 223, 191, 1)"
-        col_green = "rgba(191, 255, 191, 1)"
+        #col_green = "rgba(191, 255, 191, 1)"
+        col_green = "rgb(191, 255, 191)"
 
         taxonomy_loc = taxonomy
         if taxonomy_loc[-1] == '/':
