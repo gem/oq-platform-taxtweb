@@ -59,7 +59,6 @@ def make_function(func_name, taxonomy, run_slow):
         hide_footer()
 
         col_red = "rgba(255, 223, 191, 1)"
-        #col_green = "rgba(191, 255, 191, 1)"
         col_green = "rgb(191, 255, 191)"
 
         taxonomy_loc = taxonomy
@@ -84,7 +83,7 @@ def make_function(func_name, taxonomy, run_slow):
             self.assertEqual(resulte_val, taxonomy_loc)
 
         if run_slow:
-            time.sleep(3)
+            time.sleep(1)
             resulte_tag.click()
             resulte_tag.send_keys(Keys.END)  # Positions the cursor at the end of string
             if len(resulte_val) > 0 and resulte_val[-1] == '/':
