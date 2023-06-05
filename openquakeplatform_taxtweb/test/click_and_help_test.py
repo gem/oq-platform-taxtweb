@@ -39,6 +39,9 @@ class VulnTaxonomiesTest(unittest.TestCase):
     def click_and_help_simple_test(self):
         pla = platform_get()
 
+        taxonomy_home = pla.xpath_finduniq(
+            "//div[@class='oq-header-description']")
+
         hide_footer()
 
         first_tab_tag = pla.xpath_finduniq(
