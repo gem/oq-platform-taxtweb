@@ -39,6 +39,9 @@ class VulnTaxonomiesTest(unittest.TestCase):
     def click_and_help_simple_test(self):
         pla = platform_get()
 
+        direction = pla.xpath_finduniq(
+            "//span[@class='nav-logo']")
+
         hide_footer()
 
         first_tab_tag = pla.xpath_finduniq(
