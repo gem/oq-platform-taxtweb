@@ -39,12 +39,9 @@ class VulnTaxonomiesTest(unittest.TestCase):
     def click_and_help_simple_test(self):
         pla = platform_get()
 
-<<<<<<< Updated upstream
-=======
         direction = pla.xpath_finduniq(
             "//li[@id='id_help_form']")
 
->>>>>>> Stashed changes
         hide_footer()
 
         first_tab_tag = pla.xpath_finduniq(
