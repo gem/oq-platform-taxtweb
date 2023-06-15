@@ -46,7 +46,7 @@ def index(request, **kwargs):
             subtab_id = 1
 
     if 'HTTP_HOST' in request.META:
-        proto = (request.META['HTTP_X_FORWARDED_PROTO'] if
+        proto = (request.META['HTTP_X_FORWARDED_PROTO'].split(', ')[-1] if
                  'HTTP_X_FORWARDED_PROTO' in request.META else 'http')
         if request.META['HTTP_HOST'].startswith('taxtweb'):
             taxt_prefix = proto + '://' + request.META['HTTP_HOST']
