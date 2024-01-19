@@ -85,14 +85,8 @@ class VulnTaxonomiesTest(unittest.TestCase):
         select_tag = pla.xpath_finduniq(
             "//select[@id='PositionCB']")
 
-        # check width / 2, height / 2 of select_tag
-        select_tag_width = select_tag.size['width'] / 2
-        select_tag_height = select_tag.size['height'] / 2
-
-        # click with offset
         action_select_tag = ActionChains(pla.driver)
-        action_select_tag.move_to_element_with_offset(
-            select_tag, select_tag_width, select_tag_height).click().perform()
+        action_select_tag.move_to_element(select_tag).click().perform()
 
         item_tag = pla.xpath_finduniq(
             "//div[@id='gem_help_select']/span[normalize-space(text()) = "
