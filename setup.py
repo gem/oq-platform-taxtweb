@@ -60,7 +60,7 @@ if pybuild_name == 'oq-platform-taxtweb':
         author='GEM Foundation',
         author_email='devops@openquake.org',
         install_requires=[
-            'django >=4, <5',
+            'django >=4.2, <5',
         ],
         classifiers=[
             'Environment :: Web Environment',
