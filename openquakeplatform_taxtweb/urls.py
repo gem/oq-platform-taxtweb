@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with OpenQuake. If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import re_path
+from django.urls import re_path
 from openquakeplatform_taxtweb import views
 
 # Uncomment the next two lines to enable the admin:
