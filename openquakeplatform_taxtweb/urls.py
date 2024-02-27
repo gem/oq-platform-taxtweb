@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with OpenQuake. If not, see <http://www.gnu.org/licenses/>.
 
-from django.conf.urls import url
+from django.urls import re_path
 from openquakeplatform_taxtweb import views
 
 # Uncomment the next two lines to enable the admin:
@@ -25,9 +25,9 @@ from openquakeplatform_taxtweb import views
 
 app_name = 'taxtweb'
 urlpatterns = [
-    url(r'^explanation(?P<taxonomy>[^?]*)',
-        views.explanation, name='explanation'),
-    url(r'^checker(?P<taxonomy>[^?]*)', views.checker, name='checker'),
-    url(r'^(?P<taxonomy>[^?]*)', views.index, name='index'),
-    url('', views.index, name='home'),
+    re_path(r'^explanation(?P<taxonomy>[^?]*)',
+            views.explanation, name='explanation'),
+    re_path(r'^checker(?P<taxonomy>[^?]*)', views.checker, name='checker'),
+    re_path(r'^(?P<taxonomy>[^?]*)', views.index, name='index'),
+    re_path('', views.index, name='home'),
 ]
