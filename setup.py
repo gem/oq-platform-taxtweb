@@ -117,8 +117,6 @@ elif pybuild_name == 'oq-taxonomy':
             'Intended Audience :: Education',
             'Intended Audience :: Science/Research',
             'Programming Language :: Python :: 3',
-            'Programming Language :: Python :: 3.6',
-            'Programming Language :: Python :: 3.7',
             'License :: OSI Approved :: GNU Affero General Public License v3',
             'Operating System :: OS Independent',
             'Topic :: Scientific/Engineering',
