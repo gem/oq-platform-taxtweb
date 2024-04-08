@@ -25,7 +25,7 @@ class ProductionTest(unittest.TestCase):
     def permalink_test(self):
         pla = platform_get()
         prod_pla = pla.platform_create('admin', 'admin', jqheavy=None)
-        prod_pla.init(config=('https://platform.openquake.org', 'admin', 'admin', 'test@openquake.org', ''),
+        prod_pla.init(config=('https://tools.openquake.org', 'admin', 'admin', 'test@openquake.org', ''),
                       autologin=False)
         prod_pla.get('/taxtweb')
 
