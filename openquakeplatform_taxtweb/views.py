@@ -23,9 +23,9 @@ from openquake.taxonomy.taxtweb_eng import Taxonomy
 from openquake.taxonomy.taxonomy2human import full_text2human
 
 try:
-    from openquakeplatform.settings import STANDALONE
+    from openquakeplatform.settings import EXTERNAL_TOOLS
 except ImportError:
-    STANDALONE = False
+    EXTERNAL_TOOLS = False
 
 
 def index(request, **kwargs):
@@ -69,7 +69,7 @@ def index(request, **kwargs):
 
     sub1desc = ['Direction X', 'Direction Y']
     taxonomy_base = ('https://taxonomy.openquake.org/terms/'
-                     if not STANDALONE else '/taxonomy/')
+                     if EXTERNAL_TOOLS else '/taxonomy/')
     sub1help = [taxonomy_base + 'direction-x',
                 taxonomy_base + 'direction-y',
                 ]
