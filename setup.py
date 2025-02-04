@@ -139,4 +139,3 @@ elif pybuild_name == 'oq-taxonomy':
         #test_suite='openquake.risklib,openquake.commonlib,openquake.calculators',
         zip_safe=True,
         )
-
