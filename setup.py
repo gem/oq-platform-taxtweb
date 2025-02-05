@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vim: tabstop=4 shiftwidth=4 softtabstop=4
 #
-# Copyright (C) 2013-2019 GEM Foundation
+# Copyright (C) 2013-2025 GEM Foundation
 #
 # OpenQuake is free software: you can redistribute it and/or modify it
 # under the terms of the GNU Affero General Public License as published
@@ -59,6 +59,7 @@ if pybuild_name == 'oq-platform-taxtweb':
         url='http://github.com/gem/oq-platform-taxtweb',
         author='GEM Foundation',
         author_email='devops@openquake.org',
+        python_requires='>=3.10,<3.13',
         install_requires=[
             'django >=4.2, <5',
         ],
@@ -69,8 +70,7 @@ if pybuild_name == 'oq-platform-taxtweb':
             'License :: OSI Approved :: AGPL3',
             'Operating System :: OS Independent',
             'Programming Language :: Python',
-            'Programming Language :: Python :: 2',
-            'Programming Language :: Python :: 2.7',
+            'Programming Language :: Python :: 3',
             'Topic :: Internet :: WWW/HTTP',
             'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         ],
@@ -107,7 +107,7 @@ elif pybuild_name == 'oq-taxonomy':
         author_email="devops@openquake.org",
         maintainer='GEM Foundation',
         maintainer_email='devops@openquake.org',
-        description=("Computes earthquake hazard and risk."),
+        description=("Describe and classify buildings in a uniform manner"),
         license="AGPL3",
         keywords="earthquake seismic risk taxonomy",
         url=url,
@@ -128,6 +128,7 @@ elif pybuild_name == 'oq-taxonomy':
         package_data={"openquake.taxonomy": [
             "README.md", "LICENSE"]},
         namespace_packages=['openquake'],
+        python_requires='>=3.10,<3.13',
         install_requires=install_requires,
         extras_require=extras_require,
         entry_points={
@@ -139,4 +140,3 @@ elif pybuild_name == 'oq-taxonomy':
         #test_suite='openquake.risklib,openquake.commonlib,openquake.calculators',
         zip_safe=True,
         )
-
